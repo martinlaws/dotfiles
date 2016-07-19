@@ -24,7 +24,9 @@
 
 ![screenshot](http://i.imgur.com/3C1Ze.png)
 
-## Installation
+## Installation for Ubuntu Vagrant Box
+
+For instructions on install YADR on OSX, please refer to the master branch of this repository.
 
 To get started once you are in Vagrant, we first need to install zsh:
 
