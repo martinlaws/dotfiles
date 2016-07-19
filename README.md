@@ -5,14 +5,11 @@
      _____| / ___ ( (_| | |
     (_______\_____|\____|_|
 
+    # Martin's TRC Ubuntu Version
     # Yet Another Dotfile Repo v1.1
     # Now with Prezto and Vundle!
 
 [![Join the chat at https://gitter.im/skwp/dotfiles](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/skwp/dotfiles?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
-#### sh -c "\`curl -fsSL https://raw.githubusercontent.com/skwp/dotfiles/master/install.sh \`"
-
-**Always be sure to run `rake update` after pulling to ensure plugins are updated**
 
 ## What is YADR?
 
@@ -23,29 +20,28 @@
   * Many zsh plugins, starting with the wonderful Prezto base, and adding a few niceties on top.
   * All things are vimized: irb, postgres command line, etc.
 
-## Mailing List
-
-Got questions, concerns, want to hear announcements? Join the [Google Group](https://groups.google.com/forum/#!forum/yadr-users)
-
-Please use GitHub Issues for pull requests or bug reports only.
-
 ## Screenshot
 
 ![screenshot](http://i.imgur.com/3C1Ze.png)
 
 ## Installation
 
-To get started please run:
+To get started once you are in Vagrant, we first need to install zsh:
 
 ```bash
-sh -c "`curl -fsSL https://raw.githubusercontent.com/skwp/dotfiles/master/install.sh`"
+sudo apt-get update && sudo apt-get install zsh
 ```
 
-**Note:** YADR will automatically install all of its subcomponents. If you want to be asked
-about each one, use:
+Now let's make ZSH our default shell:
 
 ```bash
-sh -c "`curl -fsSL https://raw.githubusercontent.com/skwp/dotfiles/master/install.sh`" -s ask
+chsh -s /bin/zsh
+```
+
+Next, clone this repo and install YADR:
+
+```bash
+  git clone -b martin-ubuntu-yadr <GITHUB REPO URL> ~/.yadr && cd ~/.yadr && rake install
 ```
 
 ## Wait, you're not done! Do this:
@@ -59,24 +55,21 @@ The escape key is the single most used key in vim.  Old keyboards used to have E
 #### Set up a system wide hotkey for iTerm (Keys=>Hotkey)
 Recommended Cmd-Escape, which is really Cmd-Capslock.
 
-#### In iTerm, uncheck "Use Lion-style full screen" on General
-This will give you fast full screen windows that are switchable without switching to spaces.
-
-#### in MacVim, uncheck Prefer native fullscreen under Advanced settings
-Same as iTerm. The Lion style spaces navigation slows everything down for no reason.
-
 ## If you want to run vim in terminal
 
 * Make sure you install Solarized colorscheme in your terminal!
-* If you don't want to use solarized terminal, then make sure you do this:
+* If you don't want to use solarized terminal, then make sure you add this to your `~/.vimrc.before`:
 
+```bash
       let g:yadr_using_unsolarized_terminal = 1
-      # in ~/.vimrc.before
+```
 
-* If you want to use an alternate colorcheme like Gruvbox, then in your `~/.vimrc.after` do:
+* If you want to use an alternate colorcheme like Gruvbox, then in your `~/.vimrc.after` add:
 
+```bash
       let g:yadr_disable_solarized_enhancements = 1
       colorscheme base16-twilight
+```
 
 ### Upgrading
 
