@@ -11,7 +11,6 @@ stow git tmux vim vscode bash -t ~
 ## Initial Machine Setup
 
 1. [homebrew](https://brew.sh/)
-1. [oh-my-zsh](https://ohmyz.sh/)
 1. [Plug.vim](https://github.com/junegunn/vim-plug)
 
 ## Dependencies
