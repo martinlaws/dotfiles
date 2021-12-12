@@ -33,7 +33,7 @@ zle -N insert-fzy-path-in-command-line
 bindkey "^S" "insert-fzy-path-in-command-line"
 
 # Ruby // Shopify dev stuff
-if ! [ "$SPIN" ]; then
+if ! [ "$SPIN" ] && ! [[ -f /opt/dev/sh/chruby/chruby.sh ]]; then
     source /opt/homebrew/opt/chruby/share/chruby/chruby.sh
     source /opt/homebrew/opt/chruby/share/chruby/auto.sh
 fi
