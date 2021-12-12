@@ -32,4 +32,4 @@ zle -N insert-fzy-path-in-command-line
 # Bind the key to the newly created widget
 bindkey "^S" "insert-fzy-path-in-command-line"
 
-eval "$(starship init bash)"
+eval "$(starship init zsh)"
