@@ -8,7 +8,7 @@ mkdir ~/.config
 
 ln -sf ~/dotfiles/starship/starship.toml ~/.config/starsip.toml
 ln -sf ~/dotfiles/vim/.vimrc ~/.vimrc
-ln -sf ~/dotfiles/bash/.bashrc ~/.bashrc
+ln -sf ~/dotfiles/zsh/.zshrc ~/.zshrc
 ln -sf ~/dotfiles/tmux/.tmux.conf ~/.tmux.conf
 ln -sf ~/dotfiles/tmux/.tmux.theme ~/.tmux.theme
 ln -sf ~/dotfiles/git/.gitconfig ~/.gitconfig
