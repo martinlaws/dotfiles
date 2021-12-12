@@ -1,0 +1,17 @@
+{
+    "editor.fontSize": 14,
+    "editor.fontFamily": "Fira Code, Menlo, Monaco, 'Courier New', monospace",
+    "terminal.integrated.fontFamily": "Fira Code, Menlo, Monaco, 'Courier New', monospace",
+    "editor.formatOnSave": true,
+    "editor.minimap.enabled": false,
+    "editor.multiCursorModifier": "ctrlCmd",
+    "editor.rulers": [
+        80
+    ],
+    "files.trimTrailingWhitespace": true,
+    "window.title": "${activeEditorLong}${separator}${rootName}",
+    "[markdown]": {
+        "files.trimTrailingWhitespace": false
+    },
+    "workbench.editor.enablePreviewFromQuickOpen": false
+}
