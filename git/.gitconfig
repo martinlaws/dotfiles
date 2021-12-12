@@ -1,0 +1,50 @@
+[init]
+  templatedir = ~/.git-template
+
+[user]
+  name = Martin Laws
+  email = hey@mlaws.ca
+
+[core]
+  excludesfile = ~/.gitignore_global
+  editor = vim
+  pager = diff-so-fancy | less --tabs=4 -RFX
+
+[color]
+  branch = auto
+  diff = auto
+  status = auto
+
+[push]
+  default = simple
+
+[branch]
+  autosetuprebase = always
+
+[merge]
+  log = true
+
+[rebase]
+  autosquash = true
+
+[alias]
+  a = add
+  b = branch
+  c = commit -v
+  ca = commit -v --amend
+  co = checkout
+  cb = checkout -b
+  cp = cherry-pick
+  d = diff --color
+  ds = diff --color --staged
+  git = "!git"
+  lg = log --graph --pretty=format:'%C(bold cyan)%h%C(reset) %C(blue)%cd %C(bold green)%s %C(bold cyan)%an%Creset%C(bold red)%d' --abbrev-commit --date=short
+  p = push
+  pu = push -u
+  pfl = push --force-with-lease
+  pl = pull
+  ra = rebase --abort
+  rc = rebase --continue
+  ri = rebase -i
+  flog = reflog --pretty=format:'%C(bold cyan)%h%C(reset) %C(blue)%cd %C(bold green)%s %C(bold cyan)%an%Creset%C(bold red)%d' --abbrev-commit --date=short
+  s = status -s

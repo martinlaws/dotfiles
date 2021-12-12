@@ -1,0 +1,24 @@
+
+sh -c "$(curl -fsSL https://starship.rs/install.sh)"
+
+git clone https://github.com/so-fancy/diff-so-fancy.git ~/diff-so-fancy
+
+mkdir ~/.bin
+mkdir ~/.config
+
+ln -sf ~/dotfiles/starship/starship.toml ~/.config/starsip.toml
+ln -sf ~/dotfiles/vim/.vimrc ~/.vimrc
+ln -sf ~/dotfiles/bash/.bashrc ~/.bashrc
+ln -sf ~/dotfiles/tmux/.tmux.conf ~/.tmux.conf
+ln -sf ~/dotfiles/tmux/.tmux.theme ~/.tmux.theme
+ln -sf ~/dotfiles/git/.gitconfig ~/.gitconfig
+
+ln -s ~/diff-so-fancy/diff-so-fancy ~/.bin/diff-so-fancy
+
+if ! command -v fzy &> /dev/null; then
+  sudo apt-get install -y fzy
+fi
+
+if ! command -v rg &> /dev/null; then
+  sudo apt-get install -y ripgrep
+fi
