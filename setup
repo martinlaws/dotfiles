@@ -7,10 +7,11 @@ mkdir ~/.config
 
 ln -sf ~/dotfiles/vim/.vimrc ~/.vimrc
 ln -sf ~/dotfiles/zsh/.zshrc ~/.zshrc
+ln -sf ~/dotfiles/hyper/.hyper.js ~/.hyper.js
 ln -sf ~/dotfiles/tmux/.tmux.conf ~/.tmux.conf
 ln -sf ~/dotfiles/tmux/.tmux.theme ~/.tmux.theme
 ln -sf ~/dotfiles/git/.gitconfig ~/.gitconfig
-ln -sf ~/dotfiles/starship/starship.toml ~/.config/starsip.toml
+ln -sf ~/dotfiles/starship/starship.toml ~/.config/starship.toml
 
 ln -s ~/diff-so-fancy/diff-so-fancy ~/.bin/diff-so-fancy
 
