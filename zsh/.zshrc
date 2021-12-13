@@ -35,7 +35,9 @@ bindkey "^S" "insert-fzy-path-in-command-line"
 # Ruby // Shopify dev stuff
 [[ -f /opt/dev/sh/chruby/chruby.sh ]] && type chruby >/dev/null 2>&1 || chruby () { source /opt/dev/sh/chruby/chruby.sh; chruby "$@"; }
 
-if [ -f ~/src/github.com/martinlaws/minidev/dev.sh ]; then
+if [ -f /opt/dev/dev.sh ]; then
+  source /opt/dev/dev.sh
+elif [ -f ~/src/github.com/martinlaws/minidev/dev.sh ]; then
   source ~/src/github.com/martinlaws/minidev/dev.sh
   source /opt/homebrew/opt/chruby/share/chruby/chruby.sh
   source /opt/homebrew/opt/chruby/share/chruby/auto.sh
