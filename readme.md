@@ -1,6 +1,6 @@
 # dotfiles
 
-This whole repo is lovingly ripped off from graygilmore - many thanks, friend!
+The vast majority of these dotfiles are lovingly ripped off from @graygilmore - many thanks, friend!
 
 Installation made super easy with `stow`.
 
@@ -11,11 +11,14 @@ stow git tmux vim vscode bash -t ~
 ## Initial Machine Setup
 
 1. [homebrew](https://brew.sh/)
-1. [Plug.vim](https://github.com/junegunn/vim-plug)
+2. [stow](https://www.gnu.org/software/stow/manual/stow.html#Introduction)
+3. [Plug.vim](https://github.com/junegunn/vim-plug)
 
 ## Dependencies
 
-### [fzy](https://github.com/jhawthorn/fzy) (❤️ [@jhawthorn](https://github.com/jhawthorn))
+N.B. since I'm a [fancypants](https://media.giphy.com/media/3orieXKH4P732pAeCA/giphy.gif), my work and personal machines are M1 macs (everyone @Shopify gets an M1 Pro MBP, and I my personal machine is a baby blue [iMac](https://www.apple.com/ca/imac/))
+
+### [fzy](https://github.com/jhawthorn/fzy)
 
 ```bash
 brew update
