@@ -16,7 +16,7 @@ stow git tmux vim vscode bash -t ~
 
 ## Dependencies
 
-N.B. since I'm a [fancypants](https://media.giphy.com/media/3orieXKH4P732pAeCA/giphy.gif), my work and personal machines are M1 macs (everyone @Shopify gets an M1 Pro MBP, and I my personal machine is a baby blue [iMac](https://www.apple.com/ca/imac/))
+N.B. since I'm a [fancypants](https://media.giphy.com/media/3orieXKH4P732pAeCA/giphy.gif), my work and personal machines are M1 macs (everyone @Shopify gets an M1 Pro MBP, and my personal machine is a baby blue [M1 iMac](https://www.apple.com/ca/imac/))
 
 ### [fzy](https://github.com/jhawthorn/fzy)
 
