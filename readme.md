@@ -6,5 +6,5 @@
 2. [homebrew](https://brew.sh/)
 
 ## [WIP] follow-up manual steps
-- [ ] remap caps lock to `esc` in system settings
+- [ ] remap caps lock to `esc` in system settings (Keyboard → Keyboard Shortcuts button → Modifier Keys in sidebar)
  
