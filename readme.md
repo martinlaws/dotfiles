@@ -5,45 +5,18 @@
 1. xcode-select (type git into fresh terminal)
 2. [homebrew](https://brew.sh/)
 
-## Dependencies
+## [WIP] manual `brew` installs
 
-N.B. since I'm a [fancypants](https://media.giphy.com/media/3orieXKH4P732pAeCA/giphy.gif), my work and personal machines are M1 macs (everyone @Shopify gets an M1 Pro MBP, and my personal machine is a baby blue [M1 iMac](https://www.apple.com/ca/imac/))
+- hyper
+- cursor
+- arc
+- spotify
+- figma
+- gh
+- raycast
+- claude
+- nvm
 
-### [fzy](https://github.com/jhawthorn/fzy)
+## macOS settings overrides
 
-```bash
-brew update
-brew install fzy
-```
-
-### [diff-so-fancy](https://github.com/so-fancy/diff-so-fancy)
-
-```bash
-brew update
-brew install diff-so-fancy
-```
-
-### [ripgrep](https://github.com/BurntSushi/ripgrep)
-
-```bash
-brew update
-brew install ripgrep
-```
-
-## Optional
-
-### [n](https://github.com/tj/n)
-
-Let's make use of [n-install](https://github.com/mklement0/n-install) to set up
-some defaults for us.
-
-```bash
-curl -L https://git.io/n-install | bash
-```
-
-### [tmux](https://github.com/tmux/tmux)
-
-```bash
-brew update
-brew install tmux
-```
+see: [my old gist](https://gist.github.com/martinlaws/11b0d3a75538c77ade4cae    22b7cfcbd6#file-setup-sh-L209-L351) for now
