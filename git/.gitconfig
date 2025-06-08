@@ -2,7 +2,7 @@
   templatedir = ~/.git-template
 
 [user]
-	name = Martin
+	name = Martin Laws
 	email = hey@mlaws.ca
 
 [core]
