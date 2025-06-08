@@ -15,6 +15,7 @@
 - gh
 - raycast
 - claude
+- superwhisper
 - nvm
 
 ## macOS settings overrides
