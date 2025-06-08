@@ -1,18 +1,9 @@
 # dotfiles
 
-The vast majority of these dotfiles are lovingly ripped off from @graygilmore - many thanks, friend!
-
-Installation made super easy with `stow`.
-
-```bash
-stow git tmux vim vscode bash -t ~
-```
-
 ## Initial Machine Setup
 
-1. [homebrew](https://brew.sh/)
-2. [stow](https://www.gnu.org/software/stow/manual/stow.html#Introduction)
-3. [Plug.vim](https://github.com/junegunn/vim-plug)
+1. xcode-select (type git into fresh terminal)
+2. [homebrew](https://brew.sh/)
 
 ## Dependencies
 
