@@ -48,6 +48,7 @@ if [ "$OptBrewCasks" != "${OptBrewCasks#[Yy]}" ] ;then
     claude
     superwhisper
     nvm
+    slack
   )
   echo "installing apps with Cask..."
   fancy_echo '✅ Installed casks'
