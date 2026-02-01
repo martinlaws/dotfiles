@@ -95,11 +95,11 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation & Core Tools | 2/4 | Gap closure needed | - |
+| 1. Foundation & Core Tools | 4/4 | ✓ Complete | 2026-02-01 |
 | 2. Dotfiles & Developer Config | 0/TBD | Not started | - |
 | 3. Applications & System Settings | 0/TBD | Not started | - |
 | 4. Maintenance & Updates | 0/TBD | Not started | - |
 
 ---
 *Roadmap created: 2026-02-01*
-*Last updated: 2026-02-01*
+*Last updated: 2026-02-01* (Phase 1 complete)
