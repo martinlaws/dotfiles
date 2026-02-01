@@ -60,8 +60,8 @@ if command -v gum >/dev/null 2>&1; then
     . "$SCRIPT_DIR/scripts/lib/ui.sh"
 fi
 
-# Placeholder for tool installation (coming in next plan)
-echo ""
-echo "Phase 1 foundation complete!"
-echo "Tool installation will be added in next plan."
-echo ""
+# Install CLI tools from Brewfile
+sh "$SCRIPT_DIR/scripts/install-tools.sh"
+
+# Show completion report
+sh "$SCRIPT_DIR/scripts/show-report.sh"
