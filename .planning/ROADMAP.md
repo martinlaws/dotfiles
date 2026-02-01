@@ -29,10 +29,11 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Xcode Command Line Tools install automatically without manual intervention
   4. Essential CLI tools (git, nodejs, pnpm, gh, tree, gum, stow) are available in PATH
   5. Project has clear directory structure (dotfiles/, config/, scripts/, setup entry point)
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] TBD during planning
+- [ ] 01-01-PLAN.md — Project structure and Homebrew installation with beautiful UI
+- [ ] 01-02-PLAN.md — CLI tools installation and completion report
 
 ### Phase 2: Dotfiles & Developer Config
 **Goal**: User's dotfiles are symlinked and development environment is configured with SSH/Git
@@ -92,7 +93,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation & Core Tools | 0/TBD | Not started | - |
+| 1. Foundation & Core Tools | 0/2 | Planned | - |
 | 2. Dotfiles & Developer Config | 0/TBD | Not started | - |
 | 3. Applications & System Settings | 0/TBD | Not started | - |
 | 4. Maintenance & Updates | 0/TBD | Not started | - |
