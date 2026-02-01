@@ -10,6 +10,20 @@ SCRIPT_DIR="${SCRIPT_DIR:-$(cd "$(dirname "$0")/.." && pwd)}"
 # shellcheck source=scripts/lib/ui.sh
 . "$SCRIPT_DIR/scripts/lib/ui.sh"
 
+# Verify Homebrew is available before attempting tool installation
+if ! command -v brew >/dev/null 2>&1; then
+    echo ""
+    ui_error "Homebrew is not installed or not in PATH"
+    echo ""
+    echo "Please ensure Homebrew installation completed successfully."
+    echo "You may need to:"
+    echo "  1. Check if /opt/homebrew/bin/brew exists (Apple Silicon)"
+    echo "  2. Check if /usr/local/bin/brew exists (Intel)"
+    echo "  3. Re-run the setup script"
+    echo ""
+    exit 1
+fi
+
 # Display section header
 echo ""
 ui_section "Installing CLI Tools"
