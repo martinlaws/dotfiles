@@ -71,5 +71,12 @@ source "$SCRIPT_DIR/scripts/symlink-dotfiles.sh"
 source "$SCRIPT_DIR/scripts/setup-git.sh"
 source "$SCRIPT_DIR/scripts/setup-ssh.sh"
 
+# ============================================
+# Phase 3: Applications & System Settings
+# ============================================
+
+source "$SCRIPT_DIR/scripts/configure-system.sh"
+source "$SCRIPT_DIR/scripts/install-apps.sh"
+
 # Show completion report
 sh "$SCRIPT_DIR/scripts/show-report.sh"
