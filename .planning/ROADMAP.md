@@ -53,9 +53,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — Reorganize dotfiles for Stow and create symlink script
-- [ ] 02-02-PLAN.md — SSH key setup and Git configuration scripts
-- [ ] 02-03-PLAN.md — Integration into setup flow and completion verification
+- [x] 02-01-PLAN.md — Reorganize dotfiles for Stow and create symlink script
+- [x] 02-02-PLAN.md — SSH key setup and Git configuration scripts
+- [x] 02-03-PLAN.md — Integration into setup flow and completion verification
 
 ### Phase 3: Applications & System Settings
 **Goal**: User's curated apps are installed and macOS preferences match their workflow
@@ -98,10 +98,10 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation & Core Tools | 4/4 | Complete | 2026-02-01 |
-| 2. Dotfiles & Developer Config | 0/3 | Planned | - |
+| 2. Dotfiles & Developer Config | 3/3 | Complete | 2026-02-01 |
 | 3. Applications & System Settings | 0/TBD | Not started | - |
 | 4. Maintenance & Updates | 0/TBD | Not started | - |
 
 ---
 *Roadmap created: 2026-02-01*
-*Last updated: 2026-02-01* (Phase 2 planned)
+*Last updated: 2026-02-01* (Phase 2 complete)
