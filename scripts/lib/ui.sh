@@ -25,9 +25,9 @@ ui_header() {
             "$text"
     else
         echo ""
-        echo -e "${PINK}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-        echo -e "${PINK}  $text${NC}"
-        echo -e "${PINK}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+        printf "${PINK}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}\n"
+        printf "${PINK}  %s${NC}\n" "$text"
+        printf "${PINK}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}\n"
         echo ""
     fi
 }
@@ -38,7 +38,7 @@ ui_section() {
     if command -v gum >/dev/null 2>&1; then
         gum style --foreground 212 --bold "$text"
     else
-        echo -e "${BOLD}${PINK}$text${NC}"
+        printf "${BOLD}${PINK}%s${NC}\n" "$text"
     fi
 }
 
@@ -48,7 +48,7 @@ ui_success() {
     if command -v gum >/dev/null 2>&1; then
         gum style --foreground 10 "✓ $text"
     else
-        echo -e "${GREEN}✓${NC} $text"
+        printf "${GREEN}✓${NC} %s\n" "$text"
     fi
 }
 
@@ -58,7 +58,7 @@ ui_error() {
     if command -v gum >/dev/null 2>&1; then
         gum style --foreground 196 --bold "✗ $text"
     else
-        echo -e "${BOLD}${RED}✗${NC} $text"
+        printf "${BOLD}${RED}✗${NC} %s\n" "$text"
     fi
 }
 
@@ -68,7 +68,7 @@ ui_info() {
     if command -v gum >/dev/null 2>&1; then
         gum style --foreground 212 "$text"
     else
-        echo -e "${PINK}$text${NC}"
+        printf "${PINK}%s${NC}\n" "$text"
     fi
 }
 
