@@ -14,7 +14,7 @@ echo ""
 echo ""
 
 # Display header
-ui_header "Phase 1 Complete: Foundation Ready"
+ui_header "Setup Complete: Mac Ready"
 
 echo ""
 
@@ -181,6 +181,50 @@ fi
 
 echo ""
 
+# Applications Status
+ui_section "Applications"
+echo ""
+
+# Check if apps were skipped (partial installation)
+if [ -n "$SKIPPED_APPS" ]; then
+  ui_info "Partial installation (some apps skipped or failed)"
+else
+  # Check if any cask apps are installed to determine if apps section ran
+  if brew list --cask 2>/dev/null | grep -qE "(google-chrome|visual-studio-code|cursor|raycast|slack)" 2>/dev/null; then
+    ui_success "GUI applications installed"
+  else
+    ui_info "No GUI applications installed (skipped during setup)"
+  fi
+fi
+
+echo ""
+
+# System Settings Status
+ui_section "System Settings"
+echo ""
+
+# Check if settings were skipped
+if [ -n "$SKIPPED_SETTINGS" ]; then
+  ui_info "Partial configuration (some settings skipped)"
+else
+  # Check if key system settings were applied
+  DOCK_AUTOHIDE=$(defaults read com.apple.dock autohide 2>/dev/null || echo "0")
+  FINDER_EXTENSIONS=$(defaults read NSGlobalDomain AppleShowAllExtensions 2>/dev/null || echo "0")
+
+  if [ "$DOCK_AUTOHIDE" = "1" ] || [ "$FINDER_EXTENSIONS" = "1" ]; then
+    ui_success "System preferences configured"
+    echo "  - Dock: Auto-hide with fast animations"
+    echo "  - Finder: Show extensions, column view"
+    echo "  - Keyboard: Fast repeat (logout may be needed)"
+    echo "  - Mouse/Trackpad: Maximum speed"
+    echo "  - Screenshots: ~/Desktop/Screenshots (PNG)"
+  else
+    ui_info "System settings not applied (skipped during setup)"
+  fi
+fi
+
+echo ""
+
 # Next steps
 ui_section "Next Steps"
 echo ""
@@ -188,6 +232,6 @@ ui_info "1. Open a new terminal to load shell config"
 ui_info "2. If GitHub SSH not connected:"
 ui_info "   cat ~/.ssh/id_ed25519.pub | pbcopy"
 ui_info "   open https://github.com/settings/keys"
-ui_info "3. Ready for Phase 3: Applications & System Settings"
+ui_info "3. Keyboard settings may require logout to take full effect"
 echo ""
 
