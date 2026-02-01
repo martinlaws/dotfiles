@@ -1,0 +1,26 @@
+# Homebrew Bundle - Phase 1 CLI Tools
+#
+# Install with: brew bundle install --file=config/Brewfile
+
+# Version control
+brew "git"              # Distributed version control system
+
+# Node.js ecosystem (npm is bundled with node)
+brew "node"             # JavaScript runtime (includes npm)
+brew "yarn"             # Fast, reliable dependency management
+brew "pnpm"             # Fast, disk space efficient package manager
+
+# GitHub CLI
+brew "gh"               # GitHub command-line tool
+
+# File utilities
+brew "tree"             # Display directory structure
+
+# CLI interface framework
+brew "gum"              # Tool for beautiful shell scripts
+
+# Dotfiles management
+brew "stow"             # Symlink farm manager
+
+# Claude CLI
+brew "claude"           # Anthropic's Claude AI assistant

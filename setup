@@ -1,0 +1,67 @@
+#!/bin/bash
+#
+# Dotfiles Setup - Entry Point
+# Run with: sh setup
+
+# Parse command-line flags
+VERBOSE=false
+
+show_help() {
+    cat << EOF
+Usage: sh setup [-v] [-h]
+
+Flags:
+  -v  Verbose mode (show full command output)
+  -h  Show this help message
+
+EOF
+    exit 0
+}
+
+while getopts "vh" opt; do
+    case $opt in
+        v) VERBOSE=true ;;
+        h) show_help ;;
+        *)
+            echo "Invalid option. Use -h for help."
+            exit 1
+            ;;
+    esac
+done
+
+# Get script directory and detect architecture
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+export SCRIPT_DIR
+
+# Source detection library
+# shellcheck source=scripts/lib/detect.sh
+. "$SCRIPT_DIR/scripts/lib/detect.sh"
+
+# Export verbose flag for child scripts
+export VERBOSE
+
+# Display welcome message (plain echo for now, will use Gum after Homebrew installed)
+echo ""
+echo "================================================"
+echo "  Dotfiles Setup"
+echo "================================================"
+echo ""
+echo "Detected architecture: $ARCH"
+echo "Homebrew will install to: $BREW_PREFIX"
+echo ""
+
+# Install Homebrew and Xcode CLT
+sh "$SCRIPT_DIR/scripts/install-homebrew.sh"
+
+# After Homebrew is installed, gum is available
+# Source UI library to use Gum functions
+if command -v gum >/dev/null 2>&1; then
+    # shellcheck source=scripts/lib/ui.sh
+    . "$SCRIPT_DIR/scripts/lib/ui.sh"
+fi
+
+# Placeholder for tool installation (coming in next plan)
+echo ""
+echo "Phase 1 foundation complete!"
+echo "Tool installation will be added in next plan."
+echo ""
