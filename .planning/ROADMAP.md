@@ -32,7 +32,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 2 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Project structure and Homebrew installation with beautiful UI
+- [x] 01-01-PLAN.md — Project structure and Homebrew installation with beautiful UI
 - [ ] 01-02-PLAN.md — CLI tools installation and completion report
 
 ### Phase 2: Dotfiles & Developer Config
@@ -93,7 +93,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation & Core Tools | 0/2 | Planned | - |
+| 1. Foundation & Core Tools | 1/2 | In progress | - |
 | 2. Dotfiles & Developer Config | 0/TBD | Not started | - |
 | 3. Applications & System Settings | 0/TBD | Not started | - |
 | 4. Maintenance & Updates | 0/TBD | Not started | - |
