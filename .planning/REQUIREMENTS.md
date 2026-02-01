@@ -87,13 +87,41 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| | | |
+| DOT-01 | Phase 2 | Pending |
+| DOT-02 | Phase 2 | Pending |
+| DOT-03 | Phase 2 | Pending |
+| DOT-04 | Phase 2 | Pending |
+| DOT-05 | Phase 2 | Pending |
+| DOT-06 | Phase 2 | Pending |
+| PKG-01 | Phase 1 | Pending |
+| PKG-02 | Phase 1 | Pending |
+| PKG-03 | Phase 3 | Pending |
+| PKG-04 | Phase 3 | Pending |
+| PKG-05 | Phase 1 | Pending |
+| SYS-01 | Phase 3 | Pending |
+| SYS-02 | Phase 3 | Pending |
+| SYS-03 | Phase 3 | Pending |
+| SYS-04 | Phase 3 | Pending |
+| SYS-05 | Phase 3 | Pending |
+| SYS-06 | Phase 3 | Pending |
+| SYS-07 | Phase 3 | Pending |
+| DEV-01 | Phase 2 | Pending |
+| DEV-02 | Phase 2 | Pending |
+| DEV-03 | Phase 2 | Pending |
+| DEV-04 | Phase 2 | Pending |
+| UX-01 | Phase 1 | Pending |
+| UX-02 | Phase 1 | Pending |
+| UX-03 | Phase 1 | Pending |
+| UX-04 | Phase 1 | Pending |
+| MAINT-01 | Phase 4 | Pending |
+| MAINT-02 | Phase 4 | Pending |
+| MAINT-03 | Phase 1 | Pending |
 
 **Coverage:**
-- v1 requirements: 0 total
-- Mapped to phases: 0
-- Unmapped: 0 ⚠️
+- v1 requirements: 29 total
+- Mapped to phases: 29
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-02-01*
-*Last updated: 2026-02-01 after initial definition*
+*Last updated: 2026-02-01 after roadmap creation*
