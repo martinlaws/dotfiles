@@ -27,67 +27,46 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo ""
 
 if is_xcode_clt_installed; then
-    echo -e "${GREEN}✓${NC} Xcode Command Line Tools already installed, skipping..."
+    echo -e "${GREEN}✓${NC} Xcode Command Line Tools already installed at:"
     xcode-select -p
 else
     echo "Installing Xcode Command Line Tools..."
     echo ""
+    echo "Opening installation dialog..."
+    echo ""
 
-    # Try non-interactive installation first
-    echo "Attempting automatic installation..."
+    # Launch the interactive installer
+    xcode-select --install 2>/dev/null
 
-    # Create temporary file that triggers CLT install
-    touch /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
-
-    # Find the Command Line Tools package
-    PROD=$(softwareupdate -l 2>/dev/null | grep -B 1 "Command Line Tools" | grep -E "^\*" | sed 's/^[* ]*//' | head -1)
-
-    if [ -n "$PROD" ]; then
-        echo "Found: $PROD"
-        echo "This may take several minutes and will require your password..."
-        echo ""
-
-        # Install the package
-        if sudo softwareupdate -i "$PROD" --verbose; then
-            rm /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
-            echo ""
-            echo -e "${GREEN}✓${NC} Xcode Command Line Tools installed successfully"
-        else
-            rm /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
-            echo ""
-            echo -e "${YELLOW}⚠${NC} Automatic installation failed"
-            echo "Falling back to interactive installation..."
-            echo ""
-            xcode-select --install
-            echo ""
-            echo "Please complete the installation dialog, then press RETURN to continue."
-            read -r
-        fi
-    else
-        rm /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
-        echo ""
-        echo -e "${YELLOW}⚠${NC} Could not find Command Line Tools package"
-        echo "Falling back to interactive installation..."
-        echo ""
-        xcode-select --install
-        echo ""
-        echo "Please complete the installation dialog, then press RETURN to continue."
-        read -r
-    fi
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "  ACTION REQUIRED"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo ""
+    echo "Please complete the Xcode Command Line Tools installation:"
+    echo ""
+    echo "  1. Click 'Install' in the dialog that appeared"
+    echo "  2. Accept the license agreement"
+    echo "  3. Wait for installation to complete (may take several minutes)"
+    echo "  4. Press RETURN here when installation is complete"
+    echo ""
+    echo -n "Press RETURN to continue after installation completes..."
+    read -r
+    echo ""
 
     # Verify installation
     if is_xcode_clt_installed; then
-        echo ""
-        echo -e "${GREEN}✓${NC} Xcode Command Line Tools verified"
+        echo -e "${GREEN}✓${NC} Xcode Command Line Tools verified at:"
         xcode-select -p
     else
+        echo -e "${RED}✗${NC} Xcode Command Line Tools not detected"
         echo ""
-        echo -e "${RED}✗${NC} Xcode Command Line Tools installation failed"
+        echo "The installation may not have completed successfully."
         echo ""
-        echo "Manual installation steps:"
+        echo "Please complete these steps manually:"
         echo "  1. Run: xcode-select --install"
         echo "  2. Complete the installation dialog"
         echo "  3. Run this script again"
+        echo ""
         exit 1
     fi
 fi
@@ -107,12 +86,28 @@ if is_homebrew_installed; then
     if command -v gum >/dev/null 2>&1; then
         # shellcheck source=scripts/lib/ui.sh
         . "$SCRIPT_DIR/scripts/lib/ui.sh"
-        ui_success "Homebrew already installed, skipping..."
+        ui_success "Homebrew already installed"
     else
-        echo -e "${GREEN}✓${NC} Homebrew already installed, skipping..."
+        echo -e "${GREEN}✓${NC} Homebrew already installed"
     fi
 
     brew --version
+
+    # Ensure shell profile is configured even if Homebrew was already installed
+    SHELL_PROFILE="$HOME/.zprofile"
+    SHELLENV_LINE="eval \"\$($BREW_PREFIX/bin/brew shellenv)\""
+
+    # Create .zprofile if it doesn't exist
+    if [ ! -f "$SHELL_PROFILE" ]; then
+        touch "$SHELL_PROFILE"
+    fi
+
+    if ! grep -q "brew shellenv" "$SHELL_PROFILE" 2>/dev/null; then
+        echo ""
+        echo "Configuring Homebrew in $SHELL_PROFILE..."
+        echo "$SHELLENV_LINE" >> "$SHELL_PROFILE"
+        echo -e "${GREEN}✓${NC} Shell profile updated"
+    fi
 else
     echo "Installing Homebrew to: $BREW_PREFIX"
     echo ""
@@ -141,7 +136,12 @@ else
         SHELL_PROFILE="$HOME/.zprofile"
         SHELLENV_LINE="eval \"\$($BREW_PREFIX/bin/brew shellenv)\""
 
-        if ! grep -qF "$SHELLENV_LINE" "$SHELL_PROFILE" 2>/dev/null; then
+        # Create .zprofile if it doesn't exist
+        if [ ! -f "$SHELL_PROFILE" ]; then
+            touch "$SHELL_PROFILE"
+        fi
+
+        if ! grep -q "brew shellenv" "$SHELL_PROFILE" 2>/dev/null; then
             echo ""
             echo "Configuring Homebrew in $SHELL_PROFILE..."
             echo "$SHELLENV_LINE" >> "$SHELL_PROFILE"

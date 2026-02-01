@@ -83,7 +83,11 @@ show_tool_version() {
     else
         # Check if tool is in skipped list
         if [[ " ${SKIPPED_TOOLS} " =~ " ${tool} " ]]; then
-            gum style --foreground 214 "⚠ $display_name (skipped - installation failed)"
+            if command -v gum >/dev/null 2>&1; then
+                gum style --foreground 214 "⚠ $display_name (skipped - installation failed)"
+            else
+                echo -e "\033[38;5;214m⚠\033[0m $display_name (skipped - installation failed)"
+            fi
         fi
     fi
 }
@@ -108,11 +112,16 @@ echo ""
 echo "  Homebrew: $BREW_PREFIX"
 
 # Check shell config file
-if [ -f "$HOME/.zprofile" ] && grep -qF "brew shellenv" "$HOME/.zprofile"; then
+SHELLENV_CONFIGURED=false
+if [ -f "$HOME/.zprofile" ] && grep -q "brew shellenv" "$HOME/.zprofile" 2>/dev/null; then
     echo "  Shell config: ~/.zprofile (updated)"
-elif [ -f "$HOME/.bash_profile" ] && grep -qF "brew shellenv" "$HOME/.bash_profile"; then
+    SHELLENV_CONFIGURED=true
+elif [ -f "$HOME/.bash_profile" ] && grep -q "brew shellenv" "$HOME/.bash_profile" 2>/dev/null; then
     echo "  Shell config: ~/.bash_profile (updated)"
-else
+    SHELLENV_CONFIGURED=true
+fi
+
+if [ "$SHELLENV_CONFIGURED" = false ]; then
     echo "  Shell config: (not updated)"
 fi
 
