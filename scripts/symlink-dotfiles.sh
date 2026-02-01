@@ -11,6 +11,78 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 # Source UI library
 source "$SCRIPT_DIR/lib/ui.sh"
 
+# Validate config files before symlinking
+validate_configs() {
+  local issues=()
+  local DOTFILES_DIR="$1"
+
+  ui_section "Validating Config Files"
+
+  # Check .zshrc exists and has content
+  if [ ! -f "$DOTFILES_DIR/shell/.zshrc" ]; then
+    issues+=("shell/.zshrc: File not found")
+  elif [ ! -s "$DOTFILES_DIR/shell/.zshrc" ]; then
+    issues+=("shell/.zshrc: File is empty")
+  fi
+
+  # Check starship.toml is valid TOML (basic check - has format key)
+  if [ -f "$DOTFILES_DIR/shell/.config/starship.toml" ]; then
+    if ! grep -q "format\|add_newline" "$DOTFILES_DIR/shell/.config/starship.toml"; then
+      issues+=("starship.toml: May be invalid (no format or add_newline key)")
+    fi
+  fi
+
+  # Check .gitconfig.template has required placeholders
+  if [ -f "$DOTFILES_DIR/git/.gitconfig.template" ]; then
+    if ! grep -q "{{NAME}}" "$DOTFILES_DIR/git/.gitconfig.template"; then
+      issues+=(".gitconfig.template: Missing {{NAME}} placeholder")
+    fi
+    if ! grep -q "{{EMAIL}}" "$DOTFILES_DIR/git/.gitconfig.template"; then
+      issues+=(".gitconfig.template: Missing {{EMAIL}} placeholder")
+    fi
+  else
+    issues+=(".gitconfig.template: File not found")
+  fi
+
+  # Check SSH config has basic structure
+  if [ -f "$DOTFILES_DIR/ssh/.ssh/config" ]; then
+    if ! grep -q "Host" "$DOTFILES_DIR/ssh/.ssh/config"; then
+      issues+=("ssh/config: No Host entries found")
+    fi
+  fi
+
+  # Check VS Code settings.json is valid JSON (basic check)
+  local vscode_settings="$DOTFILES_DIR/editors/Library/Application Support/Code/User/settings.json"
+  if [ -f "$vscode_settings" ]; then
+    # Check it starts with { and ends with }
+    if ! head -1 "$vscode_settings" | grep -q "^{" || ! tail -1 "$vscode_settings" | grep -q "}$"; then
+      issues+=("VS Code settings.json: May be invalid JSON")
+    fi
+  fi
+
+  # Report results
+  if [ ${#issues[@]} -eq 0 ]; then
+    ui_success "All config files validated"
+    return 0
+  else
+    ui_error "Found ${#issues[@]} validation issue(s):"
+    echo ""
+    for issue in "${issues[@]}"; do
+      ui_info "  - $issue"
+    done
+    echo ""
+
+    # User decision point
+    if ui_confirm "Continue anyway?"; then
+      ui_info "Continuing with symlinking..."
+      return 0
+    else
+      ui_error "Aborting. Fix issues and re-run."
+      return 1
+    fi
+  fi
+}
+
 # Backup existing file/directory
 backup_existing() {
   local target="$1"
@@ -35,6 +107,9 @@ main() {
 
   # Define dotfiles directory
   DOTFILES_DIR="$REPO_ROOT/dotfiles"
+
+  # Validate configs before proceeding
+  validate_configs "$DOTFILES_DIR" || return 1
 
   # Backup existing files before stowing
   ui_section "Backing up existing configs"
