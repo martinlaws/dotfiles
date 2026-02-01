@@ -127,9 +127,67 @@ fi
 
 echo ""
 
-# Next steps
-ui_section "Next Steps:"
+# Dotfiles & Config Status
+ui_section "Dotfiles & Developer Config"
 echo ""
-echo "  Run Phase 2 to symlink dotfiles and configure Git/SSH"
+
+# Check symlinks
+check_symlink() {
+  local target="$1"
+  local name="$2"
+  if [ -L "$target" ]; then
+    ui_success "$name symlinked"
+  elif [ -e "$target" ]; then
+    ui_info "$name exists (not symlinked)"
+  else
+    ui_error "$name not found"
+  fi
+}
+
+check_symlink "$HOME/.zshrc" "Shell config (.zshrc)"
+check_symlink "$HOME/.config/starship.toml" "Starship prompt"
+check_symlink "$HOME/.hyper.js" "Hyper terminal"
+check_symlink "$HOME/Library/Application Support/Code/User/settings.json" "VS Code settings"
+check_symlink "$HOME/.ssh/config" "SSH config"
+
+# Check Git config (not symlinked, but should exist)
+if [ -f "$HOME/.gitconfig" ]; then
+  local git_name
+  local git_email
+  git_name=$(git config --global user.name 2>/dev/null || echo "")
+  git_email=$(git config --global user.email 2>/dev/null || echo "")
+  if [ -n "$git_name" ]; then
+    ui_success "Git configured ($git_name <$git_email>)"
+  else
+    ui_info "Git config exists but incomplete"
+  fi
+else
+  ui_error "Git config not found"
+fi
+
+# Check SSH key
+if [ -f "$HOME/.ssh/id_ed25519" ]; then
+  ui_success "SSH key exists"
+else
+  ui_info "No SSH key (run setup-ssh.sh to generate)"
+fi
+
+# Check GitHub connectivity (quick test)
+if ssh -T git@github.com 2>&1 | grep -q "successfully authenticated"; then
+  ui_success "GitHub SSH connected"
+else
+  ui_info "GitHub SSH not connected (add key to GitHub)"
+fi
+
+echo ""
+
+# Next steps
+ui_section "Next Steps"
+echo ""
+ui_info "1. Open a new terminal to load shell config"
+ui_info "2. If GitHub SSH not connected:"
+ui_info "   cat ~/.ssh/id_ed25519.pub | pbcopy"
+ui_info "   open https://github.com/settings/keys"
+ui_info "3. Ready for Phase 3: Applications & System Settings"
 echo ""
 

@@ -63,5 +63,13 @@ fi
 # Install CLI tools from Brewfile
 sh "$SCRIPT_DIR/scripts/install-tools.sh"
 
+# ============================================
+# Phase 2: Dotfiles & Developer Config
+# ============================================
+
+source "$SCRIPT_DIR/scripts/symlink-dotfiles.sh"
+source "$SCRIPT_DIR/scripts/setup-git.sh"
+source "$SCRIPT_DIR/scripts/setup-ssh.sh"
+
 # Show completion report
 sh "$SCRIPT_DIR/scripts/show-report.sh"
