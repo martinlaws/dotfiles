@@ -27,46 +27,68 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo ""
 
 if is_xcode_clt_installed; then
-    echo -e "${GREEN}✓${NC} Xcode Command Line Tools already installed at:"
+    printf "${GREEN}✓${NC} Xcode Command Line Tools already installed at:\n"
     xcode-select -p
 else
-    echo "Installing Xcode Command Line Tools..."
-    echo ""
-    echo "Opening installation dialog..."
+    echo "Installing Xcode Command Line Tools automatically..."
     echo ""
 
-    # Launch the interactive installer
-    xcode-select --install 2>/dev/null
+    # Create the trigger file that makes softwareupdate list CLT
+    TRIGGER_FILE="/tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress"
+    sudo touch "$TRIGGER_FILE"
 
-    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    echo "  ACTION REQUIRED"
-    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    echo ""
-    echo "Please complete the Xcode Command Line Tools installation:"
-    echo ""
-    echo "  1. Click 'Install' in the dialog that appeared"
-    echo "  2. Accept the license agreement"
-    echo "  3. Wait for installation to complete (may take several minutes)"
-    echo "  4. Press RETURN here when installation is complete"
-    echo ""
-    echo -n "Press RETURN to continue after installation completes..."
-    read -r
-    echo ""
+    # Find the CLT package name from softwareupdate
+    echo "Finding Command Line Tools package..."
+    CLT_PACKAGE=$(softwareupdate --list 2>&1 | grep -o "Command Line Tools for Xcode-[0-9.]*" | head -1)
+
+    if [ -z "$CLT_PACKAGE" ]; then
+        # Fallback: try alternate pattern
+        CLT_PACKAGE=$(softwareupdate --list 2>&1 | grep -o "\* Label: Command Line Tools.*" | sed 's/\* Label: //' | head -1)
+    fi
+
+    if [ -z "$CLT_PACKAGE" ]; then
+        # If still not found, clean up and fall back to interactive
+        sudo rm -f "$TRIGGER_FILE"
+        echo ""
+        printf "${YELLOW}Could not find Command Line Tools package automatically.${NC}\n"
+        echo "Falling back to interactive installation..."
+        echo ""
+        xcode-select --install 2>/dev/null
+        echo ""
+        echo "Please complete the installation dialog, then press RETURN to continue..."
+        read -r
+    else
+        echo "Installing: $CLT_PACKAGE"
+        echo ""
+        echo "This may take several minutes..."
+        echo ""
+
+        # Install CLT via softwareupdate (runs silently)
+        if sudo softwareupdate --install "$CLT_PACKAGE" --verbose; then
+            printf "${GREEN}✓${NC} Xcode Command Line Tools installed successfully\n"
+        else
+            printf "${RED}✗${NC} softwareupdate installation failed\n"
+            echo ""
+            echo "Falling back to interactive installation..."
+            xcode-select --install 2>/dev/null
+            echo ""
+            echo "Please complete the installation dialog, then press RETURN to continue..."
+            read -r
+        fi
+
+        # Clean up trigger file
+        sudo rm -f "$TRIGGER_FILE"
+    fi
 
     # Verify installation
     if is_xcode_clt_installed; then
-        echo -e "${GREEN}✓${NC} Xcode Command Line Tools verified at:"
+        printf "${GREEN}✓${NC} Xcode Command Line Tools verified at:\n"
         xcode-select -p
     else
-        echo -e "${RED}✗${NC} Xcode Command Line Tools not detected"
+        printf "${RED}✗${NC} Xcode Command Line Tools not detected\n"
         echo ""
-        echo "The installation may not have completed successfully."
-        echo ""
-        echo "Please complete these steps manually:"
-        echo "  1. Run: xcode-select --install"
-        echo "  2. Complete the installation dialog"
-        echo "  3. Run this script again"
-        echo ""
+        echo "Installation may not have completed successfully."
+        echo "Please run: xcode-select --install"
         exit 1
     fi
 fi
@@ -88,7 +110,7 @@ if is_homebrew_installed; then
         . "$SCRIPT_DIR/scripts/lib/ui.sh"
         ui_success "Homebrew already installed"
     else
-        echo -e "${GREEN}✓${NC} Homebrew already installed"
+        printf "${GREEN}✓${NC} Homebrew already installed\n"
     fi
 
     brew --version
@@ -106,28 +128,28 @@ if is_homebrew_installed; then
         echo ""
         echo "Configuring Homebrew in $SHELL_PROFILE..."
         echo "$SHELLENV_LINE" >> "$SHELL_PROFILE"
-        echo -e "${GREEN}✓${NC} Shell profile updated"
+        printf "${GREEN}✓${NC} Shell profile updated\n"
     fi
 else
     echo "Installing Homebrew to: $BREW_PREFIX"
     echo ""
-    echo -e "${YELLOW}Note:${NC} Your password may be required for system directories"
+    printf "${YELLOW}Note:${NC} You will be prompted for your password when needed\n"
     echo ""
 
     # Install Homebrew
-    if NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; then
+    if /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; then
         echo ""
-        echo -e "${GREEN}✓${NC} Homebrew installation complete"
+        printf "${GREEN}✓${NC} Homebrew installation complete\n"
 
         # Configure PATH for current session
         eval "$($BREW_PREFIX/bin/brew shellenv)"
 
         # Verify Homebrew is now available
         if command -v brew >/dev/null 2>&1; then
-            echo -e "${GREEN}✓${NC} Homebrew verified in PATH"
+            printf "${GREEN}✓${NC} Homebrew verified in PATH\n"
             brew --version
         else
-            echo -e "${RED}✗${NC} Homebrew installation succeeded but not found in PATH"
+            printf "${RED}✗${NC} Homebrew installation succeeded but not found in PATH\n"
             echo "This is unexpected. Please check your installation."
             exit 1
         fi
@@ -145,24 +167,24 @@ else
             echo ""
             echo "Configuring Homebrew in $SHELL_PROFILE..."
             echo "$SHELLENV_LINE" >> "$SHELL_PROFILE"
-            echo -e "${GREEN}✓${NC} Shell profile updated"
+            printf "${GREEN}✓${NC} Shell profile updated\n"
         else
             echo ""
-            echo -e "${GREEN}✓${NC} Homebrew already configured in shell profile"
+            printf "${GREEN}✓${NC} Homebrew already configured in shell profile\n"
         fi
 
         # Install gum immediately for subsequent UI
         echo ""
         echo "Installing Gum for beautiful CLI interface..."
         if brew install gum; then
-            echo -e "${GREEN}✓${NC} Gum installed successfully"
+            printf "${GREEN}✓${NC} Gum installed successfully\n"
         else
-            echo -e "${YELLOW}⚠${NC} Gum installation failed (will fall back to plain output)"
+            printf "${YELLOW}⚠${NC} Gum installation failed (will fall back to plain output)\n"
         fi
 
     else
         echo ""
-        echo -e "${RED}✗${NC} Homebrew installation failed"
+        printf "${RED}✗${NC} Homebrew installation failed\n"
         echo ""
         echo "You can try again by re-running this script, or install manually:"
         echo "  Visit: https://brew.sh"
@@ -171,7 +193,7 @@ else
 fi
 
 echo ""
-echo -e "${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-echo -e "${GREEN}  Homebrew setup complete!${NC}"
-echo -e "${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+printf "${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}\n"
+printf "${GREEN}  Homebrew setup complete!${NC}\n"
+printf "${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}\n"
 echo ""
