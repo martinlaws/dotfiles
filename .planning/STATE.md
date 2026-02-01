@@ -5,22 +5,22 @@
 See: .planning/PROJECT.md (updated 2026-02-01)
 
 **Core value:** New Mac setup should be delightful and maintainable, not confusing and broken.
-**Current focus:** Phase 1: Foundation & Core Tools
+**Current focus:** Phase 2: Dotfiles & Developer Config
 
 ## Current Position
 
 Phase: 2 of 4 (Dotfiles & Developer Config)
-Plan: 1 of 3 in current phase
+Plan: 2 of 3 in current phase
 Status: In progress
-Last activity: 2026-02-01 — Completed 02-01-PLAN.md (Stow package structure)
+Last activity: 2026-02-01 — Completed 02-02-PLAN.md (SSH & Git setup scripts)
 
-Progress: [███████░░░] 71% (5 of 7 plans complete across all phases)
+Progress: [████████░░] 86% (6 of 7 plans complete across all phases)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 5
-- Average duration: 4 min
+- Total plans completed: 6
+- Average duration: 3 min
 - Total execution time: 0.3 hours
 
 **By Phase:**
@@ -28,11 +28,11 @@ Progress: [███████░░░] 71% (5 of 7 plans complete across all
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 1 | 4 | 16 min | 4 min |
-| 2 | 1 | 2 min | 2 min |
+| 2 | 2 | 3 min | 1.5 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-02 (10 min), 01-03 (2 min), 01-04 (2 min), 02-01 (2 min)
-- Trend: Excellent velocity maintained into Phase 2
+- Last 5 plans: 01-03 (2 min), 01-04 (2 min), 02-01 (2 min), 02-02 (1 min)
+- Trend: Excellent velocity maintained, Phase 2 scripts are quick to implement
 
 *Updated after each plan completion*
 
@@ -60,6 +60,11 @@ Recent decisions affecting current work:
 | 02-01 | Template-based .gitconfig with placeholders | Same dotfiles work across multiple machines with different user names/emails |
 | 02-01 | Local override pattern with *.local files | Machine-specific config without polluting shared dotfiles |
 | 02-01 | VS Code settings at macOS path | VS Code uses Library/Application Support on macOS, not .config |
+| 02-02 | Ed25519 key type for SSH | Modern, secure, shorter keys than RSA - GitHub recommended |
+| 02-02 | Interactive passphrase prompting | Let ssh-keygen handle passphrase input securely |
+| 02-02 | macOS keychain integration | --apple-use-keychain flag for SSH persistence across reboots |
+| 02-02 | Sed character escaping for user input | Prevent sed substitution errors with special characters |
+| 02-02 | .gitconfig.local include at bottom | Local overrides take precedence over template settings |
 
 ### Pending Todos
 
@@ -71,8 +76,8 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-01 18:36 UTC
-Stopped at: Completed 02-01-PLAN.md (Stow package structure)
+Last session: 2026-02-01 18:41 UTC
+Stopped at: Completed 02-02-PLAN.md (SSH & Git setup scripts)
 Resume file: None
 
 ---
