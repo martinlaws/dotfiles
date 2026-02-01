@@ -71,10 +71,12 @@ Plans:
   7. Dock auto-hides with optimal size and fast animations
   8. User previews system settings changes before they are applied
   9. User can customize which system settings to apply
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] TBD during planning
+- [ ] 03-01-PLAN.md — GUI application installation with selection flow (all/categories/individual)
+- [ ] 03-02-PLAN.md — macOS system settings configuration with preview
+- [ ] 03-03-PLAN.md — Integration into setup flow and completion report
 
 ### Phase 4: Maintenance & Updates
 **Goal**: User can safely re-run setup to update packages and configs without breaking existing setup
@@ -99,9 +101,9 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 |-------|----------------|--------|-----------|
 | 1. Foundation & Core Tools | 4/4 | Complete | 2026-02-01 |
 | 2. Dotfiles & Developer Config | 3/3 | Complete | 2026-02-01 |
-| 3. Applications & System Settings | 0/TBD | Not started | - |
+| 3. Applications & System Settings | 0/3 | Planning complete | - |
 | 4. Maintenance & Updates | 0/TBD | Not started | - |
 
 ---
 *Roadmap created: 2026-02-01*
-*Last updated: 2026-02-01* (Phase 2 complete)
+*Last updated: 2026-02-01* (Phase 3 planned)
