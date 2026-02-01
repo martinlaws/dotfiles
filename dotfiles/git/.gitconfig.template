@@ -2,8 +2,8 @@
   templatedir = ~/.git-template
 
 [user]
-	name = Martin Laws
-	email = hey@mlaws.ca
+	name = {{NAME}}
+	email = {{EMAIL}}
 
 [core]
   excludesfile = ~/.gitignore_global
