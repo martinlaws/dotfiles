@@ -6,6 +6,7 @@ plugins=(macos)
 
 # Aliases
 alias mbrew="arch -arm64 brew"
+alias gsd="claude --dangerously-skip-permissions"
 
 # Add a default scripts folder to $PATH
 path+=($HOME/.bin)
