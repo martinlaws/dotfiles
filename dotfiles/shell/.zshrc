@@ -28,3 +28,6 @@ case ":$PATH:" in
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
 # pnpm end
+
+# Load local overrides if they exist
+[ -f ~/.zshrc.local ] && source ~/.zshrc.local
