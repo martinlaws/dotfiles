@@ -86,7 +86,7 @@ show_tool_version() {
             if command -v gum >/dev/null 2>&1; then
                 gum style --foreground 214 "⚠ $display_name (skipped - installation failed)"
             else
-                echo -e "\033[38;5;214m⚠\033[0m $display_name (skipped - installation failed)"
+                printf "\033[38;5;214m⚠\033[0m %s\n" "$display_name (skipped - installation failed)"
             fi
         fi
     fi
