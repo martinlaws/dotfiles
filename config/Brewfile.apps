@@ -1,0 +1,63 @@
+# Homebrew Bundle - GUI Applications
+#
+# Install all apps:
+#   brew bundle install --file=config/Brewfile.apps
+#
+# For partial installation:
+#   Use scripts/install-apps.sh which generates a filtered Brewfile
+#   based on your selection (all/categories/individual)
+
+###############################################################################
+# Browsers
+###############################################################################
+
+cask "google-chrome"       # (essential) Primary browser
+cask "dia"                 # (recommended) Daily driver browser
+cask "firefox"             # (optional) Alternative browser
+
+###############################################################################
+# Dev Tools
+###############################################################################
+
+cask "visual-studio-code"  # (essential) Primary code editor
+cask "cursor"              # (recommended) AI-powered code editor
+cask "hyper"               # (recommended) Terminal emulator
+cask "claude"              # (recommended) Claude Desktop
+cask "docker"              # (optional) Container platform
+cask "postman"             # (optional) API testing
+
+###############################################################################
+# Communication
+###############################################################################
+
+cask "slack"               # (essential) Team communication
+cask "zoom"                # (recommended) Video conferencing
+cask "discord"             # (optional) Community chat
+
+###############################################################################
+# Creative
+###############################################################################
+
+cask "figma@beta"          # (recommended) Design tool (Beta)
+cask "descript"            # (optional) Audio/video editing
+cask "bambu-studio"        # (optional) 3D printing
+
+###############################################################################
+# Utilities
+###############################################################################
+
+cask "raycast"             # (recommended) Productivity launcher
+
+###############################################################################
+# Productivity
+###############################################################################
+
+cask "notion"              # (recommended) Note-taking
+cask "spotify"             # (recommended) Music streaming
+
+###############################################################################
+# Gaming
+###############################################################################
+
+cask "steam"               # (optional) Game platform
+cask "battle-net"          # (optional) Blizzard games
