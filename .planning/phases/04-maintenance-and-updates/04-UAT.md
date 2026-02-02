@@ -1,5 +1,5 @@
 ---
-status: complete
+status: diagnosed
 phase: 04-maintenance-and-updates
 source: 04-01-SUMMARY.md, 04-02-SUMMARY.md, 04-03-SUMMARY.md
 started: 2026-02-01T20:40:00Z
@@ -87,7 +87,11 @@ skipped: 10
   reason: "User reported: I just tried to run it and it errored out on: /Users/mlaws/dotfiles/scripts/show-report.sh: line 19: show_update_report: command not found"
   severity: blocker
   test: 1
-  root_cause: ""
-  artifacts: []
-  missing: []
-  debug_session: ""
+  root_cause: "Function call before definition - show_update_report() called at line 19 but defined at line 254"
+  artifacts:
+    - path: "scripts/show-report.sh"
+      issue: "Lines 18-21 check UPDATE_MODE and call show_update_report, but function is defined much later at lines 254-335"
+  missing:
+    - "Move function definitions before the mode check/function calls"
+    - "Correct order: libraries → function definitions → mode routing → function call"
+  debug_session: "inline diagnosis"
