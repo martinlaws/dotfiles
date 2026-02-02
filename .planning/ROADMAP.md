@@ -2,7 +2,7 @@
 
 ## Overview
 
-Transform Mac setup from painful manual chore into delightful automated experience through four focused phases: establish foundation with Homebrew and development tools, automate dotfiles symlinking with SSH/Git configuration, install GUI applications with beautiful CLI prompts, and enable safe re-run for long-term maintenance. Each phase delivers complete, testable capability that builds toward the core value of making new Mac setup delightful and maintainable.
+Transform Mac setup from painful manual chore into delightful automated experience through five focused phases: establish foundation with Homebrew and development tools, automate dotfiles symlinking with SSH/Git configuration, install GUI applications with beautiful CLI prompts, enable safe re-run for long-term maintenance, and fix critical integration breaks in update mode. Each phase delivers complete, testable capability that builds toward the core value of making new Mac setup delightful and maintainable.
 
 ## Phases
 
@@ -16,6 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: Dotfiles & Developer Config** - Symlink dotfiles, SSH keys, Git configuration
 - [x] **Phase 3: Applications & System Settings** - GUI apps installation, macOS preferences
 - [x] **Phase 4: Maintenance & Updates** - Idempotent re-run, update mode
+- [ ] **Phase 5: Fix Update Mode Integration Breaks** - Fix stow package mismatch and Brewfile reference
 
 ## Phase Details
 
@@ -95,10 +96,23 @@ Plans:
 - [x] 04-03-PLAN.md — Integration into setup entry point and completion report
 - [x] 04-04-PLAN.md — [GAP CLOSURE] Fix function call order in show-report.sh
 
+### Phase 5: Fix Update Mode Integration Breaks
+**Goal**: Fix 2 critical one-line errors blocking update mode functionality
+**Depends on**: Phase 4
+**Gap Closure**: Closes 2 integration breaks from v1.0 milestone audit
+**Success Criteria** (what must be TRUE):
+  1. Update mode dotfiles refresh completes without stow "package does not exist" errors
+  2. App drift detection correctly identifies installed casks from Brewfile.apps (not CLI tools from Brewfile)
+  3. Running ./setup with existing state successfully refreshes dotfiles and detects app drift
+**Plans**: 1 plan
+
+Plans:
+- [ ] 05-01-PLAN.md — Fix stow package names and Brewfile reference in update scripts
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4
+Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -106,7 +120,8 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 2. Dotfiles & Developer Config | 3/3 | Complete | 2026-02-01 |
 | 3. Applications & System Settings | 3/3 | Complete | 2026-02-01 |
 | 4. Maintenance & Updates | 4/4 | Complete | 2026-02-01 |
+| 5. Fix Update Mode Integration Breaks | 0/1 | Pending | — |
 
 ---
 *Roadmap created: 2026-02-01*
-*Last updated: 2026-02-01* (Phase 4 gap closure completed)
+*Last updated: 2026-02-02* (Phase 5 gap closure added)
