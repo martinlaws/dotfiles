@@ -48,6 +48,7 @@ cask "bambu-studio"        # (optional) 3D printing
 ###############################################################################
 
 cask "raycast"             # (recommended) Productivity launcher
+cask "superwhisper"        # (recommended) Voice-to-text dictation
 
 ###############################################################################
 # Productivity
