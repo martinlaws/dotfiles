@@ -15,6 +15,7 @@ brew "gh"               # GitHub command-line tool
 
 # File utilities
 brew "tree"             # Display directory structure
+brew "jq"               # JSON processor for state file management
 
 # CLI interface framework
 brew "gum"              # Tool for beautiful shell scripts
