@@ -23,6 +23,7 @@ cask "visual-studio-code"  # (essential) Primary code editor
 cask "cursor"              # (recommended) AI-powered code editor
 cask "hyper"               # (recommended) Terminal emulator
 cask "claude"              # (recommended) Claude desktop app
+cask "opencode-desktop"    # (optional) OpenCode AI coding agent desktop app
 cask "docker"              # (optional) Container platform
 cask "postman"             # (optional) API testing
 
