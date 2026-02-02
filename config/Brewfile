@@ -25,6 +25,3 @@ brew "gum"              # Tool for beautiful shell scripts
 
 # Dotfiles management
 brew "stow"             # Symlink farm manager
-
-# Claude CLI
-brew "claude"           # Anthropic's Claude AI assistant
