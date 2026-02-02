@@ -1,9 +1,9 @@
 ---
-status: complete
+status: diagnosed
 phase: 06-gap-closure-fixes
 source: 06-01-SUMMARY.md
 started: 2026-02-01T03:00:00Z
-updated: 2026-02-01T03:15:00Z
+updated: 2026-02-01T03:20:00Z
 ---
 
 ## Current Test
@@ -59,21 +59,41 @@ skipped: 0
 setup: line 128: /Users/mlaws/dotfiles/scripts/scripts/install-apps.sh: No such file or directory"
   severity: blocker
   test: 1
-  artifacts: []
-  missing: []
+  root_cause: "configure-system.sh line 9 redefines SCRIPT_DIR variable when sourced, changing it from /Users/mlaws/dotfiles to /Users/mlaws/dotfiles/scripts, causing double scripts/scripts/ path on line 128"
+  artifacts:
+    - path: "scripts/configure-system.sh"
+      issue: "Line 9 redefines SCRIPT_DIR without using unique variable name"
+    - path: "setup"
+      issue: "Lines 127-128 source configure-system.sh then use corrupted SCRIPT_DIR"
+  missing:
+    - "Change configure-system.sh to use SCRIPTS_DIR variable instead of SCRIPT_DIR"
+    - "Update all references within configure-system.sh to use SCRIPTS_DIR"
+  debug_session: ".planning/debug/script-dir-double-path.md"
 
 - truth: "Claude desktop app installs via Homebrew and launches as GUI application"
   status: failed
   reason: "User reported: no claude GUI app"
   severity: major
   test: 3
-  artifacts: []
-  missing: []
+  root_cause: "configure-system.sh redefines SCRIPT_DIR, breaking path resolution so install-apps.sh never executes, preventing all GUI apps including Claude from installing"
+  artifacts:
+    - path: "scripts/configure-system.sh"
+      issue: "Line 9 redefines SCRIPT_DIR"
+    - path: "config/Brewfile.apps"
+      issue: "Correct cask entry exists but script never runs"
+  missing:
+    - "Fix configure-system.sh SCRIPT_DIR issue (same as Gap 1)"
+  debug_session: ".planning/debug/claude-app-not-installing.md"
 
 - truth: "If Homebrew is missing when Phase 3 starts, setup shows clear error message"
   status: failed
   reason: "User reported: apps is where it's failing!"
   severity: major
   test: 6
-  artifacts: []
-  missing: []
+  root_cause: "configure-system.sh line 9 unconditionally redefines SCRIPT_DIR, overwriting exported value and causing double scripts/scripts/ path. Homebrew verification works but apps phase fails at line 128 due to path corruption"
+  artifacts:
+    - path: "scripts/configure-system.sh"
+      issue: "Line 9 uses unconditional assignment instead of conditional or unique variable"
+  missing:
+    - "Use conditional assignment or different variable name in configure-system.sh"
+  debug_session: ".planning/debug/apps-phase-failing.md"
