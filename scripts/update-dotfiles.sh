@@ -64,7 +64,7 @@ update_dotfiles() {
   ui_section "Refreshing Dotfile Symlinks"
 
   # Define stow packages to refresh
-  STOW_PACKAGES="git zsh hyper vscode ssh starship"
+  STOW_PACKAGES="git shell terminal editors ssh"
   STOW_DIR="$SCRIPT_DIR/dotfiles"
 
   # Check for conflicts (simplified - full check would iterate all expected files)
