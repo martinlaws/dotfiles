@@ -24,11 +24,11 @@ ui_header() {
             --align center --width 60 --margin "1 2" --padding "2 4" \
             "$text"
     else
-        echo ""
+        printf "\n"
         printf "${PINK}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}\n"
         printf "${PINK}  %s${NC}\n" "$text"
         printf "${PINK}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}\n"
-        echo ""
+        printf "\n"
     fi
 }
 
