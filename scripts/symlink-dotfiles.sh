@@ -4,12 +4,12 @@
 #
 set -euo pipefail
 
-# Get script directory for relative paths
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+# Get script directory for relative paths (use SCRIPTS_DIR for sourced scripts)
+SCRIPTS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPTS_DIR/.." && pwd)"
 
 # Source UI library
-source "$SCRIPT_DIR/lib/ui.sh"
+source "$SCRIPTS_DIR/lib/ui.sh"
 
 # Validate config files before symlinking
 validate_configs() {

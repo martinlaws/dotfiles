@@ -7,10 +7,10 @@
 
 set -euo pipefail
 
-# Detect script directory and source UI library
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+# Detect script directory and source UI library (use SCRIPTS_DIR for sourced scripts)
+SCRIPTS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=scripts/lib/ui.sh
-. "$SCRIPT_DIR/lib/ui.sh"
+. "$SCRIPTS_DIR/lib/ui.sh"
 
 #
 # Main SSH Setup Function
