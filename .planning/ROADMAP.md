@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Foundation & Core Tools** - Homebrew installation, CLI tools, beautiful interface setup
 - [x] **Phase 2: Dotfiles & Developer Config** - Symlink dotfiles, SSH keys, Git configuration
 - [x] **Phase 3: Applications & System Settings** - GUI apps installation, macOS preferences
-- [x] **Phase 4: Maintenance & Updates** - Idempotent re-run, update mode
+- [ ] **Phase 4: Maintenance & Updates** - Idempotent re-run, update mode
 
 ## Phase Details
 
@@ -87,12 +87,13 @@ Plans:
   2. Setup script detects existing installation and switches to update mode
   3. Update mode upgrades Homebrew packages and refreshes symlinks without prompting for already-configured settings
   4. User can run setup months later to maintain their Mac without manual intervention
-**Plans**: 3 plans
+**Plans**: 4 plans (3 original + 1 gap closure)
 
 Plans:
 - [x] 04-01-PLAN.md — State management and backup infrastructure
 - [x] 04-02-PLAN.md — Update category scripts (Homebrew, dotfiles, system, apps)
 - [x] 04-03-PLAN.md — Integration into setup entry point and completion report
+- [ ] 04-04-PLAN.md — [GAP CLOSURE] Fix function call order in show-report.sh
 
 ## Progress
 
@@ -104,8 +105,8 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 1. Foundation & Core Tools | 4/4 | Complete | 2026-02-01 |
 | 2. Dotfiles & Developer Config | 3/3 | Complete | 2026-02-01 |
 | 3. Applications & System Settings | 3/3 | Complete | 2026-02-01 |
-| 4. Maintenance & Updates | 3/3 | Complete | 2026-02-01 |
+| 4. Maintenance & Updates | 3/4 | Gap Closure | - |
 
 ---
 *Roadmap created: 2026-02-01*
-*Last updated: 2026-02-01* (Phase 4 complete)
+*Last updated: 2026-02-02* (Phase 4 gap closure plan added)
