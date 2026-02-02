@@ -96,7 +96,8 @@ Recent decisions affecting current work:
 
 ### Pending Todos
 
-None yet.
+1 pending todo:
+- Add fnm (Fast Node Manager) to CLI tools (.planning/todos/pending/2026-02-01-add-fnm-to-cli-tools.md)
 
 ### Blockers/Concerns
 
