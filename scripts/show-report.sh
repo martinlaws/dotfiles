@@ -9,6 +9,19 @@ SCRIPT_DIR="${SCRIPT_DIR:-$(cd "$(dirname "$0")/.." && pwd)}"
 . "$SCRIPT_DIR/scripts/lib/detect.sh"
 # shellcheck source=scripts/lib/ui.sh
 . "$SCRIPT_DIR/scripts/lib/ui.sh"
+# shellcheck source=scripts/lib/state.sh
+. "$SCRIPT_DIR/scripts/lib/state.sh"
+# shellcheck source=scripts/lib/logging.sh
+. "$SCRIPT_DIR/scripts/lib/logging.sh"
+
+# Determine report mode
+if [ "${UPDATE_MODE:-false}" = "true" ]; then
+  show_update_report
+  exit 0
+fi
+
+# First-time report follows below
+show_first_time_report() {
 
 echo ""
 echo ""
@@ -234,4 +247,93 @@ ui_info "   cat ~/.ssh/id_ed25519.pub | pbcopy"
 ui_info "   open https://github.com/settings/keys"
 ui_info "3. Keyboard settings may require logout to take full effect"
 echo ""
+
+}
+
+# Update mode report function with package-level detail
+show_update_report() {
+  echo ""
+  ui_header "Update Complete"
+  echo ""
+
+  # Time since last update
+  LAST_RUN=$(state_get_last_run)
+  ui_info "Previous run: $LAST_RUN"
+  ui_info "Updated: $(date)"
+  echo ""
+
+  # Package-level detail for Homebrew upgrades (NEW - per user decision)
+  if [ -n "${UPGRADED_PACKAGES:-}" ]; then
+    ui_section "Packages Upgraded:"
+    echo ""
+    # UPGRADED_PACKAGES format from update-homebrew.sh: "package version1 -> version2" per line
+    echo "$UPGRADED_PACKAGES" | while read -r pkg_info; do
+      [ -n "$pkg_info" ] && ui_success "  $pkg_info"
+    done
+    echo ""
+  fi
+
+  # Categories updated (high-level)
+  if [ -n "${UPDATED_CATEGORIES:-}" ]; then
+    ui_section "Categories Completed:"
+    echo ""
+    echo -e "$UPDATED_CATEGORIES" | while read -r cat; do
+      [ -n "$cat" ] && ui_success "$cat"
+    done
+    echo ""
+  fi
+
+  # Categories skipped
+  if [ -n "${SKIPPED_CATEGORIES:-}" ]; then
+    ui_section "Skipped:"
+    echo ""
+    echo -e "$SKIPPED_CATEGORIES" | while read -r cat; do
+      [ -n "$cat" ] && ui_info "$cat (not selected)"
+    done
+    echo ""
+  fi
+
+  # Errors encountered
+  if [ -n "${UPDATE_ERRORS:-}" ]; then
+    ui_section "Errors:"
+    echo ""
+    echo -e "$UPDATE_ERRORS" | while read -r cat; do
+      [ -n "$cat" ] && ui_error "$cat"
+    done
+    echo ""
+  fi
+
+  # Backup location
+  BACKUP_DIR=$(ls -td ~/.local/state/dotfiles/backups/*/ 2>/dev/null | head -1)
+  if [ -n "$BACKUP_DIR" ]; then
+    ui_section "Backups:"
+    echo ""
+    ui_info "Latest backup: $BACKUP_DIR"
+    echo ""
+  fi
+
+  # Log file location
+  LOG_FILE=$(log_get_file 2>/dev/null || echo "")
+  if [ -n "$LOG_FILE" ] && [ -f "$LOG_FILE" ]; then
+    ui_section "Logs:"
+    echo ""
+    ui_info "Detailed log: $LOG_FILE"
+    echo ""
+  fi
+
+  # Next steps for update mode
+  ui_section "Next Steps"
+  echo ""
+  ui_info "1. Some settings may require logout to take effect"
+  ui_info "2. Check for any errors above"
+  ui_info "3. Run again anytime with: ./setup"
+  echo ""
+
+  # Recommended next update
+  ui_info "Recommended: Run updates monthly to keep packages current"
+  echo ""
+}
+
+# Run first-time report
+show_first_time_report
 
