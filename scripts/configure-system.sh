@@ -6,10 +6,10 @@
 
 set -e
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPTS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Source libraries
-source "$SCRIPT_DIR/lib/ui.sh"
+source "$SCRIPTS_DIR/lib/ui.sh"
 
 # Display header
 ui_header "Configuring System Settings"
