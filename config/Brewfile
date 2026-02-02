@@ -9,6 +9,7 @@ brew "git"              # Distributed version control system
 brew "node"             # JavaScript runtime (includes npm)
 brew "yarn"             # Fast, reliable dependency management
 brew "pnpm"             # Fast, disk space efficient package manager
+brew "fnm"              # Fast Node Manager - Rust-based version manager
 
 # GitHub CLI
 brew "gh"               # GitHub command-line tool
