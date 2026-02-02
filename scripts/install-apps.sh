@@ -234,7 +234,7 @@ if [ "$VERBOSE" = true ]; then
     INSTALL_STATUS=$?
 else
     # Normal mode: use spinner
-    ui_spin "Installing selected apps..." "brew bundle install --file='$TEMP_BREWFILE' 2>&1"
+    ui_spin "Installing selected apps..." "brew bundle install --file=\"$TEMP_BREWFILE\" 2>&1"
     INSTALL_STATUS=$?
 fi
 
