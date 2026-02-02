@@ -14,6 +14,9 @@ brew "fnm"              # Fast Node Manager - Rust-based version manager
 # GitHub CLI
 brew "gh"               # GitHub command-line tool
 
+# AI Tools
+brew "opencode"         # AI coding agent for the terminal
+
 # File utilities
 brew "tree"             # Display directory structure
 brew "jq"               # JSON processor for state file management
