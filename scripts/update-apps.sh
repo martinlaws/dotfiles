@@ -16,8 +16,8 @@ SCRIPT_DIR="${SCRIPT_DIR:-$(cd "$(dirname "$0")/.." && pwd)}"
 update_apps() {
   ui_section "Checking Applications"
 
-  # CORRECT PATH: homebrew/Brewfile (single file, not split)
-  BREWFILE="$SCRIPT_DIR/homebrew/Brewfile"
+  # Brewfile location from Phase 1
+  BREWFILE="$SCRIPT_DIR/config/Brewfile"
 
   if [ ! -f "$BREWFILE" ]; then
     ui_error "Brewfile not found at: $BREWFILE"
