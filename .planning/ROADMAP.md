@@ -13,8 +13,8 @@ Transform Mac setup from painful manual chore into delightful automated experien
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation & Core Tools** - Homebrew installation, CLI tools, beautiful interface setup
-- [ ] **Phase 2: Dotfiles & Developer Config** - Symlink dotfiles, SSH keys, Git configuration
-- [ ] **Phase 3: Applications & System Settings** - GUI apps installation, macOS preferences
+- [x] **Phase 2: Dotfiles & Developer Config** - Symlink dotfiles, SSH keys, Git configuration
+- [x] **Phase 3: Applications & System Settings** - GUI apps installation, macOS preferences
 - [ ] **Phase 4: Maintenance & Updates** - Idempotent re-run, update mode
 
 ## Phase Details
@@ -74,9 +74,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 03-01-PLAN.md — GUI application installation with selection flow (all/categories/individual)
-- [ ] 03-02-PLAN.md — macOS system settings configuration with preview
-- [ ] 03-03-PLAN.md — Integration into setup flow and completion report
+- [x] 03-01-PLAN.md — GUI application installation with selection flow (all/categories/individual)
+- [x] 03-02-PLAN.md — macOS system settings configuration with preview
+- [x] 03-03-PLAN.md — Integration into setup flow and completion report
 
 ### Phase 4: Maintenance & Updates
 **Goal**: User can safely re-run setup to update packages and configs without breaking existing setup
@@ -87,10 +87,12 @@ Plans:
   2. Setup script detects existing installation and switches to update mode
   3. Update mode upgrades Homebrew packages and refreshes symlinks without prompting for already-configured settings
   4. User can run setup months later to maintain their Mac without manual intervention
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] TBD during planning
+- [ ] 04-01-PLAN.md — State management and backup infrastructure
+- [ ] 04-02-PLAN.md — Update category scripts (Homebrew, dotfiles, system, apps)
+- [ ] 04-03-PLAN.md — Integration into setup entry point and completion report
 
 ## Progress
 
@@ -102,8 +104,8 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 1. Foundation & Core Tools | 4/4 | Complete | 2026-02-01 |
 | 2. Dotfiles & Developer Config | 3/3 | Complete | 2026-02-01 |
 | 3. Applications & System Settings | 3/3 | Complete | 2026-02-01 |
-| 4. Maintenance & Updates | 0/TBD | Not started | - |
+| 4. Maintenance & Updates | 0/3 | Planned | - |
 
 ---
 *Roadmap created: 2026-02-01*
-*Last updated: 2026-02-01* (Phase 3 complete)
+*Last updated: 2026-02-01* (Phase 4 planned)
