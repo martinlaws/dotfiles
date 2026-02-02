@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: Dotfiles & Developer Config** - Symlink dotfiles, SSH keys, Git configuration
 - [x] **Phase 3: Applications & System Settings** - GUI apps installation, macOS preferences
 - [x] **Phase 4: Maintenance & Updates** - Idempotent re-run, update mode
-- [ ] **Phase 5: Fix Update Mode Integration Breaks** - Fix stow package mismatch and Brewfile reference
+- [x] **Phase 5: Fix Update Mode Integration Breaks** - Fix stow package mismatch and Brewfile reference
 
 ## Phase Details
 
@@ -107,7 +107,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 05-01-PLAN.md — Fix stow package names and Brewfile reference in update scripts
+- [x] 05-01-PLAN.md — Fix stow package names and Brewfile reference in update scripts
 
 ## Progress
 
@@ -120,8 +120,8 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 2. Dotfiles & Developer Config | 3/3 | Complete | 2026-02-01 |
 | 3. Applications & System Settings | 3/3 | Complete | 2026-02-01 |
 | 4. Maintenance & Updates | 4/4 | Complete | 2026-02-01 |
-| 5. Fix Update Mode Integration Breaks | 0/1 | Pending | — |
+| 5. Fix Update Mode Integration Breaks | 1/1 | Complete | 2026-02-01 |
 
 ---
 *Roadmap created: 2026-02-01*
-*Last updated: 2026-02-02* (Phase 5 gap closure added)
+*Last updated: 2026-02-01* (Phase 5 complete)
