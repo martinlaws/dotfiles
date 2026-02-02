@@ -17,6 +17,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 3: Applications & System Settings** - GUI apps installation, macOS preferences
 - [x] **Phase 4: Maintenance & Updates** - Idempotent re-run, update mode
 - [x] **Phase 5: Fix Update Mode Integration Breaks** - Fix stow package mismatch and Brewfile reference
+- [x] **Phase 6: Gap Closure Fixes** - Fix immediate bugs + automation gaps for 100% hands-off setup
 
 ## Phase Details
 
@@ -109,10 +110,27 @@ Plans:
 Plans:
 - [x] 05-01-PLAN.md — Fix stow package names and Brewfile reference in update scripts
 
+### Phase 6: Gap Closure Fixes
+**Goal**: Fix immediate blocking bugs + achieve 100% hands-off automation (29/29 requirements)
+**Depends on**: Phase 5
+**Gap Closure**: Closes remaining v1.0 audit gaps (PKG-05, UX-01, integration issues) + immediate bugs
+**Success Criteria** (what must be TRUE):
+  1. Scripts source correctly without SCRIPT_DIR double path errors
+  2. Starship installs and .zshrc works on fresh Mac
+  3. Claude desktop app in correct Brewfile location
+  4. Xcode CLT installs automatically without GUI interaction (hands-off)
+  5. Beautiful CLI output before gum installs (no -e artifacts)
+  6. Setup script stops on first error (no cascading failures)
+  7. Homebrew verification before Phase 3 prevents silent failures
+**Plans**: 1 plan
+
+Plans:
+- [x] 06-01-PLAN.md — Fix SCRIPT_DIR bug, add starship, move claude, fix echo fallback, add error handling
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
+Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -121,7 +139,8 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 3. Applications & System Settings | 3/3 | Complete | 2026-02-01 |
 | 4. Maintenance & Updates | 4/4 | Complete | 2026-02-01 |
 | 5. Fix Update Mode Integration Breaks | 1/1 | Complete | 2026-02-01 |
+| 6. Gap Closure Fixes | 1/1 | Complete | 2026-02-02 |
 
 ---
 *Roadmap created: 2026-02-01*
-*Last updated: 2026-02-01* (Phase 5 complete)
+*Last updated: 2026-02-02* (Phase 6 planned for gap closure)
