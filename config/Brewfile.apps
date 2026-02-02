@@ -22,7 +22,7 @@ cask "firefox"             # (optional) Alternative browser
 cask "visual-studio-code"  # (essential) Primary code editor
 cask "cursor"              # (recommended) AI-powered code editor
 cask "hyper"               # (recommended) Terminal emulator
-cask "claude"              # (recommended) Claude Desktop
+cask "claude"              # (recommended) Claude desktop app
 cask "docker"              # (optional) Container platform
 cask "postman"             # (optional) API testing
 
