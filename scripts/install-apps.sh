@@ -87,7 +87,9 @@ while IFS='|' read -r category app priority description; do
     eval "APP_${app//-/_}_CATEGORY=\"$category\""
     eval "APP_${app//-/_}_PRIORITY=\"$priority\""
     eval "APP_${app//-/_}_DESCRIPTION=\"$description\""
-done < <(parse_apps_by_category)
+done <<EOF
+$(parse_apps_by_category)
+EOF
 
 # Show installation mode selection
 ui_info "How would you like to install applications?"
@@ -142,7 +144,9 @@ case "$MODE" in
             if echo "$CATEGORIES" | grep -q "^${category}"; then
                 SELECTED_APPS+=("$app")
             fi
-        done < <(parse_apps_by_category)
+        done <<EOF
+$(parse_apps_by_category)
+EOF
 
         ui_success "Selected ${#SELECTED_APPS[@]} apps from categories"
         ;;
@@ -169,7 +173,9 @@ case "$MODE" in
             else
                 SELECTION_LIST+=("  $app - $description")
             fi
-        done < <(parse_apps_by_category)
+        done <<EOF
+$(parse_apps_by_category)
+EOF
 
         # Show selection
         SELECTIONS=$(printf '%s\n' "${SELECTION_LIST[@]}" | gum choose --no-limit)
