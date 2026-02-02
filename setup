@@ -37,8 +37,39 @@ export SCRIPT_DIR
 # shellcheck source=scripts/lib/detect.sh
 . "$SCRIPT_DIR/scripts/lib/detect.sh"
 
+# Source state library (for update mode detection)
+# shellcheck source=scripts/lib/state.sh
+. "$SCRIPT_DIR/scripts/lib/state.sh"
+
 # Export verbose flag for child scripts
 export VERBOSE
+
+# Check for existing setup (update mode detection)
+if state_exists; then
+  # Update mode - state file exists from previous run
+  export UPDATE_MODE=true
+
+  # Need gum for update mode UI
+  if ! command -v gum >/dev/null 2>&1; then
+    echo "Error: gum required for update mode but not found"
+    echo "Please run a fresh setup first"
+    exit 1
+  fi
+
+  # Source UI library
+  . "$SCRIPT_DIR/scripts/lib/ui.sh"
+
+  # Run update flow
+  source "$SCRIPT_DIR/scripts/run-updates.sh"
+
+  # Show completion report (in update mode)
+  source "$SCRIPT_DIR/scripts/show-report.sh"
+
+  exit 0
+fi
+
+# First-time setup continues below...
+export UPDATE_MODE=false
 
 # Display welcome message (plain echo for now, will use Gum after Homebrew installed)
 echo ""
@@ -77,6 +108,14 @@ source "$SCRIPT_DIR/scripts/setup-ssh.sh"
 
 source "$SCRIPT_DIR/scripts/configure-system.sh"
 source "$SCRIPT_DIR/scripts/install-apps.sh"
+
+# Initialize state tracking for future update mode
+state_init
+state_set_last_run
+state_save_packages  # Save initial package list
+state_set_phase_complete "01-foundation"
+state_set_phase_complete "02-dotfiles"
+state_set_phase_complete "03-applications"
 
 # Show completion report
 sh "$SCRIPT_DIR/scripts/show-report.sh"
