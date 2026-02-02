@@ -14,13 +14,9 @@ SCRIPT_DIR="${SCRIPT_DIR:-$(cd "$(dirname "$0")/.." && pwd)}"
 # shellcheck source=scripts/lib/logging.sh
 . "$SCRIPT_DIR/scripts/lib/logging.sh"
 
-# Determine report mode
-if [ "${UPDATE_MODE:-false}" = "true" ]; then
-  show_update_report
-  exit 0
-fi
+# Function definitions (must be before mode routing)
 
-# First-time report follows below
+# First-time report
 show_first_time_report() {
 
 echo ""
@@ -334,6 +330,11 @@ show_update_report() {
   echo ""
 }
 
-# Run first-time report
-show_first_time_report
+# Mode routing - determine which report to show
+if [ "${UPDATE_MODE:-false}" = "true" ]; then
+  show_update_report
+else
+  show_first_time_report
+fi
 
+exit 0
