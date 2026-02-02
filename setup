@@ -3,6 +3,9 @@
 # Dotfiles Setup - Entry Point
 # Run with: sh setup
 
+# Exit on any error, undefined variable, or pipe failure
+set -euo pipefail
+
 # Parse command-line flags
 VERBOSE=false
 
