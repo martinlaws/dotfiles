@@ -1,3 +1,7 @@
+# Initialize completion system
+autoload -Uz compinit
+compinit
+
 # Theme
 ZSH_THEME="robbyrussell"
 
