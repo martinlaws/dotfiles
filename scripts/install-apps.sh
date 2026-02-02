@@ -243,12 +243,19 @@ if [ $INSTALL_STATUS -ne 0 ] || ! brew bundle check --file="$TEMP_BREWFILE" >/de
     echo ""
     ui_info "Checking for failed installations..."
 
+    # Debug: show what we're checking
+    [ "$VERBOSE" = true ] && echo "DEBUG: Checking ${#SELECTED_APPS[@]} apps"
+    [ "$VERBOSE" = true ] && echo "DEBUG: Apps list: ${SELECTED_APPS[*]}"
+
     # Get list of failed apps
     FAILED_APPS=()
     for app in "${SELECTED_APPS[@]}"; do
         # Check if app is installed via brew
         if ! brew list --cask "$app" >/dev/null 2>&1; then
+            [ "$VERBOSE" = true ] && echo "DEBUG: $app - NOT FOUND"
             FAILED_APPS+=("$app")
+        else
+            [ "$VERBOSE" = true ] && echo "DEBUG: $app - FOUND"
         fi
     done
 
