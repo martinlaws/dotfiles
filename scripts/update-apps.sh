@@ -17,7 +17,7 @@ update_apps() {
   ui_section "Checking Applications"
 
   # Brewfile location from Phase 1
-  BREWFILE="$SCRIPT_DIR/config/Brewfile"
+  BREWFILE="$SCRIPT_DIR/config/Brewfile.apps"
 
   if [ ! -f "$BREWFILE" ]; then
     ui_error "Brewfile not found at: $BREWFILE"
