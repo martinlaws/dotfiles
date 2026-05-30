@@ -10,7 +10,7 @@ plugins=(macos)
 
 # Aliases
 alias mbrew="arch -arm64 brew"
-alias gsd="claude --dangerously-skip-permissions"
+alias lfg="claude --dangerously-skip-permissions"
 
 # Add a default scripts folder to $PATH
 path+=($HOME/.bin)
@@ -35,3 +35,7 @@ esac
 
 # Load local overrides if they exist
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
