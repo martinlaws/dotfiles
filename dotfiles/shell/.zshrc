@@ -22,6 +22,21 @@ eval "$(fnm env --use-on-cd)"
 
 eval "$(starship init zsh)"
 
+# Modern CLI tools (guarded so a fresh shell pre-install doesn't error)
+command -v zoxide >/dev/null && eval "$(zoxide init zsh)"   # z <partial> to jump
+command -v atuin  >/dev/null && eval "$(atuin init zsh)"    # ctrl-R history search
+if command -v fzf >/dev/null; then
+  source <(fzf --zsh) 2>/dev/null                           # ctrl-T / ctrl-R / alt-C
+fi
+
+# eza / bat aliases (only if installed)
+if command -v eza >/dev/null; then
+  alias ls="eza --group-directories-first"
+  alias ll="eza -la --group-directories-first --git"
+  alias lt="eza --tree --level=2"
+fi
+command -v bat >/dev/null && alias cat="bat --paging=never"
+
 export PATH="$HOME/.bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
 

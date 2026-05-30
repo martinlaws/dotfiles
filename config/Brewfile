@@ -21,6 +21,15 @@ brew "opencode"         # AI coding agent for the terminal
 brew "tree"             # Display directory structure
 brew "jq"               # JSON processor for state file management
 
+# Modern CLI ergonomics
+brew "atuin"            # Searchable, syncable shell history (ctrl-R upgrade)
+brew "zoxide"           # Smarter cd that learns your dirs (z <partial>)
+brew "eza"              # Modern ls — icons, git-aware, tree
+brew "bat"              # cat with syntax highlighting + git integration
+brew "fzf"              # Fuzzy finder — wires into zsh + zoxide + atuin
+brew "ripgrep"          # Fast recursive grep (rg)
+brew "git-delta"        # Beautiful git diffs (binary: delta)
+
 # Shell prompt
 brew "starship"         # Cross-shell prompt with minimal, powerful configuration
 

@@ -118,12 +118,47 @@ setup_gitignore() {
 }
 
 #
+# Symlink Git Template Directory
+#
+# .gitconfig sets `init.templatedir = ~/.git-template`, so every `git init`
+# seeds from it. Point that at the repo's tracked template.
+#
+setup_git_template() {
+    ui_section "Git Template Directory"
+
+    local source="$REPO_ROOT/dotfiles/git/.git-template"
+    local target="$HOME/.git-template"
+
+    if [ ! -d "$source" ]; then
+        ui_error "Git template dir not found: $source"
+        return 1
+    fi
+
+    if [ -L "$target" ]; then
+        ui_success ".git-template already symlinked"
+        return 0
+    fi
+
+    if [ -e "$target" ]; then
+        local timestamp
+        timestamp=$(date +%Y%m%d_%H%M%S)
+        mv "$target" "${target}.backup.${timestamp}"
+        ui_info "Backed up existing .git-template"
+    fi
+
+    ln -s "$source" "$target"
+    ui_success ".git-template symlinked"
+}
+
+#
 # Main Execution
 #
 main() {
     setup_git
     echo ""
     setup_gitignore
+    echo ""
+    setup_git_template
 }
 
 main

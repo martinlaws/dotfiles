@@ -87,4 +87,19 @@ else
     ui_success "All CLI tools installed successfully"
 fi
 
+# Pin a default Node via fnm so a fresh machine has working node/npm immediately.
+# (fnm installs the manager but ships no Node until a version is installed.)
+if command -v fnm >/dev/null 2>&1; then
+    echo ""
+    ui_section "Node (via fnm)"
+    eval "$(fnm env)" 2>/dev/null || true
+    if fnm list 2>/dev/null | grep -q 'lts-latest'; then
+        ui_success "fnm default Node already installed"
+    else
+        ui_spin "Installing latest Node LTS via fnm..." "fnm install --lts"
+        fnm default lts-latest 2>/dev/null || true
+        ui_success "Node LTS installed and set as fnm default"
+    fi
+fi
+
 echo ""

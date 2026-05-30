@@ -8,8 +8,15 @@
 [core]
   excludesfile = ~/.gitignore_global
   editor = vim
-  pager = less --tabs=4 -RFX
+  pager = delta
 	commitGraph = true
+
+[interactive]
+  diffFilter = delta --color-only
+
+[delta]
+  navigate = true
+  line-numbers = true
 
 [color]
   branch = auto
@@ -24,6 +31,7 @@
 
 [merge]
   log = true
+  conflictstyle = zdiff3
 
 [rebase]
   autosquash = true

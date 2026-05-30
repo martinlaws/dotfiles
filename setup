@@ -104,6 +104,7 @@ sh "$SCRIPT_DIR/scripts/install-tools.sh"
 source "$SCRIPT_DIR/scripts/symlink-dotfiles.sh"
 source "$SCRIPT_DIR/scripts/setup-git.sh"
 source "$SCRIPT_DIR/scripts/setup-ssh.sh"
+source "$SCRIPT_DIR/scripts/setup-claude.sh"
 
 # ============================================
 # Verify Prerequisites for Phase 3
