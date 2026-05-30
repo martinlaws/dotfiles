@@ -10,8 +10,6 @@ brew "node"             # JavaScript runtime (includes npm)
 brew "yarn"             # Fast, reliable dependency management
 brew "pnpm"             # Fast, disk space efficient package manager
 brew "fnm"              # Fast Node Manager - Rust-based version manager
-brew "nvm"              # Node Version Manager (still loaded by .zshrc)
-brew "mise"             # Polyglot runtime/tool version manager
 
 # GitHub CLI
 brew "gh"               # GitHub command-line tool
