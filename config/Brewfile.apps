@@ -54,6 +54,13 @@ cask "raycast"             # (recommended) Productivity launcher
 cask "superwhisper"        # (recommended) Voice-to-text dictation
 
 ###############################################################################
+# Security & Secrets
+###############################################################################
+
+cask "1password"           # (essential) Password manager — secrets source of truth
+cask "1password-cli"       # (essential) `op` CLI — SSH agent + secret references
+
+###############################################################################
 # Productivity
 ###############################################################################
 

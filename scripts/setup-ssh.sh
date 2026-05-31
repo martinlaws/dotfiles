@@ -18,8 +18,19 @@ SCRIPTS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 setup_ssh() {
     ui_section "SSH Key Setup"
 
-    # Check for existing Ed25519 key
-    if [ -f ~/.ssh/id_ed25519 ]; then
+    op_agent_sock="$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+
+    # Prefer the 1Password SSH agent, but ONLY when it actually holds a key. The
+    # committed ~/.ssh/config already points SSH at the agent (IdentityAgent), so
+    # there's nothing to wire here. If the agent has an identity we skip minting a
+    # local key (one key follows the 1Password account). If the socket exists but
+    # is empty (e.g. the key hasn't been added to 1Password yet), fall through and
+    # keep/mint a local key so a fresh machine is never left with no usable key.
+    if [ -S "$op_agent_sock" ] && SSH_AUTH_SOCK="$op_agent_sock" ssh-add -l >/dev/null 2>&1; then
+        ui_success "1Password SSH agent holds a key — not minting a local key"
+        ui_info "Ensure its public key is on github.com/settings/keys."
+    # Otherwise fall back to a local Ed25519 key.
+    elif [ -f ~/.ssh/id_ed25519 ]; then
         ui_success "SSH key already exists (~/.ssh/id_ed25519)"
     else
         # Prompt to generate

@@ -20,13 +20,16 @@ sh setup
 file at first run flips it) rather than redoing first-time setup.
 
 During the run it will:
-- generate `~/.ssh/id_ed25519` and print the public key — **add it to
-  github.com/settings/keys**, then the Claude config clone (private repo) can
-  succeed
+- **set up SSH** — if the 1Password SSH agent is present, it wires it via
+  `~/.ssh/config.local` and skips minting a key (your key lives in 1Password); add
+  its public key to **github.com/settings/keys** so the private claude-config clone
+  can succeed. Without 1Password it falls back to generating `~/.ssh/id_ed25519`
+  and printing the public key to add.
 - prompt for git name/email to generate `~/.gitconfig` from the template
 
 After it finishes:
-- **Restore secrets** per `SECRETS.md` (1Password → per-project `.env.local`)
+- **Restore secrets** per `SECRETS.md` — 1Password → `.env.local` for non-Vercel
+  projects; `vercel link && vercel env pull` for Vercel-linked ones
 - **Re-auth Claude Code** (regenerates `~/.claude/.credentials.json`)
 - **Remap Caps Lock → Esc**: System Settings → Keyboard → Keyboard Shortcuts →
   Modifier Keys (still manual)
