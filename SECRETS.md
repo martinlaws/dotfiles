@@ -61,4 +61,6 @@ value into the project's `.env.local` by hand.
   back to minting `~/.ssh/id_ed25519`.
 - **Claude Code auth** — re-run Claude Code and sign in; it regenerates
   `~/.claude/.credentials.json`. Not restored from any repo.
+- **GitHub CLI (`gh`)** — run `gh auth login`; the keyring token doesn't migrate.
+  SSH covers `git` operations, but `gh` commands/scripts need their own auth.
 - **1Password itself** — sign in first thing; everything else depends on it.

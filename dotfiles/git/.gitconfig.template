@@ -74,3 +74,17 @@
 
 [pull]
 	ff = only
+
+[user]
+	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDXryzp8RkT8N1G9Az27EFLHxV9OT0hmY/zSfbcXl4md
+
+[gpg]
+	format = ssh
+[gpg "ssh"]
+	# SSH commit signing via 1Password (op-ssh-sign). Needs 1Password installed;
+	# on a machine without it: git config --global commit.gpgsign false
+	program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
+[commit]
+	gpgsign = true
+[tag]
+	gpgsign = true

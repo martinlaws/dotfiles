@@ -1,0 +1,5 @@
+anthropic.claude-code
+anysphere.remote-ssh
+esbenp.prettier-vscode
+mechatroner.rainbow-csv
+shopify.theme-check-vscode

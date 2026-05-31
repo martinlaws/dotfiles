@@ -104,7 +104,7 @@ sh "$SCRIPT_DIR/scripts/install-tools.sh"
 source "$SCRIPT_DIR/scripts/symlink-dotfiles.sh"
 source "$SCRIPT_DIR/scripts/setup-git.sh"
 source "$SCRIPT_DIR/scripts/setup-ssh.sh"
-source "$SCRIPT_DIR/scripts/setup-claude.sh"
+sh "$SCRIPT_DIR/scripts/setup-claude.sh" || echo "⚠ claude-config restore skipped — run scripts/setup-claude.sh after your SSH key is on GitHub"
 
 # hey CLI — built from source (PR #79 event commands); non-fatal if it fails
 sh "$SCRIPT_DIR/scripts/install-hey.sh" || echo "⚠ hey install skipped — run scripts/install-hey.sh later"
@@ -133,6 +133,9 @@ fi
 
 source "$SCRIPT_DIR/scripts/configure-system.sh"
 source "$SCRIPT_DIR/scripts/install-apps.sh"
+
+# Reinstall editor extensions (after editors are installed); non-fatal
+sh "$SCRIPT_DIR/scripts/install-extensions.sh" || echo "⚠ editor extensions skipped — run scripts/install-extensions.sh later"
 
 # Initialize state tracking for future update mode
 state_init

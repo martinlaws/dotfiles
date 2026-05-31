@@ -17,6 +17,9 @@ brew "gh"               # GitHub command-line tool
 # Go (builds the hey CLI from source — see scripts/install-hey.sh)
 brew "go"               # Go toolchain; GOTOOLCHAIN=auto fetches newer per go.mod
 
+# Mac App Store CLI (the MAS apps themselves live in config/Brewfile.mas — needs App Store sign-in)
+brew "mas"              # install/manage Mac App Store apps from the CLI
+
 # AI Tools
 brew "opencode"         # AI coding agent for the terminal
 
