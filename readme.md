@@ -1,86 +1,129 @@
 # dotfiles
 
-Martin's macOS machine setup — shell, git, editor, terminal configs plus a
-scripted, idempotent installer. Clone, run `sh setup`, and a fresh Mac comes up
-configured.
+> macOS setup as code. Clone, run one command, and a bare Mac comes up as my
+> machine — shell, git, editor, terminal, apps, and system preferences, all
+> configured the way I like them.
 
-## New machine, from zero
+Built to be **idempotent** (safe to re-run), **interactive where it matters**
+(you pick which apps), and **honest about secrets** (none live here — see
+[`SECRETS.md`](SECRETS.md)).
+
+---
+
+## Quick start
 
 ```sh
-# 1. Sign into 1Password first — secrets restore depends on it (see SECRETS.md).
-# 2. Clone. First time, use HTTPS — SSH keys don't exist yet (chicken-and-egg):
+# 1. Sign into 1Password first — secret + SSH restore depend on it.
+# 2. Clone over HTTPS (a fresh Mac has no SSH key yet):
 git clone https://github.com/martinlaws/dotfiles.git ~/dotfiles
 cd ~/dotfiles
-# 3. Run the installer:
+
+# 3. Run the one entrypoint:
 sh setup
 ```
 
-`setup` is the **only** entrypoint. It detects architecture, installs Xcode CLT
-+ Homebrew, then runs each phase. Re-running it enters **update mode** (a state
-file at first run flips it) rather than redoing first-time setup.
+That's it. `setup` detects your architecture, installs Xcode Command Line Tools
+and Homebrew, then walks through each phase below. Run it again any time — it
+flips into **update mode** and refreshes rather than redoing first-time setup.
 
-During the run it will:
-- **set up SSH** — if the 1Password SSH agent is present, it wires it via
-  `~/.ssh/config.local` and skips minting a key (your key lives in 1Password); add
-  its public key to **github.com/settings/keys** so the private claude-config clone
-  can succeed. Without 1Password it falls back to generating `~/.ssh/id_ed25519`
-  and printing the public key to add.
-- prompt for git name/email to generate `~/.gitconfig` from the template
+---
 
-After it finishes:
-- **Restore secrets** per `SECRETS.md` — 1Password → `.env.local` for non-Vercel
-  projects; `vercel link && vercel env pull` for Vercel-linked ones
-- **Re-auth Claude Code** (regenerates `~/.claude/.credentials.json`)
-- **Remap Caps Lock → Esc**: System Settings → Keyboard → Keyboard Shortcuts →
-  Modifier Keys (still manual)
+## What it sets up
 
-## What `setup` does (phases)
+| Phase | What happens |
+|---|---|
+| **1 · Foundation** | Xcode CLT, Homebrew, CLI tools from [`config/Brewfile`](config/Brewfile), Node LTS pinned via fnm |
+| **2 · Dev config** | Symlinks shell / terminal / editor / ssh configs (via GNU Stow), generates `~/.gitconfig` from a template, sets up SSH |
+| **3 · Apps & system** | Installs GUI apps from [`config/Brewfile.apps`](config/Brewfile.apps) (all / by category / pick-and-choose), applies opinionated macOS defaults |
+| **4 · Claude** | Restores my private Claude Code config into `~/.claude` |
 
-1. **Foundation** — Xcode CLT, Homebrew, CLI tools from `config/Brewfile`,
-   pins Node LTS via fnm
-2. **Dotfiles & dev config** — stow-symlinks shell/terminal/editor/ssh configs,
-   generates `~/.gitconfig` from template, symlinks `~/.git-template`, sets up
-   SSH key + GitHub verification
-3. **Applications & system** — `config/Brewfile.apps` (interactive: all /
-   categories / individual), opinionated macOS `defaults`
-4. **Claude config** — clones the private `claude-config` repo into `~/.claude`
+A couple of steps stay manual by design — `setup` will prompt you:
+
+- **Git identity** — it asks for the name/email to stamp into `~/.gitconfig`.
+- **SSH key on GitHub** — see the SSH note below; you'll paste a public key into
+  [github.com/settings/keys](https://github.com/settings/keys).
+
+And after it finishes:
+
+- **Restore secrets** — follow [`SECRETS.md`](SECRETS.md) (1Password + `vercel env pull`).
+- **Re-auth Claude Code** — sign in once; it regenerates its own credentials.
+- **Caps Lock → Esc** — System Settings → Keyboard → Modifier Keys. (The one
+  thing macOS won't let me script cleanly.)
+
+---
+
+## The stack
+
+**Shell** — `zsh` + [Starship](https://starship.rs) prompt. History, navigation,
+and listing are upgraded with a modern CLI kit, each wired into `.zshrc` behind a
+`command -v` guard so the shell never errors if a tool isn't installed yet:
+
+| Tool | What it does |
+|---|---|
+| [`atuin`](https://atuin.sh) | Shell history → searchable, synced SQLite (Ctrl-R) |
+| [`zoxide`](https://github.com/ajeetdsouza/zoxide) | `cd` that learns — `z <partial>` from anywhere |
+| [`eza`](https://eza.rocks) | `ls` with icons, git status, tree view |
+| [`bat`](https://github.com/sharkdp/bat) | `cat` with syntax highlighting |
+| [`fzf`](https://github.com/junegunn/fzf) | Fuzzy finder (Ctrl-T / Ctrl-R / Alt-C) |
+| [`ripgrep`](https://github.com/BurntSushi/ripgrep) | Fast recursive search (`rg`) |
+| [`git-delta`](https://github.com/dandavison/delta) | Git's pager + diff filter, made readable |
+
+**Node** — managed by [`fnm`](https://github.com/Schniz/fnm) only. `.zshrc` runs
+`fnm env --use-on-cd` (auto-switch per directory), and setup pins `lts-latest` as
+the default so a fresh machine has a working `node`/`npm` immediately.
+
+**Git** — sensible aliases, `delta` for diffs, `zdiff3` conflict style, and a
+`~/.git-template` that seeds every `git init`.
+
+---
+
+## SSH: one key, in 1Password
+
+There's no per-machine SSH key to manage. The committed `~/.ssh/config` points
+SSH at the **1Password SSH agent** (`IdentityAgent`), so a single key lives in
+1Password and follows me to any machine — nothing private ever touches disk.
+
+`scripts/setup-ssh.sh` checks the agent: if it already holds a key, setup skips
+key generation entirely. If 1Password isn't present (or the key hasn't been added
+yet), it falls back to minting a local `~/.ssh/id_ed25519` and prints the public
+half to add to GitHub. Either way you end up connected.
+
+---
 
 ## Layout
 
 ```
-setup                     # entrypoint — `sh setup`
+setup                  ← the only entrypoint:  sh setup
 config/
-  Brewfile                # CLI formulae (+ Node LTS pinned by install-tools.sh)
-  Brewfile.apps           # GUI casks, categorized
-dotfiles/                 # stow packages (symlinked into ~)
-  shell/   .zshrc, .vimrc, .config/starship.toml
-  git/     .gitconfig.template, .gitignore_global, .git-template/
-  terminal/.hyper.js
-  editors/ VS Code settings
-  ssh/     .ssh/config
-scripts/                  # one file per concern, + lib/ helpers
-SECRETS.md                # secrets restore checklist (no secrets in repo)
+  Brewfile             ← CLI formulae
+  Brewfile.apps        ← GUI casks, grouped by category
+dotfiles/              ← Stow packages, symlinked into ~
+  shell/     .zshrc · .vimrc · .config/starship.toml
+  git/       .gitconfig.template · .gitignore_global · .git-template/
+  terminal/  .hyper.js
+  editors/   VS Code settings
+  ssh/       .ssh/config
+scripts/               ← one file per concern (+ lib/ helpers)
+SECRETS.md             ← how to restore secrets (no secrets in here)
 ```
 
-## Toolchain notes
+---
 
-- **Node**: managed by **fnm only** (nvm + mise were removed). `.zshrc` runs
-  `fnm env --use-on-cd`; `install-tools.sh` pins `lts-latest` as default so a
-  fresh machine has working node immediately.
-- **Modern CLI**: `atuin` (synced history), `zoxide` (`z` jump), `eza`, `bat`,
-  `fzf`, `ripgrep`, `git-delta`. `.zshrc` inits each behind a `command -v`
-  guard, so a shell opened before install still works.
-- **git**: uses `delta` as pager + diff filter; `~/.git-template` seeds every
-  `git init`.
+## On secrets
 
-## Related repos
+Nothing sensitive lives in this repo — that's the whole point, and it's why I'm
+comfortable making it public. **1Password is the source of truth**; runtime
+secrets land in per-project `.env.local` files (gitignored), and Vercel-managed
+projects pull their own. The full restore playbook is in [`SECRETS.md`](SECRETS.md).
 
-- **`martinlaws/claude-config`** (private) — Claude Code skills/agents/hooks/
-  memory; restored into `~/.claude` by `scripts/setup-claude.sh`.
+`.gitignore` blocks `*.local` and `.claude/` as a backstop. Anything
+machine-specific goes in a `.local` file; anything private goes in a private
+repo. The public repo stays clean by construction.
 
-## Conventions
+---
 
-- Secrets never live here — 1Password + per-project `.env.local` (see
-  `SECRETS.md`). `.gitignore` blocks `*.local` and `.claude/`.
-- One concern per script in `scripts/`; shared helpers in `scripts/lib/`.
-- `setup.sh` (the old entrypoint) was removed — use `sh setup`.
+## Related
+
+- **[`martinlaws/claude-config`](https://github.com/martinlaws/claude-config)**
+  *(private)* — my Claude Code skills, agents, hooks, and memory; restored into
+  `~/.claude` by `scripts/setup-claude.sh`.
