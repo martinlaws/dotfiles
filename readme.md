@@ -34,8 +34,8 @@ flips into **update mode** and refreshes rather than redoing first-time setup.
 |---|---|
 | **1 · Foundation** | Xcode CLT, Homebrew, CLI tools from [`config/Brewfile`](config/Brewfile), Node LTS pinned via fnm |
 | **2 · Dev config** | Symlinks shell / terminal / editor / ssh configs (via GNU Stow), generates `~/.gitconfig` from a template, sets up SSH |
-| **3 · Apps & system** | Installs GUI apps from [`config/Brewfile.apps`](config/Brewfile.apps) (all / by category / pick-and-choose), applies opinionated macOS defaults |
-| **4 · Claude** | Restores my private Claude Code config into `~/.claude` |
+| **3 · Apps & system** | Installs GUI apps from [`config/Brewfile.apps`](config/Brewfile.apps) (all / by category / pick-and-choose), reinstalls editor extensions, applies opinionated macOS defaults |
+| **4 · Claude & tooling** | Restores my private Claude Code config into `~/.claude`, builds the `hey` CLI from source, and clones my repos (list in `~/.claude/repos.txt`) |
 
 A couple of steps stay manual by design — `setup` will prompt you:
 
@@ -47,6 +47,8 @@ And after it finishes:
 
 - **Restore secrets** — follow [`SECRETS.md`](SECRETS.md) (1Password + `vercel env pull`).
 - **Re-auth Claude Code** — sign in once; it regenerates its own credentials.
+- **`gh auth login`** — re-authenticate the GitHub CLI; its token doesn't migrate.
+- **Mac App Store apps** — sign into the App Store, then `brew bundle --file=config/Brewfile.mas`.
 - **Caps Lock → Esc** — System Settings → Keyboard → Modifier Keys. (The one
   thing macOS won't let me script cleanly.)
 
@@ -87,6 +89,9 @@ SSH at the **1Password SSH agent** (`IdentityAgent`), so a single key lives in
 key generation entirely. If 1Password isn't present (or the key hasn't been added
 yet), it falls back to minting a local `~/.ssh/id_ed25519` and prints the public
 half to add to GitHub. Either way you end up connected.
+
+The same key also **signs my git commits** — via 1Password's `op-ssh-sign`, wired
+in the gitconfig template — so GitHub shows them Verified.
 
 ---
 
