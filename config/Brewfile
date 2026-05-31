@@ -14,6 +14,9 @@ brew "fnm"              # Fast Node Manager - Rust-based version manager
 # GitHub CLI
 brew "gh"               # GitHub command-line tool
 
+# Go (builds the hey CLI from source — see scripts/install-hey.sh)
+brew "go"               # Go toolchain; GOTOOLCHAIN=auto fetches newer per go.mod
+
 # AI Tools
 brew "opencode"         # AI coding agent for the terminal
 

@@ -106,6 +106,9 @@ source "$SCRIPT_DIR/scripts/setup-git.sh"
 source "$SCRIPT_DIR/scripts/setup-ssh.sh"
 source "$SCRIPT_DIR/scripts/setup-claude.sh"
 
+# hey CLI — built from source (PR #79 event commands); non-fatal if it fails
+sh "$SCRIPT_DIR/scripts/install-hey.sh" || echo "⚠ hey install skipped — run scripts/install-hey.sh later"
+
 # ============================================
 # Verify Prerequisites for Phase 3
 # ============================================
