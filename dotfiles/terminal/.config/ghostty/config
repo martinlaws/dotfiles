@@ -1,0 +1,31 @@
+# Ghostty configuration
+#
+# Stowed to ~/.config/ghostty/config by scripts/symlink-dotfiles.sh
+# (the `terminal` stow package). Reference: https://ghostty.org/docs/config
+#
+# Ported from the previous Hyper setup: Night Owl theme, Fira Code's intended
+# 12pt sizing (now on Ghostty's bundled JetBrains Mono), block cursor, and the
+# same window padding.
+
+# --- Appearance ---------------------------------------------------------------
+
+# Night Owl — ships with Ghostty (the theme the old hyper-night-owl plugin gave).
+theme = Night Owl
+
+# JetBrains Mono is bundled with Ghostty, so this needs no font install.
+font-family = "JetBrains Mono"
+font-size = 12
+
+# Hyper padding was "12px 14px" (top/bottom 12, left/right 14).
+window-padding-x = 14
+window-padding-y = 12
+
+# --- Cursor -------------------------------------------------------------------
+
+cursor-style = block
+cursor-style-blink = false
+
+# --- Shell --------------------------------------------------------------------
+
+# Login shell picks up ~/.zshrc (Starship, fnm, atuin, etc.) like Hyper did.
+macos-option-as-alt = true

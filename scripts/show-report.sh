@@ -155,6 +155,7 @@ check_symlink() {
 
 check_symlink "$HOME/.zshrc" "Shell config (.zshrc)"
 check_symlink "$HOME/.config/starship.toml" "Starship prompt"
+check_symlink "$HOME/.config/ghostty/config" "Ghostty terminal"
 check_symlink "$HOME/.hyper.js" "Hyper terminal"
 check_symlink "$HOME/Library/Application Support/Code/User/settings.json" "VS Code settings"
 check_symlink "$HOME/.ssh/config" "SSH config"

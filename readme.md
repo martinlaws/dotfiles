@@ -105,7 +105,7 @@ config/
 dotfiles/              ← Stow packages, symlinked into ~
   shell/     .zshrc · .vimrc · .config/starship.toml
   git/       .gitconfig.template · .gitignore_global · .git-template/
-  terminal/  .hyper.js
+  terminal/  .config/ghostty/config · .hyper.js
   editors/   VS Code settings
   ssh/       .ssh/config
 scripts/               ← one file per concern (+ lib/ helpers)

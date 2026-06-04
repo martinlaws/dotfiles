@@ -122,6 +122,10 @@ main() {
 
   backup_existing "$HOME/.hyper.js"
 
+  # Create ~/.config/ghostty if needed
+  mkdir -p "$HOME/.config/ghostty"
+  backup_existing "$HOME/.config/ghostty/config"
+
   # Create parent directories for VS Code if needed
   mkdir -p "$HOME/Library/Application Support/Code/User"
   backup_existing "$HOME/Library/Application Support/Code/User/settings.json"
