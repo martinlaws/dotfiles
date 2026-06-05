@@ -2,12 +2,6 @@
 autoload -Uz compinit
 compinit
 
-# Theme
-ZSH_THEME="robbyrussell"
-
-# Plugins
-plugins=(macos)
-
 # Aliases
 alias mbrew="arch -arm64 brew"
 alias lfg="claude --dangerously-skip-permissions"
