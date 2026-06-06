@@ -112,6 +112,9 @@ sh "$SCRIPT_DIR/scripts/install-hey.sh" || echo "⚠ hey install skipped — run
 # Clone my work repos (list is private, in ~/.claude/repos.txt); non-fatal
 sh "$SCRIPT_DIR/scripts/clone-repos.sh" || echo "⚠ repo clone skipped — run scripts/clone-repos.sh later"
 
+# Chaos autosave watcher (needs chaos cloned + fswatch); non-fatal
+sh "$SCRIPT_DIR/scripts/setup-autosave.sh" || echo "⚠ chaos autosave skipped — run scripts/setup-autosave.sh later"
+
 # ============================================
 # Verify Prerequisites for Phase 3
 # ============================================

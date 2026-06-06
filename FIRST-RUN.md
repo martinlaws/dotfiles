@@ -87,6 +87,19 @@ These live outside the repo (private data or vendor cloud) — restore each by h
   `alt-1..4` jumps contexts; windows float by default — see the config's bottom
   note to adopt tiling.
 
+## 8 · chaos autosave (auto-installed by setup)
+
+`setup` loads a background agent (`ca.mlaws.chaos-autosave`) that snapshots the
+whole chaos working tree — *including untracked notes* — to the private `autosave`
+branch ~90s after you stop editing. Never touches your working tree or `main`.
+
+Recover a lost note:
+```sh
+cd ~/code/chaos && git fetch && git checkout autosave -- path/to/note.md
+```
+(or browse the `autosave` branch on GitHub). Logs: `~/.local/state/chaos-autosave.log`.
+Re-arm manually any time: `scripts/setup-autosave.sh`.
+
 ## Verify it worked
 
 ```sh

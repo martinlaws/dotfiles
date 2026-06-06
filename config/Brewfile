@@ -27,6 +27,7 @@ brew "opencode"         # AI coding agent for the terminal
 # File utilities
 brew "tree"             # Display directory structure
 brew "jq"               # JSON processor for state file management
+brew "fswatch"          # File-change watcher (drives the chaos autosave agent)
 
 # Modern CLI ergonomics
 brew "atuin"            # Searchable, syncable shell history (ctrl-R upgrade)
