@@ -13,7 +13,12 @@
 
 cask "google-chrome"       # (essential) Primary browser
 cask "arc"                 # (recommended) Daily driver browser
+cask "comet"               # (recommended) Perplexity's agentic browser ("computer")
 cask "firefox"             # (optional) Alternative browser
+
+# NOTE: the Perplexity *desktop app* has NO Homebrew cask — install it manually
+# from perplexity.ai/download (it self-updates via its own launchd agent). Comet
+# (above) is the agentic browser and IS available as a cask.
 
 ###############################################################################
 # Dev Tools

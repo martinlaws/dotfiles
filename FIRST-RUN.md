@@ -60,6 +60,24 @@ working in each, not all at once:
 - **Caps Lock → Esc**: System Settings → Keyboard → Keyboard Shortcuts →
   Modifier Keys.
 
+## 7 · App configs that don't restore from this repo
+
+These live outside the repo (private data or vendor cloud) — restore each by hand:
+
+- **superwhisper** — install the app (`sh setup` installs the cask), launch once,
+  then copy your custom modes + vocabulary back from the iCloud backup:
+  ```sh
+  SRC="$HOME/Library/Mobile Documents/com~apple~CloudDocs/mac-migration/superwhisper"
+  cp -R "$SRC/modes/"*    ~/Documents/superwhisper/modes/
+  cp -R "$SRC/settings/"* ~/Documents/superwhisper/settings/
+  ```
+  (Backed up there because `~/Documents` isn't iCloud-synced and the config holds
+  personal/client names — see that folder's `RESTORE.md`.)
+- **Raycast** — just **sign in**. Cloud Sync restores snippets, hotkeys, and
+  presets automatically (nothing to copy). Re-grant Accessibility permission.
+- **Comet / Perplexity** — Comet installs from the cask; sign in. Perplexity
+  desktop is a manual download (no cask).
+
 ## Verify it worked
 
 ```sh
@@ -80,3 +98,6 @@ clone → secrets restore. Get 1Password right first and the rest follows.
 
 **Before wiping the old machine:** confirm every working repo under `~/code` is
 pushed — uncommitted work doesn't survive. The config repos are already safe.
+Also confirm: (1) superwhisper modes are in the iCloud `mac-migration/` backup,
+(2) Raycast shows a recent Cloud Sync date, (3) you're signed into 1Password and
+the SSH agent is on. Those three cover the configs the repo can't carry.

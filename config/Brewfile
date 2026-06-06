@@ -4,6 +4,7 @@
 
 # Version control
 brew "git"              # Distributed version control system
+brew "git-filter-repo"  # History rewriting / repo scrubbing (binary: git-filter-repo)
 
 # Node.js ecosystem (npm is bundled with node)
 brew "node"             # JavaScript runtime (includes npm)

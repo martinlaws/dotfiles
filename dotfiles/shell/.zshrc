@@ -5,6 +5,7 @@ compinit
 # Aliases
 alias mbrew="arch -arm64 brew"
 alias lfg="claude --dangerously-skip-permissions"
+alias chaos="cd ~/code/chaos && claude"   # one keystroke into the knowledge base
 
 # Add a default scripts folder to $PATH
 path+=($HOME/.bin)
