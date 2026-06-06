@@ -126,6 +126,14 @@ main() {
   mkdir -p "$HOME/.config/ghostty"
   backup_existing "$HOME/.config/ghostty/config"
 
+  # Create ~/.bin if needed (personal scripts)
+  mkdir -p "$HOME/.bin"
+  backup_existing "$HOME/.bin/sw-capture.sh"
+
+  # Create ~/.config/aerospace if needed (window manager)
+  mkdir -p "$HOME/.config/aerospace"
+  backup_existing "$HOME/.config/aerospace/aerospace.toml"
+
   # Create parent directories for VS Code if needed
   mkdir -p "$HOME/Library/Application Support/Code/User"
   backup_existing "$HOME/Library/Application Support/Code/User/settings.json"
@@ -149,6 +157,14 @@ main() {
   # Stow editors package (VS Code/Cursor settings)
   stow -d "$DOTFILES_DIR" -t ~ editors
   ui_success "Symlinked editor configs"
+
+  # Stow bin package (personal scripts → ~/.bin)
+  stow -d "$DOTFILES_DIR" -t ~ bin
+  ui_success "Symlinked bin scripts"
+
+  # Stow wm package (AeroSpace → ~/.config/aerospace)
+  stow -d "$DOTFILES_DIR" -t ~ wm
+  ui_success "Symlinked window-manager config"
 
   # Stow ssh package with directory permissions
   stow -d "$DOTFILES_DIR" -t ~ ssh

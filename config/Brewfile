@@ -46,6 +46,10 @@ brew "gum"              # Tool for beautiful shell scripts
 # Dotfiles management
 brew "stow"             # Symlink farm manager
 
+# Window manager (the `aerospace` cask is in Brewfile.apps; the tap must live
+# here because install-apps.sh ignores tap lines — only the main Brewfile runs them)
+tap "nikitabobko/tap"
+
 # Media & image tooling
 tap "charmbracelet/tap"
 brew "ffmpeg"                    # Audio/video transcoding

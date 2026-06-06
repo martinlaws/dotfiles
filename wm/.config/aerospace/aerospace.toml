@@ -1,0 +1,108 @@
+# AeroSpace — keyboard-driven window manager.
+#
+# GENTLE MODE: apps auto-sort into 4 context workspaces and windows FLOAT
+# (they behave like normal macOS windows, just organized into "rooms"). Nothing
+# new to learn day one — just alt-1..4 to jump between contexts. Flip on real
+# tiling later (see the note at the very bottom).
+#
+#   1 = brain    Ghostty + Claude
+#   2 = code     Cursor + VS Code Insiders
+#   3 = comms    Slack   (HEY is web — it lives in whatever browser/workspace)
+#   4 = research Comet + Perplexity
+#
+# Browsers (Arc, Chrome) are intentionally unassigned — they float and stay
+# wherever you open them, since you use them everywhere.
+
+start-at-login = true
+
+# Root layout. Windows float via the rules below regardless, so this only
+# matters once you remove those 'layout floating' lines to adopt tiling.
+default-root-container-layout = 'tiles'
+
+enable-normalization-flatten-containers = true
+enable-normalization-opposite-orientation-for-nested-containers = true
+
+[gaps]
+    inner.horizontal = 8
+    inner.vertical = 8
+    outer.left = 8
+    outer.right = 8
+    outer.top = 8
+    outer.bottom = 8
+
+# --- Context routing ----------------------------------------------------------
+# bundle ids verified on Martin's machine via `mdls kMDItemCFBundleIdentifier`.
+
+[[on-window-detected]]
+    if.app-id = 'com.mitchellh.ghostty'
+    run = ['layout floating', 'move-node-to-workspace 1']
+
+[[on-window-detected]]
+    if.app-id = 'com.anthropic.claudefordesktop'
+    run = ['layout floating', 'move-node-to-workspace 1']
+
+[[on-window-detected]]
+    if.app-id = 'com.todesktop.230313mzl4w4u92'   # Cursor
+    run = ['layout floating', 'move-node-to-workspace 2']
+
+[[on-window-detected]]
+    if.app-id = 'com.microsoft.VSCodeInsiders'
+    run = ['layout floating', 'move-node-to-workspace 2']
+
+[[on-window-detected]]
+    if.app-id = 'com.tinyspeck.slackmacgap'
+    run = ['layout floating', 'move-node-to-workspace 3']
+
+[[on-window-detected]]
+    if.app-id = 'ai.perplexity.comet'
+    run = ['layout floating', 'move-node-to-workspace 4']
+
+[[on-window-detected]]
+    if.app-id = 'ai.perplexity.macv3'             # Perplexity
+    run = ['layout floating', 'move-node-to-workspace 4']
+
+# Catch-all: everything else floats and stays where it opened.
+[[on-window-detected]]
+    run = ['layout floating']
+
+# --- Keybindings --------------------------------------------------------------
+[mode.main.binding]
+    # Jump to a context
+    alt-1 = 'workspace 1'
+    alt-2 = 'workspace 2'
+    alt-3 = 'workspace 3'
+    alt-4 = 'workspace 4'
+
+    # Send the focused window to a context
+    alt-shift-1 = 'move-node-to-workspace 1'
+    alt-shift-2 = 'move-node-to-workspace 2'
+    alt-shift-3 = 'move-node-to-workspace 3'
+    alt-shift-4 = 'move-node-to-workspace 4'
+
+    # Hop back to the workspace you came from
+    alt-tab = 'workspace-back-and-forth'
+
+    # Focus between windows (most useful once tiling is on)
+    alt-h = 'focus left'
+    alt-j = 'focus down'
+    alt-k = 'focus up'
+    alt-l = 'focus right'
+
+    # Toggle the focused window between floating and tiling
+    alt-shift-space = 'layout floating tiling'
+
+    # Service mode: reload config / reset layout
+    alt-shift-semicolon = 'mode service'
+
+[mode.service.binding]
+    esc = ['reload-config', 'mode main']
+    r = ['flatten-workspace-tree', 'mode main']   # reset this workspace's layout
+    f = ['layout floating tiling', 'mode main']
+
+# --- Adopting tiling later ----------------------------------------------------
+# When you want windows to auto-tile instead of float:
+#   1. Delete the 'layout floating', from each [[on-window-detected]] run line
+#      (keep the move-node-to-workspace part).
+#   2. Remove the catch-all floating rule.
+#   3. Use alt-h/j/k/l to move focus, alt-shift-space to float a window when you
+#      need it free (e.g. a video call). alt-shift-; then r resets a messy layout.

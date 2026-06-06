@@ -77,6 +77,15 @@ These live outside the repo (private data or vendor cloud) — restore each by h
   presets automatically (nothing to copy). Re-grant Accessibility permission.
 - **Comet / Perplexity** — Comet installs from the cask; sign in. Perplexity
   desktop is a manual download (no cask).
+- **superwhisper Capture mode** — the `Capture` mode (voice → chaos `_inbox.md`)
+  restores with the other modes; its script ships in the `bin` stow package at
+  `~/.bin/sw-capture.sh`. Assign Capture a hotkey in superwhisper. Needs the chaos
+  repo cloned and `jq` (both handled by setup).
+- **AeroSpace** (window manager) — installs from the cask; config is stowed to
+  `~/.config/aerospace/`. First launch: grant **Accessibility** permission, and in
+  System Settings → Desktop & Dock turn **off** "automatically rearrange Spaces".
+  `alt-1..4` jumps contexts; windows float by default — see the config's bottom
+  note to adopt tiling.
 
 ## Verify it worked
 
