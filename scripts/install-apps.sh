@@ -6,6 +6,11 @@
 # silently blocks the rest.
 #
 
+# Strict mode WITHOUT -e: the per-cask loop must keep going past individual
+# cask failures (it collects and reports them below). No ERR trap for the same
+# reason. -u/pipefail are safe — handled failures live in if-conditions.
+set -uo pipefail
+
 # Source libraries
 SCRIPT_DIR="${SCRIPT_DIR:-$(cd "$(dirname "$0")/.." && pwd)}"
 # shellcheck source=scripts/lib/detect.sh

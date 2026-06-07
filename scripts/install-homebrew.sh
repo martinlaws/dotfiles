@@ -5,10 +5,22 @@
 # This script installs Xcode Command Line Tools (prerequisite) and Homebrew
 # with proper Apple Silicon / Intel path configuration.
 
+# Strict mode (no -e: this script handles its own fallbacks for CLT/Homebrew).
+set -uo pipefail
+
 # Source detection library
 SCRIPT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 # shellcheck source=scripts/lib/detect.sh
 . "$SCRIPT_DIR/scripts/lib/detect.sh"
+# ui.sh's helpers fall back to printf when gum isn't installed yet, so they're
+# safe to source even though this is the script that installs gum.
+# shellcheck source=scripts/lib/ui.sh
+. "$SCRIPT_DIR/scripts/lib/ui.sh"
+
+# Report where an unexpected failure happened. Handled failures live in if/||
+# conditions and won't trip this.
+set -o errtrace
+trap 'ui_error "failed at $(basename "$0"):$LINENO"' ERR
 
 # Color codes for pre-gum output
 GREEN='\033[0;32m'
@@ -39,11 +51,12 @@ else
 
     # Find the CLT package name from softwareupdate
     echo "Finding Command Line Tools package..."
-    CLT_PACKAGE=$(softwareupdate --list 2>&1 | grep -o "Command Line Tools for Xcode-[0-9.]*" | head -1)
+    # `|| true`: a no-match grep is expected here and must not trip pipefail/ERR.
+    CLT_PACKAGE=$(softwareupdate --list 2>&1 | grep -o "Command Line Tools for Xcode-[0-9.]*" | head -1 || true)
 
     if [ -z "$CLT_PACKAGE" ]; then
         # Fallback: try alternate pattern
-        CLT_PACKAGE=$(softwareupdate --list 2>&1 | grep -o "\* Label: Command Line Tools.*" | sed 's/\* Label: //' | head -1)
+        CLT_PACKAGE=$(softwareupdate --list 2>&1 | grep -o "\* Label: Command Line Tools.*" | sed 's/\* Label: //' | head -1 || true)
     fi
 
     if [ -z "$CLT_PACKAGE" ]; then

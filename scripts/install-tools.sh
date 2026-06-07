@@ -3,12 +3,20 @@
 # CLI Tools Installation - Install tools via Brewfile
 #
 
+# Strict mode (no -e: partial brew/fnm failures are handled inline below).
+set -uo pipefail
+
 # Source libraries
 SCRIPT_DIR="${SCRIPT_DIR:-$(cd "$(dirname "$0")/.." && pwd)}"
 # shellcheck source=scripts/lib/detect.sh
 . "$SCRIPT_DIR/scripts/lib/detect.sh"
 # shellcheck source=scripts/lib/ui.sh
 . "$SCRIPT_DIR/scripts/lib/ui.sh"
+
+# Report where an unexpected failure happened. Handled failures live in if/||
+# conditions and won't trip this.
+set -o errtrace
+trap 'ui_error "failed at $(basename "$0"):$LINENO"' ERR
 
 # Verify Homebrew is available before attempting tool installation
 if ! command -v brew >/dev/null 2>&1; then
