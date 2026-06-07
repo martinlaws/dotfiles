@@ -35,17 +35,16 @@ if brew bundle check --file="$SCRIPT_DIR/config/Brewfile" >/dev/null 2>&1; then
     exit 0
 fi
 
-# Install tools with progress
-if [ "$VERBOSE" = true ]; then
-    # Verbose mode: show full brew output
-    echo "Running: brew bundle install --file=$SCRIPT_DIR/config/Brewfile"
-    brew bundle install --file="$SCRIPT_DIR/config/Brewfile"
-    INSTALL_STATUS=$?
+# Install tools in the FOREGROUND (no spinner) so brew's progress streams to the
+# terminal and a stuck step can never hang invisibly — mirrors install-apps.sh.
+ui_section "Installing tools from Brewfile"
+echo ""
+if brew bundle install --file="$SCRIPT_DIR/config/Brewfile"; then
+    INSTALL_STATUS=0
 else
-    # Normal mode: use spinner
-    ui_spin "Installing CLI tools..." "brew bundle install --file='$SCRIPT_DIR/config/Brewfile' 2>&1"
     INSTALL_STATUS=$?
 fi
+echo ""
 
 # Check for partial failures
 if [ $INSTALL_STATUS -ne 0 ] || ! brew bundle check --file="$SCRIPT_DIR/config/Brewfile" >/dev/null 2>&1; then
@@ -91,14 +90,19 @@ fi
 # (fnm installs the manager but ships no Node until a version is installed.)
 if command -v fnm >/dev/null 2>&1; then
     echo ""
-    ui_section "Node (via fnm)"
+    ui_section "Installing Node LTS (via fnm)"
+    echo ""
     eval "$(fnm env)" 2>/dev/null || true
     if fnm list 2>/dev/null | grep -q 'lts-latest'; then
         ui_success "fnm default Node already installed"
     else
-        ui_spin "Installing latest Node LTS via fnm..." "fnm install --lts"
-        fnm default lts-latest 2>/dev/null || true
-        ui_success "Node LTS installed and set as fnm default"
+        # Foreground so fnm's download/build progress streams to the terminal.
+        if fnm install --lts; then
+            fnm default lts-latest 2>/dev/null || true
+            ui_success "Node LTS installed and set as fnm default"
+        else
+            ui_error "fnm Node install failed — run 'fnm install --lts' by hand later"
+        fi
     fi
 fi
 
