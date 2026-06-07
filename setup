@@ -6,6 +6,28 @@
 # Exit on any error, undefined variable, or pipe failure
 set -euo pipefail
 
+# ── Run transcript ───────────────────────────────────────────────────────────
+# Tee the whole session to a log so failures can be reviewed/shared afterward.
+# `sh setup` rules out `exec > >(tee …)` (process substitution is off under sh),
+# and a plain pipe to tee would make stdout a non-TTY — that breaks gum's
+# spinners and choose/confirm prompts. /usr/bin/script -q preserves a pty, so
+# gum still renders and accepts input, while capturing everything to the log.
+# Guard with DOTFILES_SETUP_LOGGING so the re-exec'd run doesn't recurse.
+SETUP_LOG="$HOME/.local/state/dotfiles-setup.log"
+if [ -z "${DOTFILES_SETUP_LOGGING:-}" ]; then
+    mkdir -p "$(dirname "$SETUP_LOG")"
+    {
+        printf '\n'
+        printf '================================================\n'
+        printf '  dotfiles setup run — %s\n' "$(date '+%Y-%m-%d %H:%M:%S')"
+        printf '================================================\n'
+    } >> "$SETUP_LOG"
+    export DOTFILES_SETUP_LOGGING=1
+    # Re-invoke the same way it was launched (`sh setup …`; the file isn't +x),
+    # under a pty, appending to the log. Replaces this process entirely.
+    exec /usr/bin/script -q -a "$SETUP_LOG" sh "$0" "$@"
+fi
+
 # Parse command-line flags
 VERBOSE=false
 
