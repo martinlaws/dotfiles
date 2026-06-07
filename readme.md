@@ -26,6 +26,11 @@ That's it. `setup` detects your architecture, installs Xcode Command Line Tools
 and Homebrew, then walks through each phase below. Run it again any time — it
 flips into **update mode** and refreshes rather than redoing first-time setup.
 
+> **Bringing up a fresh Mac?** Follow the interactive checklist at
+> **[martinlaws.github.io/dotfiles](https://martinlaws.github.io/dotfiles/)** —
+> tick steps off as you go (progress saves in the browser, every command has a
+> copy button). Same runbook in plain text: [`FIRST-RUN.md`](FIRST-RUN.md).
+
 ---
 
 ## What it sets up
@@ -35,7 +40,7 @@ flips into **update mode** and refreshes rather than redoing first-time setup.
 | **1 · Foundation** | Xcode CLT, Homebrew, CLI tools from [`config/Brewfile`](config/Brewfile), Node LTS pinned via fnm |
 | **2 · Dev config** | Symlinks shell / terminal / editor / ssh configs (via GNU Stow), generates `~/.gitconfig` from a template, sets up SSH |
 | **3 · Apps & system** | Installs GUI apps from [`config/Brewfile.apps`](config/Brewfile.apps) (all / by category / pick-and-choose), reinstalls editor extensions, applies opinionated macOS defaults |
-| **4 · Claude & tooling** | Restores my private Claude Code config into `~/.claude`, builds the `hey` CLI from source, and clones my repos (list in `~/.claude/repos.txt`) |
+| **4 · Claude & tooling** | Restores my private Claude Code config into `~/.claude`, builds the `hey` CLI from source, clones my repos (list in `~/.claude/repos.txt`), and loads the chaos autosave agent (snapshots my knowledge repo to a safety branch) |
 
 A couple of steps stay manual by design — `setup` will prompt you:
 
@@ -102,13 +107,19 @@ setup                  ← the only entrypoint:  sh setup
 config/
   Brewfile             ← CLI formulae
   Brewfile.apps        ← GUI casks, grouped by category
+  Brewfile.mas         ← Mac App Store apps (via mas)
+  launchd/             ← LaunchAgent templates (chaos autosave)
 dotfiles/              ← Stow packages, symlinked into ~
   shell/     .zshrc · .vimrc · .config/starship.toml
   git/       .gitconfig.template · .gitignore_global · .git-template/
   terminal/  .config/ghostty/config · .hyper.js
   editors/   VS Code settings
   ssh/       .ssh/config
+  bin/       ~/.bin personal scripts (chaos autosave)
+  wm/        .config/aerospace/aerospace.toml (window manager)
 scripts/               ← one file per concern (+ lib/ helpers)
+docs/                  ← interactive first-run checklist (GitHub Pages)
+FIRST-RUN.md           ← step-by-step new-machine runbook
 SECRETS.md             ← how to restore secrets (no secrets in here)
 ```
 
