@@ -86,9 +86,9 @@ while IFS='|' read -r category app priority description; do
 
     # Store app details for display (sanitize app name for variable names)
     safe_name=$(echo "$app" | tr -c '[:alnum:]' '_')
-    eval "APP_${safe_name}_CATEGORY=\"$category\""
-    eval "APP_${safe_name}_PRIORITY=\"$priority\""
-    eval "APP_${safe_name}_DESCRIPTION=\"$description\""
+    printf -v "APP_${safe_name}_CATEGORY" '%s' "$category"
+    printf -v "APP_${safe_name}_PRIORITY" '%s' "$priority"
+    printf -v "APP_${safe_name}_DESCRIPTION" '%s' "$description"
 done <<EOF
 $(parse_apps_by_category)
 EOF

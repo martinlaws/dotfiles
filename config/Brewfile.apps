@@ -13,7 +13,7 @@
 
 cask "google-chrome"       # (essential) Primary browser
 cask "arc"                 # (recommended) Daily driver browser
-cask "comet"               # (recommended) Perplexity's agentic browser ("computer")
+cask "comet"               # (recommended) Perplexity's agentic browser
 cask "firefox"             # (optional) Alternative browser
 
 # NOTE: the Perplexity *desktop app* has NO Homebrew cask — install it manually
@@ -65,7 +65,7 @@ cask "aerospace"           # (optional) Tiling window manager (tap in Brewfile)
 ###############################################################################
 
 cask "1password"           # (essential) Password manager — secrets source of truth
-cask "1password-cli"       # (essential) `op` CLI — SSH agent + secret references
+cask "1password-cli"       # (essential) op CLI — SSH agent + secret references
 
 ###############################################################################
 # Productivity
