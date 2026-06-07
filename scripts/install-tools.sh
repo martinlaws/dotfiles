@@ -32,7 +32,7 @@ echo ""
 # Check if all tools already installed
 if brew bundle check --file="$SCRIPT_DIR/config/Brewfile" >/dev/null 2>&1; then
     ui_success "All tools already installed"
-    return 0
+    exit 0
 fi
 
 # Install tools with progress
