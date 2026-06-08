@@ -37,6 +37,16 @@ echo ""
 ui_section "Installing CLI Tools"
 echo ""
 
+# Refresh Homebrew metadata before bundling. A freshly installed (or long-idle)
+# Homebrew can carry a stale macOS-version table, so `brew bundle install` aborts
+# with "unknown or unsupported macOS version: :dunno" and installs nothing.
+# `brew update` is the documented prerequisite (see .planning phase 04 RESEARCH,
+# pitfall #2). Foreground so progress streams; non-fatal if it complains.
+ui_section "Refreshing Homebrew"
+echo ""
+brew update || ui_info "brew update reported an issue — continuing"
+echo ""
+
 # Check if all tools already installed
 if brew bundle check --file="$SCRIPT_DIR/config/Brewfile" >/dev/null 2>&1; then
     ui_success "All tools already installed"

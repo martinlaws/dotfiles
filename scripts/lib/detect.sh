@@ -28,8 +28,20 @@ is_xcode_clt_installed() {
 }
 
 # Generic tool check
+#
+# Brewfile entries are formula names, which frequently differ from the binary
+# they install (ripgrep→rg, git-delta→delta, imagemagick→magick, poppler→pdfinfo,
+# charmbracelet/tap/freeze→freeze). A plain `command -v <formula>` therefore
+# reports installed tools as missing and produces phantom "failed to install"
+# reports. Prefer an authoritative `brew list` check (stripping any tap prefix),
+# and fall back to PATH lookup for non-brew tools (brew itself, claude, etc.).
 is_tool_installed() {
     local tool="$1"
+    local formula="${tool##*/}"   # charmbracelet/tap/freeze -> freeze
+    if command -v brew >/dev/null 2>&1 \
+        && brew list --formula --versions "$formula" >/dev/null 2>&1; then
+        return 0
+    fi
     command -v "$tool" >/dev/null 2>&1
 }
 
