@@ -47,6 +47,16 @@ echo ""
 brew update || ui_info "brew update reported an issue — continuing"
 echo ""
 
+# If macOS is newer than this Homebrew knows about (e.g. a macOS beta), every
+# bottle op aborts with "unknown or unsupported macOS version: :dunno". Run this
+# AFTER brew update (which may have just shipped support) and fall back to the
+# newest known macOS's bottles rather than hard-failing the whole bundle.
+if maybe_fake_unsupported_macos; then
+    ui_info "⚠ Homebrew doesn't recognize macOS $FAKE_MACOS_APPLIED yet — using macOS $HOMEBREW_FAKE_MACOS bottles for this run (HOMEBREW_FAKE_MACOS=$HOMEBREW_FAKE_MACOS)."
+    ui_info "  Once a future 'brew update' ships macOS $FAKE_MACOS_APPLIED support, unset HOMEBREW_FAKE_MACOS for native bottles."
+    echo ""
+fi
+
 # Check if all tools already installed
 if brew bundle check --file="$SCRIPT_DIR/config/Brewfile" >/dev/null 2>&1; then
     ui_success "All tools already installed"
