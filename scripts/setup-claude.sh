@@ -32,7 +32,13 @@ setup_claude() {
     fi
 
     # Verify GitHub SSH works first (claude-config is private, SSH-only).
-    if ! ssh -T git@github.com 2>&1 | grep -q "successfully authenticated"; then
+    # Capture-then-grep, NOT `ssh ... | grep`: `ssh -T git@github.com` always
+    # exits non-zero (GitHub provides no shell), so under this script's
+    # `set -o pipefail` a direct pipe makes the check fail even when auth
+    # succeeds. Mirrors verify_github_ssh in setup-ssh.sh.
+    local ssh_result
+    ssh_result=$(ssh -T git@github.com 2>&1 || true)
+    if ! echo "$ssh_result" | grep -q "successfully authenticated"; then
         ui_error "GitHub SSH not authenticated — run setup-ssh.sh first"
         ui_info "claude-config is private; the clone needs a working SSH key"
         return 1
