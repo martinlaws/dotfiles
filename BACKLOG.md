@@ -15,6 +15,20 @@ setup works end-to-end; these are polish for the next machine / re-image).
   `~/.local/state/dotfiles-setup.log` (preserves the pty so gum still renders).
 - **Strict mode + ERR trap** (`✗ failed at <script>:<line>`) on install-homebrew /
   install-tools / install-apps.
+- **`scripts/doctor.sh` (#11)** — codified the FIRST-RUN verify checks (brew health
+  incl. macOS-ahead/`:dunno` detection, Brewfile tools, fnm node, GitHub SSH,
+  symlinks, `~/.claude` repo state + drift, chaos autosave, `/slurp` deps) into one
+  read-only health command. Born from the Jun 2026 new-Mac bring-up.
+- **macOS-ahead-of-Homebrew fallback** — `maybe_fake_unsupported_macos()` in
+  detect.sh auto-sets `HOMEBREW_FAKE_MACOS` during install-tools when the OS major
+  is newer than brew's version table (the macOS 27 `:dunno` failure).
+- **Brew-managed tool detection** — `is_tool_installed` checks `brew list` instead
+  of `command -v <formula>` (formula names ≠ binary names; killed phantom
+  "failed to install" reports).
+- **`--adopt` on cask installs** — already-hand-installed apps (1Password per
+  FIRST-RUN order) get adopted into brew instead of failing.
+- **setup-claude SSH check pipefail fix** — capture-then-grep; the old direct pipe
+  always failed because `ssh -T git@github.com` exits non-zero even on success.
 - **Default to installing ALL casks** (no picker).
 
 ## Deferred — high value
@@ -51,6 +65,4 @@ a full re-run. Write a completion marker per step; skip done steps on re-run; ad
 - **Symlink backup clutter (#9):** `symlink-dotfiles.sh` re-backs-up `~/.zshrc` etc.
   on every run even when it's already the correct symlink — skip if already linked.
 - **Overall progress (#10):** "Phase 2/4" + elapsed time.
-- **`scripts/doctor.sh` (#11):** codify the FIRST-RUN verify checks (node, `z`,
-  `ssh -T`, skills load, `/slurp`, autosave) into one health command.
 - **`--dry-run` (#12):** preview installs/symlinks without doing them.

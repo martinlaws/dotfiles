@@ -82,7 +82,10 @@ for app in "${SELECTED_APPS[@]}"; do
     fi
     echo ""
     ui_section "[$i/$total] Installing $app …"
-    if brew install --cask "$app"; then
+    # --adopt: if the app was already installed by hand (e.g. 1Password ahead of
+    # setup per FIRST-RUN.md), adopt it into brew management instead of failing
+    # with "already an App at /Applications/…".
+    if brew install --cask --adopt "$app"; then
         ui_success "[$i/$total] $app installed"
         installed=$((installed + 1))
     else
