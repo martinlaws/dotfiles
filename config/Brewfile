@@ -57,3 +57,6 @@ brew "ffmpeg"                    # Audio/video transcoding
 brew "imagemagick"              # Image manipulation
 brew "poppler"                  # PDF utilities (pdftoppm, etc.)
 brew "charmbracelet/tap/freeze" # Screenshots of code/terminal output
+
+# Script hygiene
+brew "shellcheck"               # Shell script linter (CI gate: .github/workflows/shellcheck.yml)
