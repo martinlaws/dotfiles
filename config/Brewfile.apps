@@ -80,3 +80,9 @@ cask "spotify"             # (recommended) Music streaming
 
 cask "steam"               # (optional) Game platform
 cask "battle-net"          # (optional) Blizzard games
+
+###############################################################################
+# Fonts
+###############################################################################
+
+cask "font-jetbrains-mono" # (essential) Terminal font — assumed by skill-design.md

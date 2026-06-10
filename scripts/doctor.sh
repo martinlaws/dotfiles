@@ -59,6 +59,35 @@ else
     ui_info "  Fix: brew bundle install --file $SCRIPT_DIR/config/Brewfile"
 fi
 
+# ── Brewfile drift (reverse direction) ───────────────────────────────────────
+# Things installed by hand never flow back into the Brewfiles, so the next
+# machine silently misses them. Warn-only.
+ui_section "Brewfile Drift"
+if is_homebrew_installed; then
+    # No process substitution — macOS `sh` (bash in POSIX mode) rejects it.
+    # Formula/cask tokens never contain spaces, so word-splitting is safe.
+    UNTRACKED_FORMULAE=()
+    for leaf in $(brew leaves 2>/dev/null); do
+        grep -qE "^brew[[:space:]]+\"([^\"]+/)?${leaf}\"" "$SCRIPT_DIR/config/Brewfile" || UNTRACKED_FORMULAE+=("$leaf")
+    done
+    if [ ${#UNTRACKED_FORMULAE[@]} -eq 0 ]; then
+        pass "no untracked formulae"
+    else
+        warn "${#UNTRACKED_FORMULAE[@]} formula(e) installed but not in config/Brewfile: ${UNTRACKED_FORMULAE[*]}"
+        ui_info "  Add the keepers to config/Brewfile so the next machine gets them."
+    fi
+
+    UNTRACKED_CASKS=()
+    for cask in $(brew list --cask 2>/dev/null); do
+        grep -qE "^cask[[:space:]]+\"${cask}\"" "$SCRIPT_DIR/config/Brewfile.apps" || UNTRACKED_CASKS+=("$cask")
+    done
+    if [ ${#UNTRACKED_CASKS[@]} -eq 0 ]; then
+        pass "no untracked casks"
+    else
+        warn "${#UNTRACKED_CASKS[@]} cask(s) installed but not in config/Brewfile.apps: ${UNTRACKED_CASKS[*]}"
+    fi
+fi
+
 # ── Node via fnm ─────────────────────────────────────────────────────────────
 ui_section "Node (fnm)"
 if command -v node >/dev/null 2>&1; then
@@ -101,6 +130,11 @@ if [ -d "$HOME/.claude/.git" ]; then
     unpushed=$(git -C "$HOME/.claude" rev-list --count '@{upstream}..HEAD' 2>/dev/null || echo 0)
     if [ "$unpushed" != "0" ]; then
         warn "~/.claude has $unpushed unpushed commit(s)"
+    fi
+    if launchctl list "ca.mlaws.claude-autosave" >/dev/null 2>&1; then
+        pass "claude-config autosave agent loaded (ca.mlaws.claude-autosave)"
+    else
+        fail "claude-config autosave agent NOT loaded — run ~/dotfiles/scripts/setup-autosave.sh"
     fi
 else
     fail "~/.claude not version-controlled — run scripts/setup-claude.sh (needs GitHub SSH)"
