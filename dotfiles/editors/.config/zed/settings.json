@@ -23,12 +23,15 @@
 
   // ─── Appearance ───────────────────────────────────────────────────────────
   // ▸ To match Ghostty exactly: open `zed: extensions`, install "Night Owl"
-  //   (the night-owlz extension), then change "dark" below to "Night Owl".
-  //   Left on One Dark until then so the editor doesn't come up unstyled.
+  //   Installed as a user theme JSON at .config/zed/themes/NightOwl.json
+  //   (stowed from dotfiles) rather than via the extension registry, so it
+  //   reproduces on a fresh machine with no UI steps.
+  // ⚠ Exact names are "Night Owl Dark"/"Night Owl Light" — NOT "Night Owl".
+  //   The file also ships "No Italics" variants if italic comments grate.
   "theme": {
     "mode": "dark",
-    "dark": "One Dark",
-    "light": "One Light"
+    "dark": "Night Owl Dark",
+    "light": "Night Owl Light"
   },
 
   // Monaspace Neon = neo-grotesque, closest to the JetBrains Mono it replaced.
