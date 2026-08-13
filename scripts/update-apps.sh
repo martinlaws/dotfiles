@@ -100,6 +100,53 @@ update_apps() {
   if [ -z "$MANUAL_INSTALLS" ] && [ -z "$MISSING_CASKS" ]; then
     ui_success "All Brewfile apps are in sync"
   fi
+
+  update_cli_tools
+}
+
+# Sync CLI formulae from config/Brewfile.
+#
+# ⚠ Why this exists: everything above only ever reads config/Brewfile.apps
+# (casks). Nothing in update mode looked at config/Brewfile, and
+# update-homebrew.sh only upgrades what is ALREADY installed — so a formula
+# added to the Brewfile could never reach an existing machine. Found on the Mac
+# Studio 2026-08-13, which was missing 13 tools including atuin, zoxide, eza,
+# bat and fzf. They're guarded by `command -v` in .zshrc, so the failure mode was
+# silent: those features simply didn't exist on that machine.
+update_cli_tools() {
+  ui_section "Checking CLI Tools"
+
+  CLI_BREWFILE="$SCRIPT_DIR/config/Brewfile"
+
+  if [ ! -f "$CLI_BREWFILE" ]; then
+    ui_error "Brewfile not found at: $CLI_BREWFILE"
+    return 1
+  fi
+
+  if brew bundle check --file="$CLI_BREWFILE" >/dev/null 2>&1; then
+    ui_success "All Brewfile CLI tools installed"
+    return 0
+  fi
+
+  ui_info "Some CLI tools in config/Brewfile are not installed."
+
+  if ui_confirm "Install missing CLI tools?"; then
+    # Trust declared taps first — Homebrew 6.x aborts the ENTIRE bundle on an
+    # untrusted third-party tap, so one bad tap means nothing installs at all.
+    grep -E '^tap "' "$CLI_BREWFILE" 2>/dev/null \
+      | sed 's/^tap "//; s/".*//' \
+      | while IFS= read -r t; do
+          [ -n "$t" ] && brew trust "$t" >/dev/null 2>&1 || true
+      done
+
+    if brew bundle install --file="$CLI_BREWFILE"; then
+      ui_success "CLI tools installed"
+    else
+      ui_error "Some CLI tools failed — see output above"
+    fi
+  else
+    ui_info "Skipped. Fix later: brew bundle install --file $CLI_BREWFILE"
+  fi
 }
 
 # Run if executed directly (not sourced)

@@ -57,6 +57,29 @@ if maybe_fake_unsupported_macos; then
     echo ""
 fi
 
+# Homebrew 6.x refuses to load formulae from untrusted third-party taps
+# ("Refusing to load formula charmbracelet/tap/freeze from untrusted tap"), and
+# `brew bundle install` ABORTS the whole file rather than skipping the one
+# formula — so a single untrusted tap means ZERO tools install, not all-but-one.
+# Hit on the Mac Studio 2026-08-13; the laptop was unaffected only because it had
+# the formula from before the trust model landed.
+#
+# Trust every tap the Brewfile itself declares, so this needs no maintenance when
+# taps are added or removed. Idempotent, and non-fatal if a tap is already
+# trusted or the subcommand is missing on an older Homebrew.
+ui_section "Trusting declared taps"
+grep -E '^tap "' "$SCRIPT_DIR/config/Brewfile" 2>/dev/null \
+  | sed 's/^tap "//; s/".*//' \
+  | while IFS= read -r t; do
+      [ -z "$t" ] && continue
+      if brew trust "$t" >/dev/null 2>&1; then
+          ui_success "trusted $t"
+      else
+          ui_info "$t — already trusted or trust unsupported; continuing"
+      fi
+  done
+echo ""
+
 # Check if all tools already installed
 if brew bundle check --file="$SCRIPT_DIR/config/Brewfile" >/dev/null 2>&1; then
     ui_success "All tools already installed"
