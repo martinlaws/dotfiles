@@ -63,6 +63,13 @@ cask "raycast"             # (recommended) Productivity launcher
 cask "superwhisper"        # (recommended) Voice-to-text dictation
 cask "aerospace"           # (optional) Tiling window manager (tap in Brewfile)
 
+# ⚠ The cask is "tailscale-app", not "tailscale" — the latter is now the
+# headless CLI formula. Wanted on every machine: it is what makes the Studio
+# reachable without depending on the LAN (the router does not do NAT loopback,
+# and the DHCP lease drifts). Auth is per-machine, like the hey CLI — a fresh
+# install has no tailnet until you log in.
+cask "tailscale-app"       # (recommended) Mesh VPN — remote access to the Studio
+
 ###############################################################################
 # Fonts
 ###############################################################################
