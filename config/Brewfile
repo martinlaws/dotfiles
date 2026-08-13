@@ -23,6 +23,14 @@ brew "mas"              # install/manage Mac App Store apps from the CLI
 
 # AI Tools
 brew "opencode"         # AI coding agent for the terminal
+# Local model runtime (MIT). Load-bearing, not optional: Zed's edit_predictions
+# in dotfiles/editors/.config/zed/settings.json point at http://localhost:11434,
+# so without Ollama running, tab completion silently stops working.
+# Also speaks the Anthropic Messages API natively, so ANTHROPIC_BASE_URL can
+# point Claude Code at a local model. Pull models separately — they aren't
+# managed here: `ollama pull qwen2.5-coder:3b-base` (tab completion, needs a
+# fill-in-middle BASE model) and `ollama pull qwen3-coder:30b` (agent panel).
+brew "ollama"           # Local LLM runtime — serves Zed edit predictions
 
 # File utilities
 brew "tree"             # Display directory structure
