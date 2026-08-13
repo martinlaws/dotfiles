@@ -27,6 +27,7 @@ cask "firefox"             # (optional) Alternative browser
 cask "visual-studio-code"          # (essential) Primary code editor
 cask "visual-studio-code@insiders" # (recommended) VS Code Insiders — running as primary
 cask "cursor"              # (recommended) AI-powered code editor
+cask "zed"                 # (recommended) Editor — Monaspace + vim mode + local models
 cask "ghostty"             # (recommended) Terminal emulator (primary)
 cask "hyper"               # (optional) Terminal emulator (fallback)
 cask "claude"              # (recommended) Claude desktop app
@@ -61,6 +62,23 @@ cask "superwhisper"        # (recommended) Voice-to-text dictation
 cask "aerospace"           # (optional) Tiling window manager (tap in Brewfile)
 
 ###############################################################################
+# Fonts
+###############################################################################
+
+# ⚠ font-monaspace is load-bearing, not cosmetic: both ~/.config/ghostty/config
+# and ~/.config/zed/settings.json name "Monaspace Neon" directly. Without this
+# cask, both fall back to a default font silently rather than erroring.
+#
+# Verified 2026-08-13 against the .claude/rules/skill-design.md glyph palette
+# (★ ◆ ✓ ✗ → • ▸ ⚠ … ↳ ━ ─ │): Monaspace Neon covers 13/13.
+# ⚠ JetBrains Mono covers only 11/13 — it has NO ★ and NO ↳, both of which the
+# palette uses heavily (`★ BEST PICK`, /avails adjacency footnotes). Those have
+# been rendering via silent font fallback. So Monaspace is the better base for
+# the skill-output design system, not merely the prettier one.
+cask "font-monaspace"      # (essential) Monaspace — Ghostty + Zed, full glyph palette
+cask "font-jetbrains-mono" # (optional) Previous font; ⚠ incomplete palette (11/13)
+
+###############################################################################
 # Security & Secrets
 ###############################################################################
 
@@ -80,9 +98,3 @@ cask "spotify"             # (recommended) Music streaming
 
 cask "steam"               # (optional) Game platform
 cask "battle-net"          # (optional) Blizzard games
-
-###############################################################################
-# Fonts
-###############################################################################
-
-cask "font-jetbrains-mono" # (essential) Terminal font — assumed by skill-design.md

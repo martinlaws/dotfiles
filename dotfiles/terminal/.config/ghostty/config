@@ -12,8 +12,11 @@
 # Night Owl — ships with Ghostty (the theme the old hyper-night-owl plugin gave).
 theme = Night Owl
 
-# JetBrains Mono is bundled with Ghostty, so this needs no font install.
-font-family = "JetBrains Mono"
+# Monaspace Neon (2026-08-13) — matches Zed's buffer font.
+# ⚠ Unlike the JetBrains Mono it replaced, this is NOT bundled with Ghostty —
+# it comes from `brew install --cask font-monaspace`. A fresh machine needs
+# that cask first, or Ghostty silently falls back to a default font.
+font-family = "Monaspace Neon"
 font-size = 12
 
 # Hyper padding was "12px 14px" (top/bottom 12, left/right 14).
