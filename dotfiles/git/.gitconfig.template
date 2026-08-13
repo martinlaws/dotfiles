@@ -88,3 +88,14 @@
 	gpgsign = true
 [tag]
 	gpgsign = true
+
+# ⚠ Keep this LAST — an include only overrides what comes before it.
+# Machine-local escape hatch: untracked, optional, absent by default.
+# The signing block above assumes 1Password is installed and unlocked, which is
+# not true of a machine driven remotely — op-ssh-sign then hangs commit AND push
+# for ~2 minutes rather than failing cleanly. The Mac Studio overrides it here
+# with a dedicated on-disk signing key (see ~/.gitconfig.local there).
+# Without this include, regenerating ~/.gitconfig from this template silently
+# destroys that override.
+[include]
+	path = ~/.gitconfig.local
