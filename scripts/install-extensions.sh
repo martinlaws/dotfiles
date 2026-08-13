@@ -27,6 +27,8 @@ install_for() {
   echo "  $bin: $n installed"
 }
 
-install_for cursor        "$SCRIPT_DIR/config/cursor-extensions.txt"
+# Cursor removed 2026-08-13 (left Anysphere on ownership grounds). Zed manages
+# its own extensions in ~/.config/zed/, not via a CLI --install-extension list,
+# so there is no Zed equivalent line to add here.
 install_for code          "$SCRIPT_DIR/config/vscode-extensions.txt"
 install_for code-insiders "$SCRIPT_DIR/config/vscode-insiders-extensions.txt"

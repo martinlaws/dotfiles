@@ -200,7 +200,7 @@ if [ -n "$SKIPPED_APPS" ]; then
   ui_info "Partial installation (some apps skipped or failed)"
 else
   # Check if any cask apps are installed to determine if apps section ran
-  if brew list --cask 2>/dev/null | grep -qE "(google-chrome|visual-studio-code|cursor|raycast|slack)" 2>/dev/null; then
+  if brew list --cask 2>/dev/null | grep -qE "(google-chrome|visual-studio-code|zed|raycast|slack)" 2>/dev/null; then
     ui_success "GUI applications installed"
   else
     ui_info "No GUI applications installed (skipped during setup)"

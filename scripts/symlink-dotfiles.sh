@@ -154,7 +154,8 @@ main() {
   stow -d "$DOTFILES_DIR" -t ~ terminal
   ui_success "Symlinked terminal configs"
 
-  # Stow editors package (VS Code/Cursor settings)
+  # Stow editors package (VS Code settings; never managed Cursor's, and Zed's
+  # live at ~/.config/zed/ outside this package)
   stow -d "$DOTFILES_DIR" -t ~ editors
   ui_success "Symlinked editor configs"
 

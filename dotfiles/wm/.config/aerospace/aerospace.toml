@@ -6,7 +6,7 @@
 # tiling later (see the note at the very bottom).
 #
 #   1 = brain    Ghostty + Claude
-#   2 = code     Cursor + VS Code Insiders
+#   2 = code     Zed + VS Code Insiders
 #   3 = comms    Slack   (HEY is web — it lives in whatever browser/workspace)
 #   4 = research Comet + Perplexity
 #
@@ -42,7 +42,7 @@ enable-normalization-opposite-orientation-for-nested-containers = true
     run = ['layout floating', 'move-node-to-workspace 1']
 
 [[on-window-detected]]
-    if.app-id = 'com.todesktop.230313mzl4w4u92'   # Cursor
+    if.app-id = 'dev.zed.Zed'                     # Zed (replaced Cursor 2026-08-13)
     run = ['layout floating', 'move-node-to-workspace 2']
 
 [[on-window-detected]]
