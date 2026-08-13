@@ -63,8 +63,13 @@ check_dotfile_conflict() {
 update_dotfiles() {
   ui_section "Refreshing Dotfile Symlinks"
 
-  # Define stow packages to refresh
-  STOW_PACKAGES="git shell terminal editors ssh"
+  # Define stow packages to refresh.
+  #
+  # ⚠ Must stay in sync with symlink-dotfiles.sh (the first-run path). `bin` and
+  # `wm` were missing here, so ~/.bin scripts and ~/.config/aerospace/aerospace.toml
+  # never refreshed on an already-provisioned machine — only on a fresh install.
+  # Found on the Mac Studio 2026-08-13.
+  STOW_PACKAGES="git shell terminal editors bin wm ssh"
   STOW_DIR="$SCRIPT_DIR/dotfiles"
 
   # Check for conflicts (simplified - full check would iterate all expected files)
@@ -95,13 +100,22 @@ update_dotfiles() {
     return 0
   fi
 
-  # Run stow --restow for each package
+  # Run stow --restow for each package.
+  #
+  # ⚠ Stow refuses an ENTIRE package when any one file conflicts with an existing
+  # real file. stderr used to go to /dev/null, so the failure surfaced only as
+  # "Failed to restow: <pkg>" with no reason — undiagnosable. On the Mac Studio
+  # 2026-08-13 a pre-existing VS Code settings.json blocked the whole `editors`
+  # package, which silently took Zed's config down with it.
   for pkg in $STOW_PACKAGES; do
-    if stow -R -d "$STOW_DIR" -t "$HOME" "$pkg" 2>/dev/null; then
+    STOW_ERR="$(stow -R -d "$STOW_DIR" -t "$HOME" "$pkg" 2>&1)" && STOW_OK=true || STOW_OK=false
+    if [ "$STOW_OK" = true ]; then
       ui_success "Restowed: $pkg"
     else
       ui_error "Failed to restow: $pkg"
-      log_error "Stow failed for package: $pkg"
+      [ -n "$STOW_ERR" ] && printf '%s\n' "$STOW_ERR" | sed 's/^/    /'
+      ui_info "  Conflicting file? Back it up and re-run, or: stow --adopt -d $STOW_DIR -t \$HOME $pkg"
+      log_error "Stow failed for package: $pkg — $STOW_ERR"
       # Continue to next package, don't abort
     fi
   done

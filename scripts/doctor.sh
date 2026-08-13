@@ -146,7 +146,7 @@ if [ -d "$HOME/code/chaos" ]; then
     if launchctl list "ca.mlaws.chaos-autosave" >/dev/null 2>&1; then
         pass "autosave agent loaded (ca.mlaws.chaos-autosave)"
     else
-        fail "autosave agent NOT loaded — run ~/code/chaos/scripts/setup-autosave.sh"
+        fail "autosave agent NOT loaded — run ~/dotfiles/scripts/setup-autosave.sh"
     fi
     if command -v jq >/dev/null 2>&1 && [ -x "$HOME/code/chaos/.claude/skills/slurp/drain.sh" ]; then
         pass "/slurp deps present (jq + drain.sh)"
