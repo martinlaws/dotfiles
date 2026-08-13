@@ -1,4 +1,9 @@
 # Initialize completion system
+# ⚠ Any fpath addition must come BEFORE compinit or its completions are invisible.
+# Docker Desktop appends its own fpath+compinit to the bottom of this file when
+# it starts (2026-08-13); folded in here instead, because appending after line 3
+# meant compinit ran twice on every shell.
+[ -d "$HOME/.docker/completions" ] && fpath=("$HOME/.docker/completions" $fpath)
 autoload -Uz compinit
 compinit
 
