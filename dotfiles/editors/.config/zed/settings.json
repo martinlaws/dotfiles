@@ -3,6 +3,15 @@
   // Claude Code via ACP, installed from the registry (`zed: acp registry`).
   // It owns its own auth — `/login` inside the thread, separate from anything
   // else here.
+  "agent": {
+    "default_model": {
+      "provider": "ollama",
+      "model": "qwen3-coder:30b",
+      "enable_thinking": false
+    },
+    "favorite_models": [],
+    "model_parameters": []
+  },
   "icon_theme": "Zed (Default)",
   "agent_servers": {
     "claude-acp": {
@@ -97,8 +106,30 @@
     },
   },
 
-  // Agent-panel models are auto-discovered from a running Ollama on :11434,
-  // so qwen3-coder:30b should appear in the model picker on its own.
+  // ─── Agent panel (local) ──────────────────────────────────────────────────
+  // ⚠ Do NOT go back to bare auto-discovery here. Zed asks Ollama for the
+  // model's advertised max context and then requests all of it. qwen3-coder:30b
+  // advertises 262144, which allocates ~15GB of KV cache on top of ~18GB of
+  // weights — on a 36GB machine that means swap, not speed.
+  // Measured on the Studio (M4 Max, 36GB) 2026-08-13:
+  //   262144 -> 32.9GB resident, 5% RAM free, 69 tok/s and still falling
+  //    65536 -> 22.1GB resident, 26% RAM free, 89 tok/s   <- current
+  // keep_alive matters too: left alone, Zed pins the model in memory
+  // indefinitely (observed expires_at in the year 2318).
+  "language_models": {
+    "ollama": {
+      "api_url": "http://localhost:11434",
+      "available_models": [
+        {
+          "name": "qwen3-coder:30b",
+          "display_name": "Qwen3 Coder 30B (64K)",
+          "max_tokens": 65536,
+          "keep_alive": "10m",
+          "supports_tools": true,
+        },
+      ],
+    },
+  },
 
   "telemetry": {
     "diagnostics": false,
