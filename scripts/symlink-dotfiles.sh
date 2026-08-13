@@ -86,12 +86,22 @@ validate_configs() {
 # Backup existing file/directory
 backup_existing() {
   local target="$1"
-  if [ -e "$target" ] || [ -L "$target" ]; then
-    local timestamp=$(date +%Y%m%d_%H%M%S)
-    local backup="${target}.backup.${timestamp}"
-    mv "$target" "$backup"
-    ui_info "Backed up: $(basename "$target") -> $(basename "$backup")"
+  [ -e "$target" ] || [ -L "$target" ] || return 0
+
+  # ⚠ A symlink already pointing into the repo has no content of its own, so
+  # "backing it up" just makes a second symlink to the same file — and does it
+  # again on every run. Eleven starship.toml.backup.* links accumulated under
+  # ~/.config this way before this guard existed (found and cleared 2026-08-13).
+  if [ -L "$target" ] && case "$(readlink "$target")" in *dotfiles/*) true ;; *) false ;; esac; then
+    ui_info "Already linked into dotfiles, no backup needed: $(basename "$target")"
+    return 0
   fi
+
+  local timestamp
+  timestamp=$(date +%Y%m%d_%H%M%S)
+  local backup="${target}.backup.${timestamp}"
+  mv "$target" "$backup"
+  ui_info "Backed up: $(basename "$target") -> $(basename "$backup")"
 }
 
 # Main function
