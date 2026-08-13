@@ -112,7 +112,35 @@ else
 fi
 
 # ── Dotfile symlinks ─────────────────────────────────────────────────────────
+# ⚠ This used to check ~/.zshrc and nothing else, and reported green on the
+# Mac Studio (2026-08-13) while FOUR packages were entirely unlinked — ghostty's
+# font config, ~/.bin, aerospace, and the git templates. Pulling the repo does
+# not re-stow it, so new files sit unlinked and invisible. Audit every package.
 ui_section "Symlinks"
+STOW_PACKAGES="${STOW_PACKAGES:-git shell terminal editors bin wm ssh}"
+if command -v stow >/dev/null 2>&1 && [ -d "$SCRIPT_DIR/dotfiles" ]; then
+    UNLINKED=()
+    for pkg in $STOW_PACKAGES; do
+        # A simulate run prints LINK for anything not yet linked, and WARNING!
+        # for a target stow refuses to adopt (e.g. a hand-made absolute
+        # symlink). "reverts previous action" is stow's own bookkeeping for
+        # links it already owns — not a gap.
+        pending=$(stow --simulate -v -R -d "$SCRIPT_DIR/dotfiles" -t "$HOME" "$pkg" 2>&1 \
+            | grep -E '^(LINK|CONFLICT|WARNING!)|not owned by stow' \
+            | grep -vc 'reverts previous action')
+        [ "$pending" != "0" ] && UNLINKED+=("$pkg")
+    done
+    if [ ${#UNLINKED[@]} -eq 0 ]; then
+        pass "all stow packages linked ($STOW_PACKAGES)"
+    else
+        fail "unlinked stow package(s): ${UNLINKED[*]}"
+        ui_info "  Fix: cd ~/dotfiles && stow -R -d dotfiles -t \"\$HOME\" ${UNLINKED[*]}"
+    fi
+else
+    warn "GNU stow not available — cannot audit symlinks"
+fi
+# Kept as a distinct check: the stow audit proves links exist, this proves the
+# shell actually loads from the repo.
 if [ -L "$HOME/.zshrc" ] && [[ "$(readlink "$HOME/.zshrc")" == *dotfiles* ]]; then
     pass "~/.zshrc symlinked into dotfiles"
 else
@@ -152,6 +180,55 @@ if [ -d "$HOME/code/chaos" ]; then
         pass "/slurp deps present (jq + drain.sh)"
     else
         warn "/slurp deps incomplete (need jq + executable .claude/skills/slurp/drain.sh)"
+    fi
+fi
+
+# ── Ollama (local models) ────────────────────────────────────────────────────
+# ⚠ "A server is answering on :11434" is NOT the check. On the Studio
+# (2026-08-13) ollama was answering fine — as an unsupervised child of Raycast,
+# with no plist and no log, so it would have vanished with Raycast. Verify the
+# SUPERVISOR, then the API, then that the model Zed names actually exists.
+if command -v ollama >/dev/null 2>&1; then
+    ui_section "Ollama"
+    if launchctl list homebrew.mxcl.ollama >/dev/null 2>&1; then
+        pass "ollama managed by brew services (comes back at login)"
+    elif pgrep -f "ollama serve" >/dev/null 2>&1; then
+        warn "ollama is running but NOT under brew services — nothing will restart it"
+        ui_info "  Fix: pkill -f 'ollama serve' && brew services start ollama"
+    else
+        fail "ollama not running — run 'brew services start ollama'"
+    fi
+
+    if curl -fsS -m 5 http://localhost:11434/api/tags >/dev/null 2>&1; then
+        pass "ollama API responding on :11434"
+        # Zed's tab completion fails silently when this model is absent, so the
+        # config naming it is not evidence the machine has it.
+        ZED_SETTINGS="$HOME/.config/zed/settings.json"
+        if [ -r "$ZED_SETTINGS" ]; then
+            OLLAMA_MODELS=$(ollama list 2>/dev/null | awk 'NR>1 {print $1}')
+            # Scope each lookup to its own block. A bare grep for "model" takes
+            # whichever key appears first in the file — which is exactly how this
+            # check first reported the agent model as the edit-prediction one.
+            check_zed_model() {
+                _label="$1"
+                _want=$(awk -v a="$2" 'index($0, a) {f=1} f && /"model"[[:space:]]*:/ {print; exit}' \
+                    "$ZED_SETTINGS" \
+                    | sed -E 's/.*"model"[[:space:]]*:[[:space:]]*"([^"]+)".*/\1/')
+                [ -n "$_want" ] || return 0
+                if printf '%s\n' "$OLLAMA_MODELS" | grep -qx "$_want"; then
+                    pass "$_label model present ($_want)"
+                else
+                    fail "$_label model MISSING: $_want"
+                    ui_info "  Fix: ollama pull $_want"
+                fi
+            }
+            # Agent panel errors visibly when its model is absent; tab
+            # completion just goes quiet, so the second one matters more.
+            check_zed_model "agent-panel" '"default_model"'
+            check_zed_model "edit-prediction" '"edit_predictions"'
+        fi
+    else
+        fail "ollama API not responding on :11434"
     fi
 fi
 
