@@ -26,7 +26,9 @@ cask "firefox"             # (optional) Alternative browser
 
 cask "visual-studio-code"          # (essential) Primary code editor
 cask "visual-studio-code@insiders" # (recommended) VS Code Insiders — running as primary
-cask "cursor"              # (recommended) AI-powered code editor
+# Cursor removed 2026-08-13 — leaving Anysphere on ownership grounds (SpaceX
+# acquisition). Replaced by Zed below. See chaos
+# technical/2026-08-10-editor-migration-research-v2.md.
 cask "zed"                 # (recommended) Editor — Monaspace + vim mode + local models
 cask "ghostty"             # (recommended) Terminal emulator (primary)
 cask "hyper"               # (optional) Terminal emulator (fallback)
