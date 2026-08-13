@@ -1,0 +1,103 @@
+{
+  // ─── Agent ────────────────────────────────────────────────────────────────
+  // Claude Code via ACP, installed from the registry (`zed: acp registry`).
+  // It owns its own auth — `/login` inside the thread, separate from anything
+  // else here.
+  "agent_servers": {
+    "claude-acp": {
+      "default_config_options": {
+        "fast": false
+      },
+      "type": "registry"
+    }
+  },
+
+  // ─── Editing model ────────────────────────────────────────────────────────
+  // Off by choice 2026-08-13 — learning Zed, Monaspace and the agent panel all
+  // at once was enough. Flip to true any time; nothing else here depends on it.
+  // ⚠ If you do, turn relative_line_numbers back on — it's only useful for
+  // counting motions like 5j / 3k.
+  "vim_mode": false,
+  "relative_line_numbers": false,
+  "cursor_shape": "block",
+
+  // ─── Appearance ───────────────────────────────────────────────────────────
+  // ▸ To match Ghostty exactly: open `zed: extensions`, install "Night Owl"
+  //   (the night-owlz extension), then change "dark" below to "Night Owl".
+  //   Left on One Dark until then so the editor doesn't come up unstyled.
+  "theme": {
+    "mode": "dark",
+    "dark": "One Dark",
+    "light": "One Light"
+  },
+
+  // Monaspace Neon = neo-grotesque, closest to the JetBrains Mono it replaced.
+  // Audition the others by swapping the family: Argon (humanist), Xenon (slab),
+  // Krypton (mechanical), Radon (handwritten).
+  // Verified 13/13 on the skill-design.md glyph palette — JetBrains Mono is 11/13.
+  "buffer_font_family": "Monaspace Neon",
+  "buffer_font_size": 12,
+  "ui_font_size": 13,
+
+  // calt drives Monaspace's texture healing (the reason to run this family at
+  // all); liga gives standard coding ligatures. Set either false to compare.
+  "buffer_font_features": {
+    "calt": true,
+    "liga": true
+  },
+
+  // Zed's built-in terminal, matched to Ghostty so panes look identical.
+  "terminal": {
+    "font_family": "Monaspace Neon",
+    "font_size": 12
+  },
+
+  // ─── Saving ───────────────────────────────────────────────────────────────
+  // ⚠ Deliberately NOT enabling autosave. With an agent proposing diffs, an
+  // autosave can commit changes to disk before they've been reviewed.
+  "format_on_save": "on",
+  "preferred_line_length": 80,
+
+  // ─── Per-language ─────────────────────────────────────────────────────────
+  "languages": {
+    // ⚠ Load-bearing for chaos. Its notes are hand-wrapped at ~80 cols and the
+    // skill-design rules depend on exact glyph/spacing layout. A markdown
+    // formatter would reflow every daily note on save — silently, and across
+    // thousands of files. Formatting stays OFF here permanently.
+    "Markdown": {
+      "format_on_save": "off",
+      "remove_trailing_whitespace_on_save": false,
+      "soft_wrap": "preferred_line_length"
+    }
+  },
+
+  // ─── Git ──────────────────────────────────────────────────────────────────
+  "git": {
+    "inline_blame": {
+      "enabled": true,
+      "delay_ms": 600
+    }
+  },
+
+  // ─── Edit prediction (local) ──────────────────────────────────────────────
+  // Tab-complete against a local base model. Instruct models (qwen3-coder:30b)
+  // are the wrong shape and far too slow for keystroke latency — this needs a
+  // small fill-in-middle base model. ⚠ Requires Ollama running.
+  "edit_predictions": {
+    "provider": "ollama",
+    "ollama": {
+      "api_url": "http://localhost:11434",
+      "model": "qwen2.5-coder:3b-base",
+      "prompt_format": "infer",
+      "max_output_tokens": 512
+    }
+  },
+
+  // Agent-panel models are auto-discovered from a running Ollama on :11434,
+  // so qwen3-coder:30b should appear in the model picker on its own.
+
+  "telemetry": {
+    "diagnostics": false,
+    "metrics": false
+  }
+}
