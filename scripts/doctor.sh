@@ -147,6 +147,51 @@ else
     fail "~/.zshrc is not a dotfiles symlink — run scripts/symlink-dotfiles.sh"
 fi
 
+# ── Git config drift ─────────────────────────────────────────────────────────
+# ⚠ ~/.gitconfig is GENERATED from the template, not symlinked, so the stow
+# audit above cannot see it drift. Worse, setup-git.sh returns early with "Git
+# already configured" whenever the file has a name and email — so template
+# changes never reach a machine that already has one. The Studio ran a Feb-era
+# config for six months, missing delta and commit signing entirely (2026-08-13).
+ui_section "Git Config"
+GITCONFIG_TEMPLATE="$SCRIPT_DIR/dotfiles/git/.gitconfig.template"
+if [ -f "$HOME/.gitconfig" ] && [ -f "$GITCONFIG_TEMPLATE" ]; then
+    MISSING_SECTIONS=""
+    # Here-doc, not process substitution (macOS `sh` rejects it — see above), and
+    # a read loop rather than `for`, because section names contain spaces:
+    # [gpg "ssh"] would otherwise split into two bogus entries.
+    #
+    # ⚠ Ask git, don't grep the file. ~/.gitconfig ends with an [include] of
+    # ~/.gitconfig.local, so a section can be fully configured while absent from
+    # the file itself — grepping reported [gpg]/[commit]/[tag] missing on a
+    # machine that was demonstrably signing commits.
+    while IFS= read -r section; do
+        [ -n "$section" ] || continue
+        # [gpg "ssh"] -> gpg.ssh ; [commit] -> commit
+        key=$(printf '%s' "$section" | tr -d '[]"' | tr ' ' '.')
+        git config --get-regexp "^${key}\\." >/dev/null 2>&1 \
+            || MISSING_SECTIONS="$MISSING_SECTIONS $section"
+    done <<EOF
+$(grep -oE '^\[[^]]+\]' "$GITCONFIG_TEMPLATE" | sort -u)
+EOF
+    if [ -z "$MISSING_SECTIONS" ]; then
+        pass "~/.gitconfig carries every section the template defines"
+    else
+        warn "~/.gitconfig is missing template section(s):$MISSING_SECTIONS"
+        ui_info "  setup-git.sh skips an existing config — reconcile by hand, or rerun it and choose Reconfigure."
+    fi
+
+    # Signing deserves its own check: it fails silently. Commits keep succeeding,
+    # they just land unverified, and you find out on GitHub weeks later.
+    if [ "$(git config --get commit.gpgsign 2>/dev/null)" = "true" ]; then
+        pass "commit signing enabled ($(git config --get gpg.format 2>/dev/null || echo openpgp))"
+    else
+        warn "commit signing is OFF — commits will land unverified"
+    fi
+else
+    warn "~/.gitconfig or the template is missing — run scripts/setup-git.sh"
+fi
+
 # ── Claude config (~/.claude) ────────────────────────────────────────────────
 ui_section "Claude Code"
 if [ -d "$HOME/.claude/.git" ]; then
