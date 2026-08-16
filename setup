@@ -30,22 +30,41 @@ fi
 
 # Parse command-line flags
 VERBOSE=false
+UNATTENDED=false
 
 show_help() {
     cat << EOF
-Usage: sh setup [-v] [-h]
+Usage: sh setup [-v] [-u|--unattended] [-h]
 
 Flags:
   -v  Verbose mode (show full command output)
+  -u  Unattended mode (--unattended): front-loaded inputs, safe defaults for
+      every "continue anyway?", never blocks mid-run. Missing answers are
+      still asked once at minute 0 — pre-fill ~/.config/dotfiles.env
+      (keys documented in scripts/lib/inputs.sh) for zero prompts.
   -h  Show this help message
 
 EOF
     exit 0
 }
 
-while getopts "vh" opt; do
+# getopts can't parse long flags; translate the ones we accept first.
+# (The [@]+ guard keeps `set -u` happy on an empty array under bash 3.2.)
+TRANSLATED_ARGS=()
+for arg in "$@"; do
+    case "$arg" in
+        --unattended) TRANSLATED_ARGS+=("-u") ;;
+        --verbose)    TRANSLATED_ARGS+=("-v") ;;
+        --help)       TRANSLATED_ARGS+=("-h") ;;
+        *)            TRANSLATED_ARGS+=("$arg") ;;
+    esac
+done
+set -- ${TRANSLATED_ARGS[@]+"${TRANSLATED_ARGS[@]}"}
+
+while getopts "vuh" opt; do
     case $opt in
         v) VERBOSE=true ;;
+        u) UNATTENDED=true ;;
         h) show_help ;;
         *)
             echo "Invalid option. Use -h for help."
@@ -66,8 +85,9 @@ export SCRIPT_DIR
 # shellcheck source=scripts/lib/state.sh
 . "$SCRIPT_DIR/scripts/lib/state.sh"
 
-# Export verbose flag for child scripts
+# Export flags for child scripts
 export VERBOSE
+export DOTFILES_UNATTENDED="$UNATTENDED"
 
 # Check for existing setup (update mode detection)
 if state_exists; then
@@ -106,15 +126,33 @@ echo "Detected architecture: $ARCH"
 echo "Homebrew will install to: $BREW_PREFIX"
 echo ""
 
+# ============================================
+# Minute 0: every answer + sudo, then hands-off
+# ============================================
+
+# ui.sh is safe before gum exists (helpers fall back to plain printf/read, and
+# re-check for gum at every call), so one early source covers the whole run.
+# shellcheck source=scripts/lib/ui.sh
+. "$SCRIPT_DIR/scripts/lib/ui.sh"
+# shellcheck source=scripts/lib/inputs.sh
+. "$SCRIPT_DIR/scripts/lib/inputs.sh"
+
+inputs_load_env
+inputs_gather
+
+# Pre-authorize sudo once, then keep the timestamp warm in the background so
+# CLT and cask installs never stall on a hidden password prompt mid-run — the
+# keepalive pattern Homebrew's own installer uses. Trap-cleaned on exit.
+ui_section "Pre-authorizing sudo (password now, then never again this run)"
+sudo -v
+export DOTFILES_SUDO_PREAUTHED=true
+SETUP_PID=$$
+( set +e; while kill -0 "$SETUP_PID" 2>/dev/null; do sudo -n true; sleep 50; done ) 2>/dev/null &
+SUDO_KEEPALIVE_PID=$!
+trap 'kill "$SUDO_KEEPALIVE_PID" 2>/dev/null || true' EXIT
+
 # Install Homebrew and Xcode CLT
 sh "$SCRIPT_DIR/scripts/install-homebrew.sh"
-
-# After Homebrew is installed, gum is available
-# Source UI library to use Gum functions
-if command -v gum >/dev/null 2>&1; then
-    # shellcheck source=scripts/lib/ui.sh
-    . "$SCRIPT_DIR/scripts/lib/ui.sh"
-fi
 
 # Install CLI tools from Brewfile
 sh "$SCRIPT_DIR/scripts/install-tools.sh"
