@@ -119,31 +119,51 @@ apply_screenshot_settings() {
     ui_success "Screenshot settings applied"
 }
 
+# Front-loaded answer (setup gathers it at minute 0 / dotfiles.env): yes
+# applies every setting below with no picker, no skips this script entirely,
+# unset (standalone run) keeps the interactive multi-select. `return` first
+# because setup SOURCES this file — a bare exit would end the whole run.
+if [ "${DOTFILES_APPLY_SYSTEM_SETTINGS:-}" = "no" ]; then
+    ui_info "Skipped system settings (answered at minute 0)"
+    return 0 2>/dev/null || exit 0
+fi
+
 # Show preview
 show_settings_preview
 
-# Present multi-select with all items pre-selected
-echo ""
-ui_section "Select settings to apply (all recommended by default):"
-echo ""
+ALL_SETTINGS="Dock: Auto-hide with fast animations
+Finder: Extensions, column view, no network .DS_Store
+Keyboard: Fast repeat, no press-and-hold
+Mouse/Trackpad: Maximum speed
+Screenshots: PNG to ~/Desktop/Screenshots"
 
-SETTINGS=$(gum choose --no-limit \
-    --header "Select settings to apply (space to toggle, enter to confirm):" \
-    --selected="Dock: Auto-hide with fast animations" \
-    --selected="Finder: Extensions, column view, no network .DS_Store" \
-    --selected="Keyboard: Fast repeat, no press-and-hold" \
-    --selected="Mouse/Trackpad: Maximum speed" \
-    --selected="Screenshots: PNG to ~/Desktop/Screenshots" \
-    "Dock: Auto-hide with fast animations" \
-    "Finder: Extensions, column view, no network .DS_Store" \
-    "Keyboard: Fast repeat, no press-and-hold" \
-    "Mouse/Trackpad: Maximum speed" \
-    "Screenshots: PNG to ~/Desktop/Screenshots")
+if [ "${DOTFILES_APPLY_SYSTEM_SETTINGS:-}" = "yes" ]; then
+    ui_info "Applying all recommended settings (answered at minute 0)"
+    SETTINGS="$ALL_SETTINGS"
+else
+    # Present multi-select with all items pre-selected
+    echo ""
+    ui_section "Select settings to apply (all recommended by default):"
+    echo ""
 
-# Exit if no settings selected
+    SETTINGS=$(gum choose --no-limit \
+        --header "Select settings to apply (space to toggle, enter to confirm):" \
+        --selected="Dock: Auto-hide with fast animations" \
+        --selected="Finder: Extensions, column view, no network .DS_Store" \
+        --selected="Keyboard: Fast repeat, no press-and-hold" \
+        --selected="Mouse/Trackpad: Maximum speed" \
+        --selected="Screenshots: PNG to ~/Desktop/Screenshots" \
+        "Dock: Auto-hide with fast animations" \
+        "Finder: Extensions, column view, no network .DS_Store" \
+        "Keyboard: Fast repeat, no press-and-hold" \
+        "Mouse/Trackpad: Maximum speed" \
+        "Screenshots: PNG to ~/Desktop/Screenshots")
+fi
+
+# Nothing selected — done (return, not exit: see the sourcing note above)
 if [ -z "$SETTINGS" ]; then
     ui_info "No settings selected. Exiting."
-    exit 0
+    return 0 2>/dev/null || exit 0
 fi
 
 echo ""
