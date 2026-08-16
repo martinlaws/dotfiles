@@ -42,11 +42,20 @@ flips into **update mode** and refreshes rather than redoing first-time setup.
 | **3 · Apps & system** | Installs GUI apps from [`config/Brewfile.apps`](config/Brewfile.apps) (all / by category / pick-and-choose), reinstalls editor extensions, applies opinionated macOS defaults |
 | **4 · Claude & tooling** | Restores my private Claude Code config into `~/.claude`, builds the `hey` CLI from source, clones my repos (list in `~/.claude/repos.txt`), and loads the chaos autosave agent (snapshots my knowledge repo to a safety branch) |
 
-A couple of steps stay manual by design — `setup` will prompt you:
+Every question is asked **up front, at minute 0** (git identity, Claude config
+restore, macOS defaults, your sudo password — kept warm in the background so
+cask installs never stall on a hidden prompt). After that the run is hands-off.
+Two ways to reach zero prompts:
 
-- **Git identity** — it asks for the name/email to stamp into `~/.gitconfig`.
-- **SSH key on GitHub** — see the SSH note below; you'll paste a public key into
-  [github.com/settings/keys](https://github.com/settings/keys).
+- **`~/.config/dotfiles.env`** — pre-answer everything; keys are documented in
+  [`scripts/lib/inputs.sh`](scripts/lib/inputs.sh) (example in
+  [`FIRST-RUN.md`](FIRST-RUN.md)).
+- **`sh setup --unattended`** — safe defaults for anything unanswered, and every
+  "continue anyway?" auto-continues instead of blocking.
+
+One step stays manual by design: **SSH key on GitHub** — see the SSH note below;
+you'll paste a public key into
+[github.com/settings/keys](https://github.com/settings/keys).
 
 And after it finishes:
 

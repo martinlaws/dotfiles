@@ -29,13 +29,33 @@ sh setup
 `setup` triggers the Xcode Command Line Tools install first (accept the dialog,
 wait), then runs its four phases.
 
-## 3 · Answer the prompts
+## 3 · Answer the prompts — all at minute 0
+
+`setup` asks everything up front, then runs hands-off:
 
 - **Git identity** — name + email for `~/.gitconfig`.
-- **SSH** — with the 1Password agent live, it detects the key and **skips
-  keygen** ("1Password SSH agent holds a key — not minting a local key").
-- **Apps** — "Install all", or pick by category for a leaner machine.
-- **System defaults** — accept the opinionated macOS settings.
+- **Claude config** — restore the private `claude-config` repo into `~/.claude`?
+- **SSH** — with the 1Password agent live, it detects the key and **skips the
+  question entirely** ("1Password SSH agent holds a key — not minting a local key").
+- **System defaults** — one yes/no for the opinionated macOS settings (run
+  `scripts/configure-system.sh` on its own for the per-item picker).
+- **Your password** — `sudo` is authorized once here and kept warm in the
+  background, so cask installs never stall on a hidden prompt mid-run.
+
+Want **zero** prompts? Write the answers to `~/.config/dotfiles.env` first
+(every key optional and documented in `scripts/lib/inputs.sh`), and/or run
+`sh setup --unattended` — missing answers fall back to safe defaults and every
+"continue anyway?" auto-continues:
+
+```sh
+mkdir -p ~/.config && cat > ~/.config/dotfiles.env <<'EOF'
+DOTFILES_GIT_NAME="Martin Laws"
+DOTFILES_GIT_EMAIL="hey@mlaws.ca"
+DOTFILES_RESTORE_CLAUDE=yes
+DOTFILES_APPLY_SYSTEM_SETTINGS=yes
+DOTFILES_CONTINUE_ON_ERROR=yes
+EOF
+```
 
 > The private `claude-config` clone (phase 4 of setup) needs your SSH public key
 > on github.com/settings/keys. It's already there from before — but if that clone
