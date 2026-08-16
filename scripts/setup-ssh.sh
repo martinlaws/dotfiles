@@ -33,12 +33,25 @@ setup_ssh() {
     elif [ -f ~/.ssh/id_ed25519 ]; then
         ui_success "SSH key already exists (~/.ssh/id_ed25519)"
     else
-        # Prompt to generate
         ui_info "No SSH key found"
-        if ui_confirm "Generate new Ed25519 SSH key?"; then
-            # Get email for key comment
-            echo -n "Enter email for SSH key: "
-            read -r ssh_email
+
+        # Front-loaded answer (setup gathers it at minute 0 / dotfiles.env);
+        # unset on a standalone run, which prompts as before.
+        local generate="${DOTFILES_GENERATE_SSH_KEY:-}"
+        if [ -z "$generate" ]; then
+            if ui_confirm "Generate new Ed25519 SSH key?"; then
+                generate=yes
+            else
+                generate=no
+            fi
+        fi
+
+        if [ "$generate" = yes ]; then
+            local ssh_email="${DOTFILES_SSH_EMAIL:-}"
+            if [ -z "$ssh_email" ]; then
+                echo -n "Enter email for SSH key: "
+                read -r ssh_email
+            fi
 
             if [ -z "$ssh_email" ]; then
                 ui_error "Email is required for SSH key"
@@ -49,8 +62,14 @@ setup_ssh() {
             mkdir -p ~/.ssh
             chmod 700 ~/.ssh
 
-            # Generate key (ssh-keygen will prompt for passphrase interactively)
-            ssh-keygen -t ed25519 -C "$ssh_email" -f ~/.ssh/id_ed25519
+            if [ "${DOTFILES_UNATTENDED:-false}" = true ]; then
+                # ssh-keygen's passphrase prompt would block an unattended run;
+                # mint with an empty passphrase (1Password is the real key home).
+                ssh-keygen -t ed25519 -C "$ssh_email" -f ~/.ssh/id_ed25519 -N ""
+            else
+                # Generate key (ssh-keygen will prompt for passphrase interactively)
+                ssh-keygen -t ed25519 -C "$ssh_email" -f ~/.ssh/id_ed25519
+            fi
 
             # Add to macOS keychain
             ssh-add --apple-use-keychain ~/.ssh/id_ed25519
