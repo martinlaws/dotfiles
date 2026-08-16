@@ -104,3 +104,27 @@ ui_confirm() {
         [[ "$response" =~ ^[Yy]$ ]]
     fi
 }
+
+# Failure-path confirm ("continue anyway?"). Consults the front-loaded answers
+# so a hands-off run never blocks on a mid-run failure: an explicit
+# DOTFILES_CONTINUE_ON_ERROR wins, then --unattended defaults to continuing
+# (the failure still lands in the end-of-run report). Attended runs without a
+# pre-answer fall through to a live prompt.
+ui_confirm_continue() {
+    local question="$1"
+    case "${DOTFILES_CONTINUE_ON_ERROR:-}" in
+        yes)
+            ui_info "$question — yes (pre-answered by dotfiles.env)"
+            return 0
+            ;;
+        no)
+            ui_info "$question — no (pre-answered by dotfiles.env)"
+            return 1
+            ;;
+    esac
+    if [ "${DOTFILES_UNATTENDED:-false}" = true ]; then
+        ui_info "$question — continuing (unattended)"
+        return 0
+    fi
+    ui_confirm "$question"
+}

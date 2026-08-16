@@ -72,8 +72,8 @@ validate_configs() {
     done
     echo ""
 
-    # User decision point
-    if ui_confirm "Continue anyway?"; then
+    # User decision point (pre-answered under --unattended / dotfiles.env)
+    if ui_confirm_continue "Continue anyway?"; then
       ui_info "Continuing with symlinking..."
       return 0
     else

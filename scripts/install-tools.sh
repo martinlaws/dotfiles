@@ -123,8 +123,8 @@ if [ $INSTALL_STATUS -ne 0 ] || ! brew bundle check --file="$SCRIPT_DIR/config/B
         done
         echo ""
 
-        # Prompt to continue
-        if ui_confirm "Continue anyway?"; then
+        # Prompt to continue (pre-answered under --unattended / dotfiles.env)
+        if ui_confirm_continue "Continue anyway?"; then
             ui_info "Continuing with partial installation..."
             # Export failed tools for report
             export SKIPPED_TOOLS="${FAILED_TOOLS[*]}"
