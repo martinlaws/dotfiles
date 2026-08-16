@@ -61,7 +61,13 @@ if [ ${#SELECTED_APPS[@]} -eq 0 ]; then
 fi
 
 ui_success "Installing all ${#SELECTED_APPS[@]} applications"
-ui_info "Edit config/Brewfile.apps to change the set. Watch for the occasional password prompt."
+if [ "${DOTFILES_SUDO_PREAUTHED:-false}" = true ]; then
+    # setup's sudo keepalive is running — cask installers use the warm
+    # timestamp instead of prompting.
+    ui_info "Edit config/Brewfile.apps to change the set. sudo is pre-authorized — no password prompts expected."
+else
+    ui_info "Edit config/Brewfile.apps to change the set. Watch for the occasional password prompt."
+fi
 echo ""
 
 # Install one cask at a time, in the FOREGROUND (no spinner) so brew's progress
