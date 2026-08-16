@@ -31,6 +31,11 @@ setup_git() {
         return 1
     fi
 
+    # Front-loaded identity (setup gathers it at minute 0 / dotfiles.env);
+    # empty on a standalone run, which prompts below as before.
+    local git_name="${DOTFILES_GIT_NAME:-}"
+    local git_email="${DOTFILES_GIT_EMAIL:-}"
+
     # Check if ~/.gitconfig already exists with valid user
     if [ -f "$target" ]; then
         local existing_name existing_email
@@ -38,22 +43,36 @@ setup_git() {
         existing_email=$(git config --global user.email 2>/dev/null || echo "")
 
         if [ -n "$existing_name" ] && [ -n "$existing_email" ]; then
-            ui_success "Git already configured"
-            ui_info "  Name: $existing_name"
-            ui_info "  Email: $existing_email"
-
-            if ! ui_confirm "Reconfigure Git?"; then
+            if [ "$existing_name" = "$git_name" ] && [ "$existing_email" = "$git_email" ]; then
+                ui_success "Git already configured"
+                ui_info "  Name: $existing_name"
+                ui_info "  Email: $existing_email"
                 return 0
+            fi
+            if [ -n "$git_name" ] && [ -n "$git_email" ]; then
+                # Front-loaded identity differs from what's configured — the
+                # answer at minute 0 wins, no mid-run prompt.
+                ui_info "Reconfiguring Git with the front-loaded identity"
+            else
+                ui_success "Git already configured"
+                ui_info "  Name: $existing_name"
+                ui_info "  Email: $existing_email"
+
+                if ! ui_confirm "Reconfigure Git?"; then
+                    return 0
+                fi
             fi
         fi
     fi
 
-    # Prompt for user details
-    ui_info "Enter your Git configuration:"
-    echo -n "Name: "
-    read -r git_name
-    echo -n "Email: "
-    read -r git_email
+    # Prompt for user details (standalone runs only — setup pre-fills these)
+    if [ -z "$git_name" ] || [ -z "$git_email" ]; then
+        ui_info "Enter your Git configuration:"
+        echo -n "Name: "
+        read -r git_name
+        echo -n "Email: "
+        read -r git_email
+    fi
 
     if [ -z "$git_name" ] || [ -z "$git_email" ]; then
         ui_error "Name and email are required"
