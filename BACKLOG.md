@@ -31,6 +31,12 @@ setup works end-to-end; these are polish for the next machine / re-image).
   always failed because `ssh -T git@github.com` exits non-zero even on success.
 - **Default to installing ALL casks** (no picker).
 
+## Shipped (Aug 2026)
+
+- **Symlink backup clutter (#9)** — `symlink-dotfiles.sh` no longer re-backs-up
+  files that are already correct symlinks into the repo ("fix: stop backing up
+  symlinks that already point into the repo").
+
 ## Deferred — high value
 
 ### Unattended setup (#6 + #7) — "run it and walk away"
@@ -62,7 +68,5 @@ a full re-run. Write a completion marker per step; skip done steps on re-run; ad
   + detaches stdin. Stream them too.
 - **Preflight checks (#8):** up front — network reachable, free disk, macOS/arch,
   1Password present — warn early instead of failing deep at the SSH/secrets stage.
-- **Symlink backup clutter (#9):** `symlink-dotfiles.sh` re-backs-up `~/.zshrc` etc.
-  on every run even when it's already the correct symlink — skip if already linked.
 - **Overall progress (#10):** "Phase 2/4" + elapsed time.
 - **`--dry-run` (#12):** preview installs/symlinks without doing them.
