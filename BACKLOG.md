@@ -36,20 +36,14 @@ setup works end-to-end; these are polish for the next machine / re-image).
 - **Symlink backup clutter (#9)** — `symlink-dotfiles.sh` no longer re-backs-up
   files that are already correct symlinks into the repo ("fix: stop backing up
   symlinks that already point into the repo").
+- **Unattended setup (#6 + #7)** — every question moves to minute 0
+  (`scripts/lib/inputs.sh`), pre-answerable via `~/.config/dotfiles.env`;
+  `sudo -v` once up front + a background keepalive (trap-cleaned) so cask
+  installs never block; `--unattended` adds safe defaults for every
+  "continue anyway?" and the Homebrew installer's own pause. No state-model
+  changes — update-mode prompts (#2) and phase resume (#4) stay as they were.
 
 ## Deferred — high value
-
-### Unattended setup (#6 + #7) — "run it and walk away"
-Prompts are scattered today (git name/email in `setup-git`, "restore Claude
-config?" in `setup-claude`, cask sudo prompts in phase 3) → two babysitting windows.
-- **Front-load inputs (#6):** gather git name/email + the confirms at minute 0, or
-  read from a `~/.config/dotfiles.env`; phase scripts consume those instead of
-  prompting. Config present → zero prompts.
-- **sudo pre-auth + `--unattended` (#7):** `sudo -v` once up front + a background
-  keepalive (`sudo -n true` every ~50s, trap-cleaned on exit) so cask installs
-  don't block mid-run — the pattern Homebrew's own installer uses. `--unattended`
-  implies front-loaded inputs + safe defaults for every "continue anyway?".
-- Effort: medium · Risk: low (no state-model changes) · best done as one feature.
 
 ### Phase/step resume (#4) — "don't redo phase 1 after a failure"
 `state_init` only writes at the very end of `setup`, so any mid-run failure forces
