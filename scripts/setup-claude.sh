@@ -26,10 +26,23 @@ setup_claude() {
         return 0
     fi
 
-    if ! ui_confirm "Restore Claude Code config (skills/agents/memory) from claude-config?"; then
-        ui_info "Skipped Claude config restore"
-        return 0
-    fi
+    # Front-loaded answer (setup gathers it at minute 0 / dotfiles.env)
+    # replaces the mid-run confirm; unset on a standalone run, which asks.
+    case "${DOTFILES_RESTORE_CLAUDE:-}" in
+        yes)
+            ui_info "Restoring Claude config (answered at minute 0)"
+            ;;
+        no)
+            ui_info "Skipped Claude config restore (answered at minute 0)"
+            return 0
+            ;;
+        *)
+            if ! ui_confirm "Restore Claude Code config (skills/agents/memory) from claude-config?"; then
+                ui_info "Skipped Claude config restore"
+                return 0
+            fi
+            ;;
+    esac
 
     # Verify GitHub SSH works first (claude-config is private, SSH-only).
     # Capture-then-grep, NOT `ssh ... | grep`: `ssh -T git@github.com` always
