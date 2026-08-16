@@ -68,6 +68,13 @@ else
         echo ""
         xcode-select --install 2>/dev/null
         echo ""
+        # A GUI dialog can't be completed unattended — fail fast and say why,
+        # rather than sitting on a read forever.
+        if [ "${DOTFILES_UNATTENDED:-false}" = true ]; then
+            ui_error "CLT needs the GUI installer dialog — can't finish unattended"
+            echo "Complete the dialog, then re-run: sh setup --unattended"
+            exit 1
+        fi
         echo "Please complete the installation dialog, then press RETURN to continue..."
         read -r
     else
@@ -85,6 +92,13 @@ else
             echo "Falling back to interactive installation..."
             xcode-select --install 2>/dev/null
             echo ""
+            # Same unattended guard as above — never block on a GUI dialog.
+            if [ "${DOTFILES_UNATTENDED:-false}" = true ]; then
+                sudo rm -f "$TRIGGER_FILE"
+                ui_error "CLT needs the GUI installer dialog — can't finish unattended"
+                echo "Complete the dialog, then re-run: sh setup --unattended"
+                exit 1
+            fi
             echo "Please complete the installation dialog, then press RETURN to continue..."
             read -r
         fi
@@ -146,7 +160,14 @@ if is_homebrew_installed; then
 else
     echo "Installing Homebrew to: $BREW_PREFIX"
     echo ""
-    printf "${YELLOW}Note:${NC} You will be prompted for your password when needed\n"
+    if [ "${DOTFILES_SUDO_PREAUTHED:-false}" = true ]; then
+        printf "${GREEN}✓${NC} sudo pre-authorized by setup — no password prompt expected\n"
+        # With sudo already warm, the installer's "Press RETURN to continue"
+        # pause is the only thing left that blocks — suppress it.
+        export NONINTERACTIVE=1
+    else
+        printf "${YELLOW}Note:${NC} You will be prompted for your password when needed\n"
+    fi
     echo ""
 
     # Install Homebrew
