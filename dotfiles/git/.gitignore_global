@@ -10,3 +10,4 @@ Thumbs.db
 **/vendor/bundle
 .bundle/*
 .ruby-version
+**/.claude/settings.local.json
