@@ -157,4 +157,23 @@ if command -v fnm >/dev/null 2>&1; then
     fi
 fi
 
+# The sonoscli formula installs only the binary — no shell completion. Generate
+# _sonos into Homebrew's site-functions, which .zprofile's `brew shellenv` puts
+# on fpath BEFORE .zshrc runs compinit, so a fresh login shell picks it up with
+# no .zshrc edit. Regenerate whenever the binary is newer than the completion so
+# a `brew upgrade` can't leave stale subcommands behind.
+if command -v sonos >/dev/null 2>&1; then
+    SONOS_COMPDIR="$(brew --prefix)/share/zsh/site-functions"
+    SONOS_COMPFILE="$SONOS_COMPDIR/_sonos"
+    if [ ! -f "$SONOS_COMPFILE" ] || [ "$(command -v sonos)" -nt "$SONOS_COMPFILE" ]; then
+        mkdir -p "$SONOS_COMPDIR"
+        if sonos completion zsh > "$SONOS_COMPFILE" 2>/dev/null; then
+            ui_success "sonos zsh completion generated"
+        else
+            rm -f "$SONOS_COMPFILE"
+            ui_error "sonos completion failed — run 'sonos completion zsh' by hand later"
+        fi
+    fi
+fi
+
 echo ""

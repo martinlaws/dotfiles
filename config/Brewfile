@@ -68,3 +68,11 @@ brew "charmbracelet/tap/freeze" # Screenshots of code/terminal output
 
 # Script hygiene
 brew "shellcheck"               # Shell script linter (CI gate: .github/workflows/shellcheck.yml)
+
+# Home audio
+# Local-network Sonos control (UPnP/SOAP, no cloud auth). Binary is `sonos`, not
+# `sonoscli`. Third-party tap — install-tools.sh auto-trusts every tap declared
+# in this file, so no manual `brew trust` is needed on a fresh machine.
+# Ships no shell completion; install-tools.sh generates _sonos post-install.
+tap "steipete/tap"
+brew "sonoscli"                 # Control/group Sonos speakers from the CLI
