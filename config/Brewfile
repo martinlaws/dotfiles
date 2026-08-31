@@ -15,8 +15,10 @@ brew "fnm"              # Fast Node Manager - Rust-based version manager
 # GitHub CLI
 brew "gh"               # GitHub command-line tool
 
-# Go (builds the hey CLI from source — see scripts/install-hey.sh)
-brew "go"               # Go toolchain; GOTOOLCHAIN=auto fetches newer per go.mod
+# Go — ⚠ no longer required by install-hey.sh (2026-08-31: hey now installs from
+# the official release binary, not a source build). Kept as a general toolchain;
+# safe to drop if nothing else here needs it.
+brew "go"               # Go toolchain
 
 # Mac App Store CLI (the MAS apps themselves live in config/Brewfile.mas — needs App Store sign-in)
 brew "mas"              # install/manage Mac App Store apps from the CLI

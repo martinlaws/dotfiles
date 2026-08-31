@@ -1,15 +1,24 @@
 #!/bin/bash
 #
-# hey CLI install (Go binary built from source)
+# hey CLI install (official release binary)
 #
-# `hey` (https://github.com/basecamp/hey-cli) has no Homebrew tap and no release
-# with calendar-event support. The event commands (list/create/edit/delete) that
-# our /book + /avails booking flows depend on live ONLY on the open PR #79
-# ("Add hey event commands"), which is itself pinned to an unreleased hey-sdk.
-# So until #79 merges and a release is cut, we build from the PR head.
+# `hey` (https://github.com/basecamp/hey-cli) ships tagged releases and an
+# official installer as of v1.0.0 (2026-08-24). Martin moved off his local
+# fork build on 2026-08-31 — see chaos technical/2026-08-31-hey-fork-retirement-*.
 #
-# TODO(when #79 merges + a release is tagged): drop the PR-head fetch below and
-# switch to `go install github.com/basecamp/hey-cli/cmd/hey@latest` or a brew tap.
+# The installer downloads the release for this platform, verifies its SHA-256
+# against the release checksums (and its Sigstore signature when cosign is
+# present), and installs to $HOME/.local/bin — which is already on PATH and is
+# the path chaos hardcodes (dashboard/scripts/refresh-calendar.ts resolves
+# ~/.local/bin/hey before falling back to PATH).
+#
+# HEY_SETUP_AGENT=none: do NOT auto-connect coding agents or link a hey skill
+# into ~/.claude — chaos carries its own /triage-emails and /book skills, and an
+# ungated vendor skill that advertises "send email" would sit beside them.
+# HEY_SKIP_SETUP=1: no interactive OAuth wizard during an unattended `sh setup`.
+#
+# ⚠ The env vars MUST sit to the RIGHT of the pipe. `VAR=x curl … | bash` binds
+# them to curl, and bash never sees them.
 
 set -euo pipefail
 
@@ -17,51 +26,34 @@ SCRIPTS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=scripts/lib/ui.sh
 . "$SCRIPTS_DIR/lib/ui.sh"
 
-REPO_URL="https://github.com/basecamp/hey-cli"
-REPO_DIR="$HOME/code/hey-cli"
-PR_REF="pull/79/head"            # event commands — open PR #79
 DEST="$HOME/.local/bin/hey"
 
 install_hey() {
     ui_section "hey CLI"
 
-    if ! command -v go >/dev/null 2>&1; then
-        ui_error "Go not found — ensure 'brew \"go\"' is installed (Phase 1) first."
-        return 1
-    fi
-
-    # Idempotent: if hey is already installed, leave it (and the repo) untouched.
+    # Idempotent: if hey is already installed, leave it. Upgrades are `hey upgrade`.
     if [ -x "$DEST" ]; then
-        ui_success "hey already installed ($DEST) — skipping build"
+        ui_success "hey already installed ($DEST, $("$DEST" --version 2>/dev/null || echo unknown)) — skipping"
+        ui_info "To upgrade later: hey upgrade"
         return 0
     fi
 
-    # Clone the source if we don't have it yet.
-    if [ ! -d "$REPO_DIR/.git" ]; then
-        ui_info "Cloning hey-cli into ${REPO_DIR/#$HOME/~}"
-        git clone "$REPO_URL" "$REPO_DIR"
-    fi
-
-    cd "$REPO_DIR"
-
-    # Never clobber a dirty working tree (e.g. in-progress local event work).
-    if ! git diff --quiet || ! git diff --cached --quiet; then
-        ui_error "${REPO_DIR/#$HOME/~} has uncommitted changes — build it manually."
+    if ! command -v curl >/dev/null 2>&1; then
+        ui_error "curl not found — cannot fetch the hey installer."
         return 1
     fi
 
-    # Build from the PR #79 head (detached) so we get event support.
-    ui_info "Fetching PR #79 (event commands) and building…"
-    git fetch --quiet origin "$PR_REF"
-    git checkout --quiet --detach FETCH_HEAD
+    ui_info "Installing hey from the official release channel…"
+    curl -fsSL https://hey.com/install-cli \
+      | HEY_BIN_DIR="$HOME/.local/bin" HEY_SETUP_AGENT=none HEY_SKIP_SETUP=1 bash
 
-    # GOTOOLCHAIN=auto lets a stable Homebrew Go auto-fetch the 1.26 toolchain
-    # that go.mod requires; `make build` stamps the version via LDFLAGS.
-    GOTOOLCHAIN=auto make build
-    mkdir -p "$(dirname "$DEST")"
-    install -m 0755 bin/hey "$DEST"  # ~/.local/bin/hey — no sudo, unlike `make install`
+    if [ ! -x "$DEST" ]; then
+        ui_error "hey did not land at $DEST — check the installer output above."
+        return 1
+    fi
 
-    ui_success "hey installed → $DEST"
+    ui_success "hey installed → $DEST ($("$DEST" --version 2>/dev/null || echo unknown))"
+    ui_info "Authenticate with: hey auth login"
 }
 
 install_hey
