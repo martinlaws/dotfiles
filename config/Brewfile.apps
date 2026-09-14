@@ -29,7 +29,7 @@ cask "visual-studio-code@insiders" # (recommended) VS Code Insiders — running 
 # Cursor removed 2026-08-13 — leaving Anysphere on ownership grounds (SpaceX
 # acquisition). Replaced by Zed below. See chaos
 # technical/2026-08-10-editor-migration-research-v2.md.
-cask "zed"                 # (recommended) Editor — Monaspace + vim mode + local models
+cask "zed"                 # (recommended) Editor — Maple Mono + local models
 cask "ghostty"             # (recommended) Terminal emulator (primary)
 cask "hyper"               # (optional) Terminal emulator (fallback)
 cask "claude"              # (recommended) Claude desktop app
@@ -74,17 +74,16 @@ cask "tailscale-app"       # (recommended) Mesh VPN — remote access to the Stu
 # Fonts
 ###############################################################################
 
-# ⚠ font-monaspace is load-bearing, not cosmetic: both ~/.config/ghostty/config
-# and ~/.config/zed/settings.json name "Monaspace Neon" directly. Without this
-# cask, both fall back to a default font silently rather than erroring.
+# ⚠ The terminal/editor font is Maple Mono v8 (2026-09-14) and it is NOT here:
+# Homebrew's font-maple-mono cask is 7.9, whose upright face has no ★. v8 is
+# installed by scripts/install-maple-mono.sh (pinned tag + SHA-256), which
+# setup runs. Both ~/.config/ghostty/config and zed/settings.json name
+# "Maple Mono" directly; without it they fall back silently rather than error.
+# ✗ Don't add the 7.9 cask alongside it — two builds, one family name.
 #
-# Verified 2026-08-13 against the .claude/rules/skill-design.md glyph palette
-# (★ ◆ ✓ ✗ → • ▸ ⚠ … ↳ ━ ─ │): Monaspace Neon covers 13/13.
-# ⚠ JetBrains Mono covers only 11/13 — it has NO ★ and NO ↳, both of which the
-# palette uses heavily (`★ BEST PICK`, /avails adjacency footnotes). Those have
-# been rendering via silent font fallback. So Monaspace is the better base for
-# the skill-output design system, not merely the prettier one.
-cask "font-monaspace"      # (essential) Monaspace — Ghostty + Zed, full glyph palette
+# Palette check (chaos .claude/rules/skill-design.md, 14 glyphs incl. ×):
+# Maple Mono v8 14/14 · Monaspace Neon 14/14 · JetBrains Mono 12/14 (no ★ ↳).
+cask "font-monaspace"      # (optional) Previous font (Neon, 2026-08-13 → 09-14); full palette
 cask "font-jetbrains-mono" # (optional) Previous font; ⚠ incomplete palette (11/13)
 
 ###############################################################################

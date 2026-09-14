@@ -200,6 +200,9 @@ source "$SCRIPT_DIR/scripts/install-apps.sh"
 # Reinstall editor extensions (after editors are installed); non-fatal
 sh "$SCRIPT_DIR/scripts/install-extensions.sh" || echo "⚠ editor extensions skipped — run scripts/install-extensions.sh later"
 
+# Maple Mono v8 (pinned pre-release, not a cask — see the script); non-fatal
+sh "$SCRIPT_DIR/scripts/install-maple-mono.sh" || echo "⚠ Maple Mono skipped — run scripts/install-maple-mono.sh later"
+
 # Initialize state tracking for future update mode
 state_init
 state_set_last_run

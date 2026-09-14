@@ -44,16 +44,16 @@
     "light": "Night Owl Light",
   },
 
-  // Monaspace Neon = neo-grotesque, closest to the JetBrains Mono it replaced.
-  // Audition the others by swapping the family: Argon (humanist), Xenon (slab),
-  // Krypton (mechanical), Radon (handwritten).
-  // Verified 13/13 on the skill-design.md glyph palette — JetBrains Mono is 11/13.
-  "buffer_font_family": "Monaspace Neon",
+  // Maple Mono v8 (2026-09-14) — rounded, playful, variable weight. Chosen
+  // after four rounds against Monaspace Neon and 40-odd others; 14/14 on the
+  // skill-design.md glyph palette, every glyph one cell wide. Installed by
+  // scripts/install-maple-mono.sh (v8 is a pinned pre-release, not a cask).
+  "buffer_font_family": "Maple Mono",
   "buffer_font_size": 12,
   "ui_font_size": 13,
 
-  // calt drives Monaspace's texture healing (the reason to run this family at
-  // all); liga gives standard coding ligatures. Set either false to compare.
+  // calt drives Maple's contextual alternates and ligatures; liga gives the
+  // standard coding set. Set either false to compare.
   "buffer_font_features": {
     "calt": true,
     "liga": true,
@@ -61,7 +61,7 @@
 
   // Zed's built-in terminal, matched to Ghostty so panes look identical.
   "terminal": {
-    "font_family": "Monaspace Neon",
+    "font_family": "Maple Mono",
     "font_size": 12,
   },
 
