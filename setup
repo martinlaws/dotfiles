@@ -175,6 +175,9 @@ sh "$SCRIPT_DIR/scripts/clone-repos.sh" || echo "⚠ repo clone skipped — run 
 # Chaos autosave watcher (needs chaos cloned + fswatch); non-fatal
 sh "$SCRIPT_DIR/scripts/setup-autosave.sh" || echo "⚠ chaos autosave skipped — run scripts/setup-autosave.sh later"
 
+# Chaos dashboard + calendar agents (Studio only — the script says why); non-fatal
+sh "$SCRIPT_DIR/scripts/setup-dashboard-agents.sh" || echo "⚠ dashboard agents skipped — run scripts/setup-dashboard-agents.sh later"
+
 # ============================================
 # Verify Prerequisites for Phase 3
 # ============================================

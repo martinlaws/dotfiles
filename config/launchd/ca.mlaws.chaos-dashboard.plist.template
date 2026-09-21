@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- Installed (with __HOME__ substituted) by scripts/setup-dashboard-agents.sh.
+
+     STUDIO ONLY. The installer refuses to write this file on any other host and
+     the wrapper checks again at runtime, because these dotfiles are shared with
+     the MacBook Pro and dashboard/.cache/calendar.json is git-tracked.
+
+     WorkingDirectory is load-bearing, not tidiness: the app resolves the repo
+     with `path.resolve(process.cwd(), "..")` (src/lib/chaos-root.ts) and reads
+     the calendar cache from `process.cwd()/.cache/`. A wrong cwd makes every
+     parser return nothing, silently — no error, just an empty panel.
+
+     PATH puts fnm's stable alias first. The autosave agents' PATH resolves
+     Homebrew node v26.8.2; node_modules here was installed under v24.13.0. -->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>ca.mlaws.chaos-dashboard</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>__HOME__/.bin/chaos-dashboard.sh</string>
+    </array>
+    <key>WorkingDirectory</key>
+    <string>__HOME__/code/chaos/dashboard</string>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>ThrottleInterval</key>
+    <integer>30</integer>
+    <key>StandardOutPath</key>
+    <string>__HOME__/.local/state/chaos-dashboard.out.log</string>
+    <key>StandardErrorPath</key>
+    <string>__HOME__/.local/state/chaos-dashboard.err.log</string>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>__HOME__/.local/share/fnm/aliases/default/bin:__HOME__/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
+        <key>TZ</key>
+        <string>America/Toronto</string>
+        <key>NODE_ENV</key>
+        <string>production</string>
+    </dict>
+</dict>
+</plist>

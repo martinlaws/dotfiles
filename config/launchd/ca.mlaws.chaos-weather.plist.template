@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- Installed (with __HOME__ substituted) by scripts/setup-dashboard-agents.sh.
+     STUDIO ONLY — see ca.mlaws.chaos-dashboard.plist.template for why. The gate
+     is also in the wrapper, so a plist that somehow lands on the MacBook is
+     inert rather than merely unwanted.
+
+     StartInterval 3600. Hourly rather than the calendar job's 900 because
+     src/lib/frame/weather.ts drops the block past three hours — three
+     consecutive misses — and an hourly forecast does not move meaningfully
+     inside an hour. The failure this spacing accepts is a weather row missing
+     for one hour; the failure it avoids is 96 needless requests a day to a
+     keyless public API.
+
+     StartInterval rather than StartCalendarInterval, for the same reason as
+     ca.mlaws.chaos-calendar: launchd drops a StartInterval firing that lands
+     while the machine is asleep, and `pmset -g` reports `sleep 0` on this
+     machine. If the Studio ever starts sleeping, switch both.
+
+     No KeepAlive. This is a one-shot on a timer; a non-zero exit is a report,
+     not a crash, and `launchctl list ca.mlaws.chaos-weather` is where doctor.sh
+     reads it. refresh-weather.ts writes nothing on failure, so a run that exits
+     1 leaves the previous cache exactly as it was.
+
+     ⚠ TZ is set here as well as in the script. The script's own notion of
+     "today" is Toronto-relative, and launchd hands a job whatever environment
+     the plist declares and nothing else — there is no login shell in front of
+     it to supply one. -->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>ca.mlaws.chaos-weather</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>__HOME__/.bin/chaos-weather-refresh.sh</string>
+    </array>
+    <key>WorkingDirectory</key>
+    <string>__HOME__/code/chaos/dashboard</string>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>StartInterval</key>
+    <integer>3600</integer>
+    <key>StandardOutPath</key>
+    <string>__HOME__/.local/state/chaos-weather.out.log</string>
+    <key>StandardErrorPath</key>
+    <string>__HOME__/.local/state/chaos-weather.err.log</string>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>__HOME__/.local/share/fnm/aliases/default/bin:__HOME__/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
+        <key>TZ</key>
+        <string>America/Toronto</string>
+    </dict>
+</dict>
+</plist>

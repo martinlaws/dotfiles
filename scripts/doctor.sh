@@ -226,6 +226,76 @@ if [ -d "$HOME/code/chaos" ]; then
     else
         warn "/slurp deps incomplete (need jq + executable .claude/skills/slurp/drain.sh)"
     fi
+
+    # Dashboard + calendar agents. Studio only on purpose — .cache/calendar.json
+    # is git-tracked and a second machine on a timer would fight over it.
+    # ⚠ `launchctl list` printing the label is NOT the check. The agent this
+    # replaces stayed "loaded" while failing 1,279 consecutive times against a
+    # wrapper script that had been deleted. Check that :2424 answers, and check
+    # the calendar job's LAST EXIT STATUS, not its presence.
+    if [ "$(scutil --get LocalHostName 2>/dev/null || hostname -s)" = "${CHAOS_DASHBOARD_HOST:-studio}" ]; then
+        if ! launchctl list "ca.mlaws.chaos-dashboard" >/dev/null 2>&1; then
+            fail "dashboard agent NOT loaded — run ~/dotfiles/scripts/setup-dashboard-agents.sh"
+        elif curl -fsS --max-time 4 -o /dev/null "http://127.0.0.1:2424/"; then
+            pass "dashboard agent serving on :2424 (ca.mlaws.chaos-dashboard)"
+        else
+            fail "dashboard agent loaded but :2424 is not answering — see ~/.local/state/chaos-dashboard.out.log"
+        fi
+
+        if ! cal_list=$(launchctl list "ca.mlaws.chaos-calendar" 2>/dev/null); then
+            fail "calendar agent NOT loaded — run ~/dotfiles/scripts/setup-dashboard-agents.sh"
+        else
+            cal_status=$(printf '%s\n' "$cal_list" | awk -F'= ' '/LastExitStatus/ {gsub(/[; ]/,"",$2); print $2}')
+            # ⚠ Freshness comes from lastRefresh INSIDE the json, never the file
+            # mtime — git operations and hand-commits touch this tracked file, so
+            # its mtime currently reads three days newer than its own contents.
+            cache="$HOME/code/chaos/dashboard/.cache/calendar.json"
+            lr=$(sed -n 's/.*"lastRefresh": *"\([^.Z"]*\).*/\1/p' "$cache" 2>/dev/null | head -1)
+            lr_epoch=$(date -j -u -f '%Y-%m-%dT%H:%M:%S' "$lr" +%s 2>/dev/null || echo 0)
+            age_h=$(( ( $(date +%s) - lr_epoch ) / 3600 ))
+
+            if [ "${cal_status:-0}" != "0" ]; then
+                fail "calendar refresh last exited ${cal_status} — see ~/.local/state/chaos-calendar.out.log (try: hey auth status)"
+            elif [ "$lr_epoch" = 0 ]; then
+                fail "calendar agent loaded but .cache/calendar.json has no readable lastRefresh"
+            elif [ "$age_h" -ge 2 ]; then
+                warn "calendar agent reports success but lastRefresh is ${age_h}h old — it is not actually refreshing"
+            else
+                pass "calendar agent healthy, cache ${age_h}h old (ca.mlaws.chaos-calendar)"
+            fi
+        fi
+
+        # Same shape for weather. The frame's weather row returns null once the
+        # cache passes ~3h, so a dead refresher takes the row off the panel
+        # silently — which is how /morning's calendar died for 97 days.
+        if ! wx_list=$(launchctl list "ca.mlaws.chaos-weather" 2>/dev/null); then
+            fail "weather agent NOT loaded — run ~/dotfiles/scripts/setup-dashboard-agents.sh"
+        else
+            wx_status=$(printf '%s\n' "$wx_list" | awk -F'= ' '/LastExitStatus/ {gsub(/[; ]/,"",$2); print $2}')
+            wx_cache="$HOME/code/chaos/dashboard/.cache/weather.json"
+            wx_gen=$(sed -n 's/.*"generatedAt": *"\([^.Z"]*\).*/\1/p' "$wx_cache" 2>/dev/null | head -1)
+            wx_epoch=$(date -j -u -f '%Y-%m-%dT%H:%M:%S' "$wx_gen" +%s 2>/dev/null || echo 0)
+            wx_age_h=$(( ( $(date +%s) - wx_epoch ) / 3600 ))
+
+            if [ "${wx_status:-0}" != "0" ]; then
+                fail "weather refresh last exited ${wx_status} — see ~/.local/state/chaos-weather.out.log"
+            elif [ "$wx_epoch" = 0 ]; then
+                fail "weather agent loaded but .cache/weather.json has no readable generatedAt"
+            elif [ "$wx_age_h" -ge 3 ]; then
+                warn "weather cache is ${wx_age_h}h old — the frame drops the weather row past ~3h"
+            else
+                pass "weather agent healthy, cache ${wx_age_h}h old (ca.mlaws.chaos-weather)"
+            fi
+        fi
+
+        # ★ The frame route itself. Everything above can be green while the one
+        # thing the panel actually fetches returns a 500.
+        if curl -fsS --max-time 8 -o /dev/null "http://127.0.0.1:2424/frame?view=morning"; then
+            pass "/frame renders (the Kobo panel's source)"
+        else
+            fail "/frame is NOT rendering — the desk panel will hold its last image forever"
+        fi
+    fi
 fi
 
 # ── Ollama (local models) ────────────────────────────────────────────────────

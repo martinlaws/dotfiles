@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- Installed (with __HOME__ substituted) by scripts/setup-dashboard-agents.sh.
+     STUDIO ONLY — see ca.mlaws.chaos-dashboard.plist.template for why.
+
+     StartInterval rather than StartCalendarInterval: launchd's man page says a
+     StartInterval firing that lands while the machine is asleep is silently
+     dropped, where StartCalendarInterval coalesces missed firings and fires on
+     wake. Moot on this machine — `pmset -g` reports `sleep 0` and it has not
+     slept in days — so the simpler key wins. If the Studio ever starts
+     sleeping, switch to StartCalendarInterval.
+
+     No KeepAlive. This is a one-shot on a timer; a non-zero exit is a report,
+     not a crash, and `launchctl list ca.mlaws.chaos-calendar` is where
+     doctor.sh reads it. -->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>ca.mlaws.chaos-calendar</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>__HOME__/.bin/chaos-calendar-refresh.sh</string>
+    </array>
+    <key>WorkingDirectory</key>
+    <string>__HOME__/code/chaos/dashboard</string>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>StartInterval</key>
+    <integer>900</integer>
+    <key>StandardOutPath</key>
+    <string>__HOME__/.local/state/chaos-calendar.out.log</string>
+    <key>StandardErrorPath</key>
+    <string>__HOME__/.local/state/chaos-calendar.err.log</string>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>__HOME__/.local/share/fnm/aliases/default/bin:__HOME__/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
+        <key>TZ</key>
+        <string>America/Toronto</string>
+    </dict>
+</dict>
+</plist>
