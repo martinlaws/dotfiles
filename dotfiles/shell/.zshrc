@@ -48,6 +48,8 @@ case ":$PATH:" in
 esac
 # pnpm end
 
-# Load local overrides if they exist
+# rbenv only where it's installed (it isn't in the Brewfile, so not every Mac has it)
+command -v rbenv >/dev/null && eval "$(rbenv init - zsh)"
+
+# Load local overrides if they exist (last, so they win)
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
-eval "$(rbenv init - zsh)"
