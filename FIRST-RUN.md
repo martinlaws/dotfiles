@@ -110,14 +110,32 @@ These live outside the repo (private data or vendor cloud) — restore each by h
 ## 8 · chaos autosave (auto-installed by setup)
 
 `setup` loads a background agent (`ca.mlaws.chaos-autosave`) that snapshots the
-whole chaos working tree — *including untracked notes* — to the private `autosave`
-branch ~90s after you stop editing. Never touches your working tree or `main`.
+whole chaos working tree — *including untracked notes* — ~90s after you stop
+editing, and pushes it only when something changed. Never touches your working
+tree or `main`. A sibling agent (`ca.mlaws.claude-autosave`) does the same for
+`~/.claude`'s tracked brain.
 
-Recover a lost note:
+Each Mac pushes its own branch so neither overwrites the other: the Studio pushes
+`autosave`, any other Mac pushes `autosave-<LocalHostName>` (read with
+`/usr/sbin/scutil --get LocalHostName`, never the network hostname;
+`scripts/setup-autosave.sh` prints it). Every Mac also keeps its latest snapshot
+locally at `refs/autosave/latest`, even when a push fails, and retries a failed
+push after 15 quiet minutes.
+
+Recover a lost note (`git restore` puts the file back in your working tree only;
+nothing is staged):
 ```sh
-cd ~/code/chaos && git fetch && git checkout autosave -- path/to/note.md
+# same Mac — local, freshest, no network
+cd ~/code/chaos && git restore --source=refs/autosave/latest -- path/to/note.md
+
+# from GitHub — the Studio's snapshot
+cd ~/code/chaos && git fetch origin && git restore --source=origin/autosave -- path/to/note.md
+# …or another Mac's:  git restore --source=origin/autosave-<host> -- path/to/note.md
 ```
-(or browse the `autosave` branch on GitHub). Logs: `~/.local/state/chaos-autosave.log`.
+⚠ `git checkout autosave -- <file>` does NOT work: there is no local `autosave`
+branch, and with `-- <path>` git won't guess the remote one (`fatal: invalid
+reference`). Same commands in `~/.claude` for claude-config. Or browse the branch on
+GitHub. Logs: `~/.local/state/chaos-autosave.log` (rolls to `.log.1` past 2 MB).
 Re-arm manually any time: `scripts/setup-autosave.sh`.
 
 ## Verify it worked

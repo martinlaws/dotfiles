@@ -161,7 +161,8 @@ const PHASES = [
     { id:"v-shell", x:"Fresh shell + core tools", c:'exec zsh\nnode --version\nz ~\nssh -T git@github.com' },
     { id:"v-cc", x:"Open Claude Code in chaos — statusline renders, skills load" },
     { id:"v-slurp", x:"Say something via superwhisper Capture (opt+/), then run /slurp — it lands in _inbox.md" },
-    { id:"v-auto", x:"Edit a chaos file, wait ~90s — the autosave branch updates on GitHub" },
+    { id:"v-auto", x:"Edit a chaos file, wait ~90s — this Mac's autosave branch updates on GitHub", n:"The Studio pushes <code>autosave</code>; any other Mac pushes <code>autosave-&lt;LocalHostName&gt;</code>, and the log names it. Recover a file on this Mac with <code>git restore --source=refs/autosave/latest -- &lt;file&gt;</code>, or from GitHub after <code>git fetch origin</code> with <code>--source=origin/autosave</code> (another Mac: <code>origin/autosave-&lt;host&gt;</code>). FIRST-RUN.md §8 has the rest.",
+      c:'tail -3 ~/.local/state/chaos-autosave.log' },
   ]},
   { t:"Later — deferred", s:"No rush.", items:[
     { id:"tm", x:"Time Machine → Mac Studio", n:"Share a drive on the Studio as a Time Machine destination; the laptop backs up over the LAN when home." },

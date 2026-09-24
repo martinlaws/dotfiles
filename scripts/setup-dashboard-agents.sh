@@ -51,7 +51,9 @@ uninstall() {
 
 [ "${1:-}" = "uninstall" ] && uninstall
 
-host="$(scutil --get LocalHostName 2>/dev/null || hostname -s)"
+# /usr/sbin/scutil by absolute path: launchd's PATH has no /usr/sbin, and the old
+# `hostname -s` fallback followed the network (2026-09-23). Unreadable → unknown.
+host="$(/usr/sbin/scutil --get LocalHostName 2>/dev/null || true)"; host="${host:-unknown}"
 if [ "$host" != "$EXPECT_HOST" ]; then
   echo "⚠ not the dashboard host — this is '$host', expected '$EXPECT_HOST'."
   echo "  Skipping the dashboard agents on purpose: dashboard/.cache/calendar.json"

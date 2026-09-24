@@ -39,7 +39,9 @@ EXPECT_HOST="${CHAOS_DASHBOARD_HOST:-studio}"
 
 log() { printf '%s  %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$*"; }
 
-host="$(scutil --get LocalHostName 2>/dev/null || hostname -s)"
+# /usr/sbin/scutil by absolute path: launchd's PATH has no /usr/sbin, and the old
+# `hostname -s` fallback followed the network (2026-09-23). Unreadable → unknown.
+host="$(/usr/sbin/scutil --get LocalHostName 2>/dev/null || true)"; host="${host:-unknown}"
 if [ "$host" != "$EXPECT_HOST" ]; then
   log "✗ not the weather-refresh host — this is '$host', expected '$EXPECT_HOST'. Skipping."
   exit 0

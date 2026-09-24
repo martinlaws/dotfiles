@@ -40,7 +40,7 @@ flips into **update mode** and refreshes rather than redoing first-time setup.
 | **1 · Foundation** | Xcode CLT, Homebrew, CLI tools from [`config/Brewfile`](config/Brewfile), Node LTS pinned via fnm |
 | **2 · Dev config** | Symlinks shell / terminal / editor / ssh configs (via GNU Stow), generates `~/.gitconfig` from a template, sets up SSH |
 | **3 · Apps & system** | Installs GUI apps from [`config/Brewfile.apps`](config/Brewfile.apps) (all / by category / pick-and-choose), reinstalls editor extensions, applies opinionated macOS defaults |
-| **4 · Claude & tooling** | Restores my private Claude Code config into `~/.claude`, builds the `hey` CLI from source, clones my repos (list in `~/.claude/repos.txt`), and loads the chaos autosave agent (snapshots my knowledge repo to a safety branch) |
+| **4 · Claude & tooling** | Restores my private Claude Code config into `~/.claude`, builds the `hey` CLI from source, clones my repos (list in `~/.claude/repos.txt`), and loads the chaos and `~/.claude` autosave agents (each Mac snapshots both repos to its own safety branch: `autosave` from the Studio, `autosave-<LocalHostName>` from any other Mac; recovery in [`FIRST-RUN.md`](FIRST-RUN.md) §8) |
 
 Every question is asked **up front, at minute 0** (git identity, Claude config
 restore, macOS defaults, your sudo password — kept warm in the background so

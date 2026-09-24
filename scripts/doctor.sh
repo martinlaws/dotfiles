@@ -233,7 +233,7 @@ if [ -d "$HOME/code/chaos" ]; then
     # replaces stayed "loaded" while failing 1,279 consecutive times against a
     # wrapper script that had been deleted. Check that :2424 answers, and check
     # the calendar job's LAST EXIT STATUS, not its presence.
-    if [ "$(scutil --get LocalHostName 2>/dev/null || hostname -s)" = "${CHAOS_DASHBOARD_HOST:-studio}" ]; then
+    if [ "$(/usr/sbin/scutil --get LocalHostName 2>/dev/null)" = "${CHAOS_DASHBOARD_HOST:-studio}" ]; then
         if ! launchctl list "ca.mlaws.chaos-dashboard" >/dev/null 2>&1; then
             fail "dashboard agent NOT loaded — run ~/dotfiles/scripts/setup-dashboard-agents.sh"
         elif curl -fsS --max-time 4 -o /dev/null "http://127.0.0.1:2424/"; then
