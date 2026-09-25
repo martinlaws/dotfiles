@@ -242,16 +242,19 @@ if [ -d "$HOME/code/chaos" ]; then
             fail "dashboard agent loaded but :2424 is not answering — see ~/.local/state/chaos-dashboard.out.log"
         fi
 
+        # ⚠ Freshness comes from lastRefresh INSIDE the json, never the file
+        # mtime — git operations and hand-commits touch this tracked file, so
+        # its mtime currently reads three days newer than its own contents.
+        # Read before the agent check so the cloud check below can compare
+        # against it even when the agent isn't loaded.
+        cache="$HOME/code/chaos/dashboard/.cache/calendar.json"
+        lr=$(sed -n 's/.*"lastRefresh": *"\([^.Z"]*\).*/\1/p' "$cache" 2>/dev/null | head -1)
+        lr_epoch=$(date -j -u -f '%Y-%m-%dT%H:%M:%S' "$lr" +%s 2>/dev/null || echo 0)
+
         if ! cal_list=$(launchctl list "ca.mlaws.chaos-calendar" 2>/dev/null); then
             fail "calendar agent NOT loaded — run ~/dotfiles/scripts/setup-dashboard-agents.sh"
         else
             cal_status=$(printf '%s\n' "$cal_list" | awk -F'= ' '/LastExitStatus/ {gsub(/[; ]/,"",$2); print $2}')
-            # ⚠ Freshness comes from lastRefresh INSIDE the json, never the file
-            # mtime — git operations and hand-commits touch this tracked file, so
-            # its mtime currently reads three days newer than its own contents.
-            cache="$HOME/code/chaos/dashboard/.cache/calendar.json"
-            lr=$(sed -n 's/.*"lastRefresh": *"\([^.Z"]*\).*/\1/p' "$cache" 2>/dev/null | head -1)
-            lr_epoch=$(date -j -u -f '%Y-%m-%dT%H:%M:%S' "$lr" +%s 2>/dev/null || echo 0)
             age_h=$(( ( $(date +%s) - lr_epoch ) / 3600 ))
 
             if [ "${cal_status:-0}" != "0" ]; then
@@ -263,6 +266,32 @@ if [ -d "$HOME/code/chaos" ]; then
             else
                 pass "calendar agent healthy, cache ${age_h}h old (ca.mlaws.chaos-calendar)"
             fi
+        fi
+
+        # ★ The copy the CLOUD briefing reads. The scheduled /morning runs in a
+        # fresh clone with no hey, so it sees only what reached origin, and this
+        # Mac force-pushes its tree to `autosave` (~/.bin/chaos-autosave.sh). A
+        # green working copy above says nothing about that push. No fetch here
+        # (read-only, and SSH can prompt 1Password): origin/autosave moves only
+        # on a successful push or fetch, so this is AS OF THE LAST FETCH/PUSH.
+        # ⚠ A push to `autosave` from another Mac after ours won't show here.
+        # A stale cloud copy that is no older than the working copy means the
+        # calendar refresh is the fault (flagged above), not autosave; only a
+        # cloud copy BEHIND the working copy points at autosave.
+        cloud_lr=$(git -C "$HOME/code/chaos" show origin/autosave:dashboard/.cache/calendar.json 2>/dev/null \
+            | sed -n 's/.*"lastRefresh": *"\([^.Z"]*\).*/\1/p' | head -1)
+        cloud_epoch=$(date -j -u -f '%Y-%m-%dT%H:%M:%S' "$cloud_lr" +%s 2>/dev/null || echo 0)
+        cloud_age_m=$(( ( $(date +%s) - cloud_epoch ) / 60 ))
+        if [ "$cloud_epoch" = 0 ]; then
+            warn "this clone's origin/autosave has no readable calendar lastRefresh (as of the last fetch/push)"
+        elif [ "$cloud_age_m" -ge 120 ]; then
+            if [ "${lr_epoch:-0}" != 0 ] && [ "$cloud_epoch" -ge "${lr_epoch:-0}" ]; then
+                warn "origin/autosave calendar is $((cloud_age_m / 60))h old (as of the last fetch/push), no older than the working copy — the calendar refresh above is the fault, not autosave"
+            else
+                warn "origin/autosave calendar is $((cloud_age_m / 60))h old (as of the last fetch/push) — autosave isn't reaching origin, or another Mac overwrote autosave (possible until the MacBook pulls the per-host fix); see ~/.local/state/chaos-autosave.log"
+            fi
+        else
+            pass "cloud copy fresh: origin/autosave calendar ${cloud_age_m}m old (as of the last fetch/push)"
         fi
 
         # Same shape for weather. The frame's weather row returns null once the
