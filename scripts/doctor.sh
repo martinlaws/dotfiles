@@ -3,7 +3,9 @@
 # Doctor — one-shot health check for a machine set up by this repo.
 # Codifies the FIRST-RUN.md "Verify it worked" checks (BACKLOG #11) plus the
 # failure classes from the June 2026 new-Mac bring-up (macOS-ahead-of-Homebrew,
-# formula-vs-binary names, SSH-under-pipefail). Read-only: changes nothing.
+# formula-vs-binary names, SSH-under-pipefail). Read-only: it changes no
+# setting and runs no fix. One side effect: its request to the chaos
+# dashboard's /frame route can refresh that route's own cache for its size.
 #
 # Run: sh ~/dotfiles/scripts/doctor.sh
 
@@ -317,13 +319,128 @@ if [ -d "$HOME/code/chaos" ]; then
             fi
         fi
 
-        # ★ The frame route itself. Everything above can be green while the one
-        # thing the panel actually fetches returns a 500.
+        ui_section "Desk panel"
+        # ★ The frame route itself. Everything above can be green while the
+        # route the panel is drawn from returns a 500. (The panel fetches
+        # /frame.raw, which is this route turned into pixels.)
+        # ⚠ Deliberately the default size, NOT the panel's 1404×1872: /frame
+        # keeps one edition record per view and size (and writes it when the
+        # content moved), so a request at the panel's size could mint the
+        # panel's next edition itself. The panel never reads this size's record.
         if curl -fsS --max-time 8 -o /dev/null "http://127.0.0.1:2424/frame?view=morning"; then
-            pass "/frame renders (the Kobo panel's source)"
+            pass "/frame renders (the route the desk panel is drawn from)"
         else
             fail "/frame is NOT rendering — the desk panel will hold its last image forever"
         fi
+
+        # ★ The tether: the Mac half of the panel. It holds the USB tunnel the
+        # panel fetches through, and takes the tablet over after every boot.
+        # ⚠ Installed BY HAND from the chaos checkout, never by `sh setup` or
+        # setup-dashboard-agents.sh (decided 2026-09-28; recorded in chaos's
+        # dashboard/kobo/README.md). Its binary is gitignored, so a rebuilt
+        # Studio has neither until the two commands below run. ✗ Never automate
+        # them: `install.sh --active` pins takeover.sh's sha256, and that pin
+        # is a human approval step.
+        # ⚠ Match `state = ` at exactly ONE tab: launchctl print also carries
+        # nested "state = active" lines and a "job state" line.
+        RM2="$HOME/code/chaos/dashboard/kobo/rm2"
+        tether=$(launchctl print "gui/$(id -u)/ca.mlaws.rm2-tether" 2>/dev/null) || tether=""
+        t_state=$(printf '%s\n' "$tether" | awk '/^\tstate = / {sub(/^\tstate = /, ""); print; exit}')
+        if [ -x "$RM2/dist/rm2tether" ] && [ "$t_state" = running ]; then
+            # Running is not feeding: observe mode probes and acts on nothing.
+            case "$tether" in
+                *-observe=false*)
+                    # ⚠ Active is not "will take over" either. At each takeover
+                    # the agent reads takeover.sh and refuses one whose sha256
+                    # isn't the pin in its arguments, and a latched breaker
+                    # refuses too. launchd still says running, and the glass
+                    # stays fed until the tablet next boots, so neither shows
+                    # anywhere else until the panel goes dark. Both are reads.
+                    # Active mode won't start without a pin, so none = unreadable.
+                    t_pin=$(printf '%s\n' "$tether" | sed -n 's/.*-script-sha256=\([0-9a-f]\{64\}\).*/\1/p' | head -1)
+                    t_disk=$(shasum -a 256 < "$RM2/tether/device/takeover.sh" 2>/dev/null | cut -d' ' -f1)
+                    t_json="$HOME/Library/Application Support/rm2panel/tether-state.json"
+                    if [ -z "$t_pin" ]; then
+                        warn "tether active, but its approved takeover.sh sha256 isn't readable from launchctl, so it wasn't compared"
+                    elif [ "$t_pin" != "$t_disk" ]; then
+                        warn "tether active, but takeover.sh no longer matches the sha256 it was approved at — the tablet's next boot will not be taken over"
+                        ui_info "  Re-approve by hand once the change is reviewed: ~/code/chaos/dashboard/kobo/rm2/tether/launchd/install.sh --active"
+                        ui_info "  ⚠ --active approves takeover.sh as it is on disk: check it has no local edits first."
+                    elif grep -q '^  "trip":' "$t_json" 2>/dev/null; then
+                        warn "tether active, but its breaker is latched — it will not take the tablet over"
+                        ui_info "  Read why first (changes nothing): ~/code/chaos/dashboard/kobo/rm2/dist/rm2tether status"
+                    else
+                        pass "tether running in active mode (ca.mlaws.rm2-tether)"
+                    fi ;;
+                *) warn "tether running but NOT in active mode — it probes the tablet and takes nothing over"
+                   ui_info "  Go live by hand: ~/code/chaos/dashboard/kobo/rm2/tether/launchd/install.sh --active"
+                   ui_info "  ⚠ --active approves takeover.sh as it is on disk: check it has no local edits first." ;;
+            esac
+        else
+            if [ ! -x "$RM2/dist/rm2tether" ]; then
+                warn "tether binary not built: dashboard/kobo/rm2/dist/rm2tether (gitignored, so a fresh clone has none)"
+            elif [ -z "$tether" ]; then
+                warn "tether agent NOT installed (ca.mlaws.rm2-tether) — the desk panel has no feed"
+            else
+                warn "tether agent loaded but ${t_state:-not running} — see ~/.local/state/rm2-tether.out.log"
+            fi
+            ui_info "  Installed by hand, never by setup. Run, in order:"
+            ui_info "    ~/code/chaos/dashboard/kobo/rm2/scripts/build.sh"
+            ui_info "    ~/code/chaos/dashboard/kobo/rm2/tether/launchd/install.sh --active"
+            ui_info "  ⚠ --active approves takeover.sh as it is on disk: check it has no local edits first."
+        fi
+
+        # ★ Is the glass still being fed? E-ink holds its last frame, so a dead
+        # feed looks exactly like a live one. /frame.raw rewrites this file on
+        # every poll whose User-Agent is rm2panel/, and nothing else writes it:
+        # it is the panel's own signal. READ it, never fetch for it; a request
+        # from here isn't the panel's and proves nothing. /daily reads the same
+        # file (chaos .claude/skills/daily/frame-liveness.sh), and 30 min is its
+        # STALE_MIN, rm2panel's own -stale-after: past it the glass shows the
+        # device's stale face. Freshness comes from INSIDE the json, never the
+        # mtime. Written by JSON.stringify(…, null, 2), so one key per line.
+        beat="$HOME/code/chaos/dashboard/.cache/frame-heartbeat.json"
+        hb() { sed -n "s/^ *\"$1\": *\"\{0,1\}\([^\",]*\).*/\1/p" "$beat" 2>/dev/null | head -1; }
+        # "2026-09-23T14:05:07-04:00" (the route's local time + offset) → epoch, or 0.
+        hb_epoch() {
+            date -j -f '%Y-%m-%dT%H:%M:%S%z' \
+                "$(printf '%s' "$1" | sed -E 's/Z$/+0000/; s/([+-][0-9]{2}):([0-9]{2})$/\1\2/')" +%s 2>/dev/null || echo 0
+        }
+        panel_live=0
+        if [ ! -f "$beat" ]; then
+            warn "no panel heartbeat — the desk panel has never fetched a frame from this Mac"
+        else
+            now=$(date +%s)
+            at_ep=$(hb_epoch "$(hb at)")
+            ok_ep=$(hb_epoch "$(hb lastOk)")
+            hb_st=$(hb status)
+            hb_fail=$(hb failures)
+            hb_unp=$(hb unpainted)
+            # A count that isn't a number means the file can't be trusted.
+            case "${hb_fail:-0}${hb_unp:-0}" in *[!0-9]*) at_ep=0 ;; esac
+            at_m=$(( (now - at_ep) / 60 ))
+            ok_m=$(( (now - ok_ep) / 60 ))
+            if [ "$at_ep" = 0 ]; then
+                warn "panel heartbeat unreadable, so the panel's state is unknown ($beat)"
+            elif [ "$ok_ep" = 0 ]; then
+                warn "desk panel has polled (last ${at_m}m ago) but never had a good answer (last HTTP ${hb_st})"
+            elif [ "$ok_m" -ge 30 ] && [ "$at_m" -ge 30 ]; then
+                warn "desk panel NOT live: it stopped asking ${at_m}m ago, so the glass shows its stale face"
+            elif [ "$ok_m" -ge 30 ]; then
+                warn "desk panel NOT live: polling, but its last good answer was ${ok_m}m ago (last HTTP ${hb_st})"
+            elif [ "${hb_fail:-0}" -gt 0 ]; then
+                warn "desk panel's last ${hb_fail} poll(s) failed (HTTP ${hb_st}); last good answer ${ok_m}m ago"
+            elif [ "${hb_unp:-0}" -gt 2 ]; then
+                warn "desk panel fetching but not painting: it has held the same frame for ${hb_unp} polls while served newer ones"
+            else
+                pass "desk panel live: last poll ${at_m}m ago got HTTP ${hb_st} (frame-heartbeat.json)"
+                panel_live=1
+            fi
+        fi
+        # Every outcome but live gets the one command that tells the causes
+        # apart (route down, no cable, tunnel down). Pointed at, never run: once
+        # the heartbeat is 30 min stale it fetches /frame at the panel's size.
+        [ "$panel_live" = 1 ] || ui_info "  Diagnose: bash ~/code/chaos/.claude/skills/daily/frame-liveness.sh"
     fi
 fi
 
