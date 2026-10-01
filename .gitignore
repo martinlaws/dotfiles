@@ -1,2 +1,3 @@
 *.local
 .claude/
+__pycache__/
