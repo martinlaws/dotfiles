@@ -49,9 +49,10 @@ PANEL_REFRESH = os.path.expanduser('~/.bin/chaos-panel-refresh.sh')
 CAPTURE = os.path.expanduser('~/.bin/chaos-capture.sh')
 
 PAD = [{"type": "device_if", "identifiers": [{"vendor_id": 21862, "product_id": 8}]}]
-OPT_SLASH = [{"key_code": "slash", "modifiers": ["left_option"]}]
-OPT_ESC = [{"key_code": "escape", "modifiers": ["left_option"]}]
-# repeat:false because a held K5 otherwise auto-repeats Return at about 30 a second (measured 2026-10-01)
+# repeat:false on every key output: a held pad key otherwise auto-repeats at about 30 a second
+# (measured 2026-10-01: K5 ~85 Returns in 3 s, K3 109 Opt+/ in 3.9 s, which would flip dictation ~110 times)
+OPT_SLASH = [{"key_code": "slash", "modifiers": ["left_option"], "repeat": False}]
+OPT_ESC = [{"key_code": "escape", "modifiers": ["left_option"], "repeat": False}]
 RETURN = [{"key_code": "return_or_enter", "repeat": False}]
 NOTHING = [{"key_code": "vk_none"}]
 REFRESH = [

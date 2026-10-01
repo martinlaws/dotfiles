@@ -432,6 +432,12 @@ print(a["to"] == [{"key_code": "return_or_enter", "repeat": False}] and a["from"
 print(b["to"] == [{"key_code": "vk_none"}] and b["from"]["modifiers"]["optional"] == ["any"])
 print(all(m["from"]["key_code"] == "d" and m["from"]["modifiers"]["mandatory"] == ["left_command"] for m in (a, b)))
 print(all(m["conditions"] == [{"type": "device_if", "identifiers": [{"vendor_id": 21862, "product_id": 8}]}] for m in (a, b)))
+def only(k):
+    r = [x for x in rules if k in x["description"]]
+    assert len(r) == 1 and len(r[0]["manipulators"]) == 1, "want exactly one " + k + " manipulator"
+    return r[0]["manipulators"][0]["to"]
+print(only("K3") == [{"key_code": "slash", "modifiers": ["left_option"], "repeat": False}])
+print(only("K4") == [{"key_code": "escape", "modifiers": ["left_option"], "repeat": False}])
 ')"
 assert_eq "K2 covers both firmware layers of v" "$(echo "$k2" | sed -n 1p)" "2 v left_command,left_control"
 assert_eq "K2 froms carry optional any" "$(echo "$k2" | sed -n 2p)" "True"
@@ -442,6 +448,8 @@ assert_eq "K5 sends Return once per press (repeat false, not keypad Enter) under
 assert_eq "K5 then swallows any other modifier with vk_none, second" "$(echo "$k2" | sed -n 7p)" "True"
 assert_eq "K5 matches the stock Cmd+D and nothing else" "$(echo "$k2" | sed -n 8p)" "True"
 assert_eq "K5 is scoped to the pad" "$(echo "$k2" | sed -n 9p)" "True"
+assert_eq "K3 sends Opt+/ once per press (repeat false, a held key would flip dictation)" "$(echo "$k2" | sed -n 10p)" "True"
+assert_eq "K4 sends Opt+Esc once per press (repeat false)" "$(echo "$k2" | sed -n 11p)" "True"
 assert_eq "the script the rule names exists and is executable" "$([ -x "$HOME/.bin/chaos-capture.sh" ] && echo yes || echo no)" "yes"
 if [ -x "/Library/Application Support/org.pqrs/Karabiner-Elements/bin/karabiner_cli" ]; then
   lint="$(python3 "$GEN" --lint 2>&1)"
