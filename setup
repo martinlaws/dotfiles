@@ -166,7 +166,7 @@ source "$SCRIPT_DIR/scripts/setup-git.sh"
 source "$SCRIPT_DIR/scripts/setup-ssh.sh"
 sh "$SCRIPT_DIR/scripts/setup-claude.sh" || echo "⚠ claude-config restore skipped — run scripts/setup-claude.sh after your SSH key is on GitHub"
 
-# hey CLI — built from source (PR #79 event commands); non-fatal if it fails
+# hey CLI — official installer (upstream release); warns on a non-upstream build; non-fatal if it fails
 sh "$SCRIPT_DIR/scripts/install-hey.sh" || echo "⚠ hey install skipped — run scripts/install-hey.sh later"
 
 # Clone my work repos (list is private, in ~/.claude/repos.txt); non-fatal

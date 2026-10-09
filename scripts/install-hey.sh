@@ -32,9 +32,19 @@ install_hey() {
     ui_section "hey CLI"
 
     # Idempotent: if hey is already installed, leave it. Upgrades are `hey upgrade`.
+    # ⚠ But say so when it isn't an upstream release. Release builds print
+    # "hey version 1.4.1"; a fork built from source doesn't, and this used to
+    # skip one in silence, so nothing flagged the MacBook's ad1f778 fork (chaos#96).
     if [ -x "$DEST" ]; then
-        ui_success "hey already installed ($DEST, $("$DEST" --version 2>/dev/null || echo unknown)) — skipping"
-        ui_info "To upgrade later: hey upgrade"
+        local version
+        version="$("$DEST" --version 2>/dev/null || echo unknown)"
+        if grep -Eq '^hey version [1-9][0-9]*\.[0-9]+\.[0-9]+' <<<"$version"; then
+            ui_success "hey already installed ($DEST, $version) — skipping"
+            ui_info "To upgrade later: hey upgrade"
+        else
+            ui_info "⚠ $DEST is not an upstream release ($version) — leaving it in place"
+            ui_info "  To replace it: mv $DEST $DEST.backup-<rev>, then re-run scripts/install-hey.sh"
+        fi
         return 0
     fi
 
