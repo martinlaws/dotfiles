@@ -2,7 +2,7 @@
 # chaos-weather-refresh.sh — refresh dashboard/.cache/weather.json on a timer.
 #
 # Loaded by ca.mlaws.chaos-weather (~/dotfiles/config/launchd/), StartInterval
-# 3600. The Kobo desk panel's weather row reads that cache and NEVER fetches on
+# 3600. The desk panel's weather row reads that cache and NEVER fetches on
 # its own: the frame renders on a request from a battery-powered panel, and a
 # network call on that path fails in the one place nobody is watching. So this
 # job owns the network and the panel owns nothing.
@@ -56,13 +56,8 @@ command -v node >/dev/null 2>&1 || { log "✗ node not on PATH. Skipping."; exit
   exit 0
 }
 
-# ⚠ tsx is invoked directly rather than through `npm run refresh-weather`,
-# because that script does not exist in package.json yet. Once it is added
-#     "refresh-weather": "tsx scripts/refresh-weather.ts"
-# this line can become `npm run --silent refresh-weather` to match the calendar
-# job. Direct invocation is equivalent and does not depend on that edit landing.
 log "refreshing (node $(node --version))"
-if node_modules/.bin/tsx scripts/refresh-weather.ts; then
+if npm run --silent refresh-weather; then
   log "✓ refreshed."
 else
   status=$?

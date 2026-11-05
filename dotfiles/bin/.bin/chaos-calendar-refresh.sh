@@ -3,7 +3,7 @@
 #
 # Loaded by ca.mlaws.chaos-calendar (~/dotfiles/config/launchd/), StartInterval
 # 900. Until now the cache only moved when Martin happened to run /daily,
-# /calendar or /morning, and two things on the Kobo panel read it.
+# /calendar or /morning, and two things on the desk panel (reMarkable 2) read it.
 #
 # Same three non-obvious guards as chaos-dashboard.sh — see that file's header
 # for the reasoning. The short version:

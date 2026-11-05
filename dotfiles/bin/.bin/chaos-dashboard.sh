@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # chaos-dashboard.sh — run the chaos dashboard as a supervised service on :2424.
 #
-# Loaded by ca.mlaws.chaos-dashboard (~/dotfiles/config/launchd/). The dashboard
-# UI is not the point — the Kobo desk panel fetches /frame from this server, so
+# Loaded by ca.mlaws.chaos-dashboard (~/dotfiles/config/launchd/). It exists for
+# the desk panel (reMarkable 2), which fetches /frame.raw from this server, so
 # it has to be up without anyone opening a tab.
 #
 # Four things here look like boilerplate and are not:
@@ -86,8 +86,9 @@ if [ "$needs_build" = 1 ]; then
   fi
 fi
 
-# 127.0.0.1 deliberately: render.sh fetches from the Mac itself, and the Kobo
-# gets PNGs from kobo/serve.sh on :8765. No reason to put the whole dashboard —
+# 127.0.0.1 deliberately: /frame.raw renders by pointing headless Chrome at this
+# same server, and the desk panel reaches it only through the tether's ssh -R
+# tunnel over the USB cable. No reason to put the whole dashboard —
 # every parser, every client name — on the LAN.
 #
 # exec the binary rather than `npm start` so launchd supervises next itself and

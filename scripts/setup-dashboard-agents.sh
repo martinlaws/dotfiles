@@ -4,7 +4,7 @@
 #   ca.mlaws.chaos-calendar   (npm run refresh-calendar, every 15 min)
 #   ca.mlaws.chaos-weather    (npm run refresh-weather, hourly)
 #
-# The Kobo desk panel fetches /frame from the dashboard server and two of its
+# The desk panel (reMarkable 2) fetches /frame.raw from the dashboard server and two of its
 # rows read dashboard/.cache/calendar.json, so both have to be up without anyone
 # opening a tab or running /daily.
 #
