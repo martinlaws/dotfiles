@@ -100,6 +100,13 @@ if command -v node >/dev/null 2>&1; then
 else
     fail "node not on PATH — run 'fnm install --lts && fnm default lts-latest', then open a fresh shell"
 fi
+if command -v node >/dev/null 2>&1; then
+    if (cd /tmp && node -e "require('playwright')" >/dev/null 2>&1); then
+        pass "playwright resolves from any folder (global, via NODE_PATH)"
+    else
+        warn "playwright doesn't resolve outside a project — run scripts/install-playwright.sh, then open a fresh shell"
+    fi
+fi
 
 # ── GitHub SSH ───────────────────────────────────────────────────────────────
 ui_section "GitHub SSH"

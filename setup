@@ -169,6 +169,9 @@ sh "$SCRIPT_DIR/scripts/setup-claude.sh" || echo "⚠ claude-config restore skip
 # hey CLI — official installer (upstream release); warns on a non-upstream build; non-fatal if it fails
 sh "$SCRIPT_DIR/scripts/install-hey.sh" || echo "⚠ hey install skipped — run scripts/install-hey.sh later"
 
+# Playwright + its Chromium, global under fnm's default Node (NODE_PATH in .zshrc); non-fatal
+sh "$SCRIPT_DIR/scripts/install-playwright.sh" || echo "⚠ Playwright skipped — run scripts/install-playwright.sh later"
+
 # Clone my work repos (list is private, in ~/.claude/repos.txt); non-fatal
 sh "$SCRIPT_DIR/scripts/clone-repos.sh" || echo "⚠ repo clone skipped — run scripts/clone-repos.sh later"
 

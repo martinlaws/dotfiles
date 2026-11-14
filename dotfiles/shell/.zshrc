@@ -20,6 +20,11 @@ path+=($HOME/.bin)
 # fnm (Fast Node Manager) - Rust-based Node version manager
 eval "$(fnm env --use-on-cd)"
 
+# Global npm modules on Node's search path, so `require('playwright')` works from
+# any folder (scripts/install-playwright.sh). fnm's default ALIAS, not `which
+# node`, which is per-shell. A project's own node_modules still wins.
+export NODE_PATH="$HOME/.local/share/fnm/aliases/default/lib/node_modules"
+
 eval "$(starship init zsh)"
 
 # Modern CLI tools (guarded so a fresh shell pre-install doesn't error)
