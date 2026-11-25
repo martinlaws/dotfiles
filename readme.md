@@ -68,6 +68,32 @@ And after it finishes:
 
 ---
 
+## Updating a Mac in one go
+
+```sh
+bash ~/dotfiles/scripts/update-mac.sh --dry-run   # reads only, changes nothing
+bash ~/dotfiles/scripts/update-mac.sh             # the default run
+```
+
+Non-interactive apart from the sudo password (asked once, kept warm), so run it
+in a terminal, not from a Claude chat. In order: fast-forwards `~/code/chaos`,
+`~/.claude` and `~/dotfiles` (only on `main`, only when nothing is in the way;
+never a stash, reset, rebase or merge), upgrades Homebrew formulae and apps
+(holding back the `claude` cask), installs anything missing from
+[`config/Brewfile`](config/Brewfile), runs `claude update` and
+`uv tool upgrade --all`, takes the `hey` CLI to the pinned release after a
+backup and runs the upgrade plan's read-only checks, and upgrades App Store
+apps. One failing step never stops the rest; the summary has one line per step,
+and the log lands in `~/.local/state/update-mac/`.
+
+Opt-ins: `--xcode` (install or upgrade Xcode.app; `xcode-select` is left
+alone), `--claude-app` (upgrades the Claude desktop app last, which quits it and
+ends every chat on the Mac), `--macos` (installs a macOS update after you type
+`restart`). Also `--no-sudo`, `--skip <step>` and `--only <step>`; `--help`
+lists the steps. The health check stays separate: `sh scripts/doctor.sh`.
+
+---
+
 ## The stack
 
 **Shell** — `zsh` + [Starship](https://starship.rs) prompt. History, navigation,
