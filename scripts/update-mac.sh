@@ -629,7 +629,7 @@ step_brew() {
         would "brew update"
         say "Lists below are as of the last brew update."
         # shellcheck disable=SC2046  # one argument per tap
-        echo_cmd "→ would run:" brew trust $(brewfile_taps)
+        echo_cmd "→ would run:" brew trust --tap $(brewfile_taps)
     else
         if ! run brew update; then
             say_warn "brew update failed: upgrading from the index already here"
@@ -639,11 +639,11 @@ step_brew() {
         # Trust the taps config/Brewfile declares: Homebrew 6+ aborts a
         # whole bundle on one untrusted tap (same loop as update-apps.sh).
         # shellcheck disable=SC2046  # one argument per tap
-        echo_cmd "→" brew trust $(brewfile_taps)
+        echo_cmd "→" brew trust --tap $(brewfile_taps)
         grep -E '^tap "' "$BREWFILE" 2>/dev/null \
           | sed 's/^tap "//; s/".*//' \
           | while IFS= read -r t; do
-              [ -n "$t" ] && brew trust "$t" >/dev/null 2>&1 || true
+              [ -n "$t" ] && brew trust --tap "$t" >/dev/null 2>&1 || true
           done
     fi
 
